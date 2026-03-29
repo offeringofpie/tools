@@ -20,8 +20,7 @@ const toolConfig: Record<string, ToolConfig> = {
 };
 
 export const useTools = () => {
-  const files = import.meta.glob('~/components/global/*.vue', { eager: true });
-
+  const files = import.meta.glob('../components/global/*.vue', { eager: true });
   const registry: Record<string, { label: string; file: string }> = {};
 
   const groups = Object.keys(files).reduce(
