@@ -9,8 +9,8 @@ const { groups } = useTools();
         Welcome!
       </h1>
       <p class="text-lg text-gray-400">
-        This is a growing collection of handy open-source utilities, designed to
-        make daily tasks a little bit easier.
+        A collection of useful open-source utilities, designed to make daily
+        tasks a little bit easier.
       </p>
     </section>
 
@@ -25,7 +25,7 @@ const { groups } = useTools();
         >
           {{ category }}
         </h2>
-        <UDivider :ui="{ border: { base: 'border-base-800' } }" />
+        <USeparator :ui="{ border: { base: 'border-base-800' } }" />
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

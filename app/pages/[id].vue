@@ -13,8 +13,11 @@ if (!toolData) {
 
 const Tool = resolveComponent(toolData.file);
 
-useHead({
-  title: `${toolData.label} - JL Tools`,
+useSeoMeta({
+  title: toolData.label,
+  description: `${toolData.description} | J Lopes`,
+  ogTitle: toolData.label,
+  ogDescription: `${toolData.description} | J Lopes`,
 });
 </script>
 
