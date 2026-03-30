@@ -6,12 +6,16 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'netlify',
   },
+  runtimeConfig: {
+    public: {
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://jlopes.eu/',
+    },
+  },
 
   css: ['~/assets/css/main.css'],
   app: {
     baseURL: '/tools/',
   },
-  devtools: { enabled: true },
 
   modules: [
     '@nuxt/a11y',
@@ -20,4 +24,19 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxt/ui',
   ],
+
+  devtools: { enabled: true },
+  vite: {
+    optimizeDeps: {
+      include: ['@vue/devtools-core', '@vue/devtools-kit', '@vueuse/core'],
+    },
+  },
+
+  scripts: {
+    registry: {
+      googleTagManager: {
+        id: process.env.GTM,
+      },
+    },
+  },
 });

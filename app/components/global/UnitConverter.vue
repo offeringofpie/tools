@@ -1,7 +1,71 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { useBreakpoints, breakpointsTailwind } from '@vueuse/core';
 
+const tabs = computed(() =>
+  categories.map((c) => ({
+    label: c.name,
+    value: c.id,
+  })),
+);
+
+const active = ref(tabs.value[0]?.value ?? '');
+
+const focused = ref<string | null>(null);
+
+const units = computed(() => {
+  const cat = categories.find((c) => c.id === active.value);
+  return cat ? cat.units.map((u) => ({ id: u.id, label: u.name })) : [];
+});
+
+const source = ref(units.value[0]?.id ?? '');
+const input = ref<number | string>(1);
+
+watch(active, () => {
+  source.value = units.value[0]?.id ?? '';
+  input.value = 1;
+});
+
+const cards = computed(() => {
+  if (!source.value) return [];
+
+  return units.value.map((u) => {
+    const isSource = u.id === source.value;
+    const raw = isSource
+      ? input.value
+      : convert(Number(input.value), source.value, u.id, active.value);
+
+    return {
+      id: u.id,
+      label: u.label,
+      value: raw === '' ? '' : isSource ? raw : format(raw),
+    };
+  });
+});
+
+const copied = ref<string | null>(null);
+
+function update(id: string, val: string | number) {
+  source.value = id;
+  input.value = val;
+}
+
+function copy(id: string, val: number | string) {
+  navigator.clipboard.writeText(`${val}`);
+  copied.value = id;
+  setTimeout(() => {
+    if (copied.value === id) copied.value = null;
+  }, 1000);
+}
+
+function blur(e: FocusEvent) {
+  const target = e?.relatedTarget as HTMLElement | null;
+  if (!target?.closest('button')) {
+    focused.value = null;
+  }
+}
+</script>
+
+<script lang="ts">
 interface Unit {
   id: string;
   name: string;
@@ -282,8 +346,7 @@ const categories: Category[] = [
     ],
   },
 ];
-
-function convert(val: number, from: string, to: string, cat: string) {
+export function convert(val: number, from: string, to: string, cat: string) {
   if (!val && val !== 0) return '';
 
   const categoryUnits = categories.find((c) => c.id === cat)?.units;
@@ -299,7 +362,7 @@ function convert(val: number, from: string, to: string, cat: string) {
   return typeof res === 'number' ? parseFloat(res.toPrecision(12)) : res;
 }
 
-function format(val: number | string): string {
+export function format(val: number | string): string {
   if (typeof val === 'string') return val;
   if (val === 0) return '0';
 
@@ -310,74 +373,6 @@ function format(val: number | string): string {
   }
 
   return val.toString();
-}
-
-const tabs = computed(() =>
-  categories.map((c) => ({
-    label: c.name,
-    value: c.id,
-  })),
-);
-
-const active = ref(tabs.value[0]?.value ?? '');
-
-const focused = ref<string | null>(null);
-
-const units = computed(() => {
-  const cat = categories.find((c) => c.id === active.value);
-  return cat ? cat.units.map((u) => ({ id: u.id, label: u.name })) : [];
-});
-
-const source = ref(units.value[0]?.id ?? '');
-const input = ref<number | string>(1);
-const breakpoints = useBreakpoints(breakpointsTailwind);
-
-const orientation = computed(() =>
-  breakpoints.smaller('md').value ? 'horizontal' : 'vertical',
-);
-
-watch(active, () => {
-  source.value = units.value[0]?.id ?? '';
-  input.value = 1;
-});
-
-const cards = computed(() => {
-  if (!source.value) return [];
-
-  return units.value.map((u) => {
-    const isSource = u.id === source.value;
-    const raw = isSource
-      ? input.value
-      : convert(Number(input.value), source.value, u.id, active.value);
-
-    return {
-      id: u.id,
-      label: u.label,
-      value: raw === '' ? '' : isSource ? raw : format(raw),
-    };
-  });
-});
-
-const copied = ref<string | null>(null);
-
-function update(id: string, val: string | number) {
-  source.value = id;
-  input.value = val;
-}
-
-function copy(id: string, val: number | string) {
-  navigator.clipboard.writeText(`${val}`);
-  copied.value = id;
-  setTimeout(() => {
-    if (copied.value === id) copied.value = null;
-  }, 1000);
-}
-
-function blur(e: FocusEvent) {
-  const target = e?.relatedTarget as HTMLElement | null;
-  if (!target?.closest('button')) {
-    focused.value = null;
-  }
 }
 </script>
 
@@ -425,14 +420,27 @@ function blur(e: FocusEvent) {
       </UPageGrid>
     </UCard>
 
-    <div class="w-full md:w-48 lg:w-56 shrink-0 order-1 md:order-2 md:sticky">
+    <div
+      class="md:w-full lg:w-56 shrink-0 order-1 md:order-2 md:sticky overflow-x-auto hide-scrollbar"
+    >
       <UTabs
         v-model="active"
         :items="tabs"
         aria-label="Select category"
         color="primary"
         variant="link"
-        :orientation="orientation"
+        orientation="horizontal"
+        :content="false"
+        class="w-full md:hidden"
+      />
+
+      <UTabs
+        v-model="active"
+        :items="tabs"
+        aria-label="Select category"
+        color="primary"
+        variant="link"
+        orientation="vertical"
         :content="false"
         class="hidden md:block w-full"
       />

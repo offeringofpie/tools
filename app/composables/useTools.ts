@@ -21,7 +21,10 @@ const toolConfig: Record<string, ToolConfig> = {
 
 export const useTools = () => {
   const files = import.meta.glob('../components/global/*.vue', { eager: true });
-  const registry: Record<string, { label: string; file: string }> = {};
+  const registry: Record<
+    string,
+    { label: string; file: string; description: string }
+  > = {};
 
   const groups = Object.keys(files).reduce(
     (acc, path) => {
@@ -39,9 +42,10 @@ export const useTools = () => {
         .toLowerCase()
         .replace(/^-/, '');
       const label = file.replace(/([A-Z])/g, ' $1').trim();
+      const description = config.description;
       const to = `/${id}`;
 
-      registry[to] = { label, file };
+      registry[to] = { label, file, description };
 
       if (!acc[config.category]) acc[config.category] = [];
 
