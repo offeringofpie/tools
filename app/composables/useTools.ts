@@ -8,6 +8,7 @@ export interface ToolItem extends NavigationMenuItem {
 interface ToolConfig {
   category: string;
   icon: string;
+  title?: string;
   description: string;
 }
 
@@ -16,6 +17,12 @@ const toolConfig: Record<string, ToolConfig> = {
     category: 'Math',
     icon: 'i-heroicons-arrows-right-left',
     description: 'Convert between units of length, weight, temperature, etc.',
+  },
+  MinifyBeautify: {
+    category: 'Code',
+    icon: 'i-heroicons-arrow-left-end-on-rectangle',
+    title: 'Minifier / Beautifier',
+    description: 'Quick & dirty minifier / beautifier.',
   },
 };
 
@@ -41,7 +48,7 @@ export const useTools = () => {
         .replace(/([A-Z])/g, '-$1')
         .toLowerCase()
         .replace(/^-/, '');
-      const label = file.replace(/([A-Z])/g, ' $1').trim();
+      const label = config.title ?? file.replace(/([A-Z])/g, ' $1').trim();
       const description = config.description;
       const to = `/${id}`;
 

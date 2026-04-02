@@ -22,31 +22,25 @@
         <ULink
           raw
           to="https://jlopes.eu"
-          class="text-primary transition-colors border-0 border-b-2 border-transparent hover:border-secondary"
+          class="text-primary hover:text-secondary transition-colors border-0 border-b-2 border-transparent hover:border-secondary"
           >Home</ULink
         >
         <ULink
           raw
           to="https://jlopes.eu/about"
-          class="text-secondary hover:text-primary transition-colors border-0 border-b-2 border-transparent hover:border-secondary"
+          class="text-secondary hover:text-secondary transition-colors border-0 border-b-2 border-transparent hover:border-secondary"
           >About</ULink
         >
         <ULink
           raw
           to="https://jlopes.eu/blog"
-          class="text-warning hover:text-primary transition-colors border-0 border-b-2 border-transparent hover:border-secondary"
+          class="text-success hover:text-secondary transition-colors border-0 border-b-2 border-transparent hover:border-secondary"
           >Blog</ULink
         >
         <ULink
           raw
-          to="https://jlopes.eu/projects"
-          class="text-error transition-colors border-0 border-b-2 border-transparent hover:border-secondary"
-          >Projects</ULink
-        >
-        <ULink
-          raw
           to="https://jlopes.eu/tools"
-          class="text-success transition-colors border-0 border-b-2 border-success hover:border-secondary"
+          class="text-warning transition-colors border-0 border-b-2 border-warning hover:border-warning"
           >Tools</ULink
         >
       </nav>
