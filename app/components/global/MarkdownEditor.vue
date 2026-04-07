@@ -103,7 +103,7 @@ onBeforeUnmount(() => editor.value?.destroy());
 
 <template>
   <div class="space-y-6 max-w-4xl mx-auto">
-    <span aria-live="polite" class="sr-only">
+    <span aria-live="polite" class="sr">
       {{ copied !== 'none' ? `Copied as ${copied === 'md' ? 'Markdown' : 'Rich Text'}` : '' }}
     </span>
 
@@ -205,17 +205,3 @@ onBeforeUnmount(() => editor.value?.destroy());
     </UCard>
   </div>
 </template>
-
-<style scoped>
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
-}
-</style>

@@ -28,7 +28,15 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   vite: {
     optimizeDeps: {
-      include: ['@vue/devtools-core', '@vue/devtools-kit', '@vueuse/core'],
+      include: [
+        '@vue/devtools-core',
+        '@vue/devtools-kit',
+        '@vueuse/core',
+        '@tiptap/vue-3',
+        '@tiptap/starter-kit',
+        'tiptap-markdown',
+        'marked',
+      ],
     },
   },
 
