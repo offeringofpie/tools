@@ -400,7 +400,7 @@ export function format(val: number | string): string {
                   variant="ghost"
                   color="neutral"
                   class="focus:text-primary hover:text-primary"
-                  icon="i-heroicons-clipboard-document"
+                  icon="i-heroicons-document-duplicate"
                   aria-label="Copy to clipboard"
                   @click="copy(card.id, card.value)"
                   @blur="focused = null"

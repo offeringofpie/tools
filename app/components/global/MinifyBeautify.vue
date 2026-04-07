@@ -293,7 +293,7 @@ export function beautify(code: string, type: CodeType) {
             <UButton
               color="secondary"
               variant="soft"
-              icon="i-heroicons-clipboard-document"
+              icon="i-heroicons-document-duplicate"
               class="cursor-pointer"
               :disabled="!output"
               @click="copyToClipboard"

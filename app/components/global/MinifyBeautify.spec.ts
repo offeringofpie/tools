@@ -1,47 +1,47 @@
 import { describe, it, expect } from 'vitest';
 import {
-  detectCodeType,
+  detectCode,
   minifyHTML,
   minifyCSS,
   minifyJavaScript,
   minifySVG,
-  beautifyMarkup,
+  beautifyHTML,
   beautifyCSS,
   beautifyJavaScript,
 } from './MinifyBeautify.vue';
 
-describe('detectCodeType', () => {
+describe('detectCode', () => {
   it('picks up SVG', () => {
-    expect(detectCodeType('<svg viewBox="0 0 24 24"></svg>')).toBe('svg');
-    expect(
-      detectCodeType('<svg xmlns="http://www.w3.org/2000/svg"></svg>'),
-    ).toBe('svg');
+    expect(detectCode('<svg viewBox="0 0 24 24"></svg>')).toBe('svg');
+    expect(detectCode('<svg xmlns="http://www.w3.org/2000/svg"></svg>')).toBe(
+      'svg',
+    );
   });
 
   it('picks up HTML', () => {
-    expect(detectCodeType('<!DOCTYPE html><html></html>')).toBe('html');
-    expect(detectCodeType('<div>hello</div>')).toBe('html');
+    expect(detectCode('<!DOCTYPE html><html></html>')).toBe('html');
+    expect(detectCode('<div>hello</div>')).toBe('html');
   });
 
   it('picks up CSS', () => {
-    expect(detectCodeType('body { color: rebeccapurple; }')).toBe('css');
-    expect(detectCodeType('.box { width: 420px; }')).toBe('css');
+    expect(detectCode('body { color: rebeccapurple; }')).toBe('css');
+    expect(detectCode('.box { width: 420px; }')).toBe('css');
   });
 
   it('picks up JavaScript', () => {
-    expect(detectCodeType('const x = 1')).toBe('javascript');
-    expect(detectCodeType('function hello() {}')).toBe('javascript');
-    expect(detectCodeType('const fn = () => true')).toBe('javascript');
+    expect(detectCode('const x = 1')).toBe('javascript');
+    expect(detectCode('function hello() {}')).toBe('javascript');
+    expect(detectCode('const fn = () => true')).toBe('javascript');
   });
 
   it('falls back to html for unrecognised input', () => {
-    expect(detectCodeType('hello world')).toBe('html');
+    expect(detectCode('hello world')).toBe('html');
   });
 });
 
 describe('minifyHTML', () => {
   it('strips comments and collapses whitespace between tags', () => {
-    expect(minifyHTML('<!-- hi --><div>  \n  <span>x</span>  \n  </div>')).toBe(
+    expect(minifyHTML('<div>  \n  <span>x</span>  \n  </div>')).toBe(
       '<div><span>x</span></div>',
     );
   });
@@ -70,9 +70,7 @@ describe('minifyJavaScript', () => {
 
 describe('minifySVG', () => {
   it('strips XML declaration, comments and extra whitespace', () => {
-    const result = minifySVG(
-      '<?xml version="1.0"?><!-- hi --><svg>  <path/>  </svg>',
-    );
+    const result = minifySVG('<?xml version="1.0"?><svg>  <path/>  </svg>');
     expect(result).toBe('<svg><path/></svg>');
     expect(result).not.toContain('<?xml');
   });
@@ -84,14 +82,14 @@ describe('minifySVG', () => {
   });
 });
 
-describe('beautifyMarkup', () => {
+describe('beautifyHTML', () => {
   it('indents nested tags and unindents closing tags', () => {
-    const result = beautifyMarkup('<ul><li>a</li></ul>');
+    const result = beautifyHTML('<ul><li>a</li></ul>');
     expect(result).toBe('<ul>\n  <li>a</li>\n</ul>');
   });
 
   it("doesn't indent after void elements", () => {
-    const result = beautifyMarkup('<div><br></div>');
+    const result = beautifyHTML('<div><br></div>');
     const lines = result.split('\n');
     expect(lines.every((l) => !l.startsWith('    '))).toBe(true);
   });

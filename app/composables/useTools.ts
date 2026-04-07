@@ -8,66 +8,67 @@ export interface ToolItem extends NavigationMenuItem {
 interface ToolConfig {
   category: string;
   icon: string;
-  title?: string;
   description: string;
 }
 
-const toolConfig: Record<string, ToolConfig> = {
+const config: Record<string, ToolConfig> = {
   UnitConverter: {
     category: 'Math',
     icon: 'i-heroicons-arrows-right-left',
     description: 'Convert between units of length, weight, temperature, etc.',
   },
+  MarkdownEditor: {
+    category: 'Text',
+    icon: 'i-heroicons-document-text',
+    description: 'A clean, distraction-free Markdown writing environment.',
+  },
   MinifyBeautify: {
     category: 'Code',
-    icon: 'i-heroicons-arrow-left-end-on-rectangle',
-    title: 'Minifier / Beautifier',
-    description: 'Quick & dirty minifier / beautifier.',
+    icon: 'i-heroicons-code-bracket',
+    description: 'Minify and format HTML, CSS, JS, and SVG files.',
   },
 };
 
 export const useTools = () => {
   const files = import.meta.glob('../components/global/*.vue', { eager: true });
-  const registry: Record<
-    string,
-    { label: string; file: string; description: string }
-  > = {};
+  const registry: Record<string, { label: string; file: string }> = {};
 
-  const groups = Object.keys(files).reduce(
+  const rawGroups = Object.keys(files).reduce(
     (acc, path) => {
       const file = path.split('/').pop()?.replace('.vue', '');
       if (!file || file === 'HelloWorld') return acc;
 
-      const config = toolConfig[file];
-
-      if (!config) {
-        throw new Error(`${file} not found.`);
-      }
+      const meta = config[file];
+      if (!meta) throw new Error(`Missing config for tool: ${file}`);
 
       const id = file
         .replace(/([A-Z])/g, '-$1')
         .toLowerCase()
         .replace(/^-/, '');
-      const label = config.title ?? file.replace(/([A-Z])/g, ' $1').trim();
-      const description = config.description;
+      const label = file.replace(/([A-Z])/g, ' $1').trim();
       const to = `/${id}`;
 
-      registry[to] = { label, file, description };
+      registry[to] = { label, file };
 
-      if (!acc[config.category]) acc[config.category] = [];
-
-      acc[config.category].push({
-        id,
-        label,
-        to,
-        icon: config.icon,
-        description: config.description,
-      });
+      acc[meta.category] ??= [];
+      acc[meta.category].push({ id, label, to, ...meta });
 
       return acc;
     },
     {} as Record<string, ToolItem[]>,
   );
 
-  return { groups, registry };
+  const groups = Object.keys(rawGroups)
+    .sort((a, b) => a.localeCompare(b))
+    .reduce(
+      (acc, category) => {
+        acc[category] = rawGroups[category].sort((a, b) =>
+          (a.label as string).localeCompare(b.label as string),
+        );
+        return acc;
+      },
+      {} as Record<string, ToolItem[]>,
+    );
+
+  return { registry, groups };
 };
