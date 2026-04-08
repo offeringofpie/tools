@@ -17,6 +17,11 @@ const config: Record<string, ToolConfig> = {
     icon: 'i-heroicons-arrows-right-left',
     description: 'Convert between units of length, weight, temperature, etc.',
   },
+  TimeConverter: {
+    category: 'Math',
+    icon: 'i-heroicons-clock',
+    description: 'Convert time between different formats.',
+  },
   MarkdownEditor: {
     category: 'Text',
     icon: 'i-heroicons-document-text',
