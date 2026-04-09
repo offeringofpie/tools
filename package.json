@@ -19,6 +19,7 @@
     "@tailwindcss/typography": "^0.5.19",
     "@tiptap/starter-kit": "^3.22.2",
     "@tiptap/vue-3": "^3.22.2",
+    "cronstrue": "^3.14.0",
     "marked": "^17.0.6",
     "nuxt": "^4.4.2",
     "tailwindcss": "^4.2.2",

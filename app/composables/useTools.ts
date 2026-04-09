@@ -27,6 +27,16 @@ const config: Record<string, ToolConfig> = {
     icon: 'i-heroicons-document-text',
     description: 'A clean, distraction-free Markdown writing environment.',
   },
+  CronHelper: {
+    category: 'Code',
+    icon: 'i-heroicons-clock',
+    description: 'Helps setup cronjobs.',
+  },
+  RegexHelper: {
+    category: 'Code',
+    icon: 'i-heroicons-funnel',
+    description: 'Write and debug regular expressions.',
+  },
   MinifyBeautify: {
     category: 'Code',
     icon: 'i-heroicons-code-bracket',
