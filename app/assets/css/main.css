@@ -87,3 +87,8 @@
   white-space: nowrap;
   border-width: 0;
 }
+
+button:not(:disabled),
+[role='button']:not([aria-disabled='true']):not(:disabled) {
+  cursor: pointer;
+}

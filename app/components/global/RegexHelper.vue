@@ -261,7 +261,7 @@ const run = computed(() => {
         <h1 class="text-2xl md:text-3xl font-bold text-white mb-2">
           Regex Helper
         </h1>
-        <p class="text-base-400">Write, and debug regular expressions.</p>
+        <p class="text-base-400">Write and debug regular expressions.</p>
       </div>
 
       <UCard class="border border-base-800 space-y-6">

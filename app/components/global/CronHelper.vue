@@ -75,10 +75,13 @@ export function toText(val: string): string {
 </script>
 
 <template>
-  <div class="space-y-6 max-w-4xl mx-auto">
-    <h1 class="text-2xl md:text-3xl font-bold text-white">Cron Helper</h1>
-
+  <div class="space-y-6 max-w-6xl mx-auto">
     <div class="space-y-6">
+      <h1 class="text-2xl md:text-3xl font-bold text-white mb-2">
+        Cron Helper
+      </h1>
+      <p class="text-base-400">Helps setup cronjobs.</p>
+
       <UCard class="border border-base-800">
         <div class="space-y-8">
           <div

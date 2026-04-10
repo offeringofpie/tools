@@ -377,73 +377,83 @@ export function format(val: number | string): string {
 </script>
 
 <template>
-  <div class="max-w-screen mx-auto flex flex-col md:flex-row gap-4 items-start">
-    <UCard class="flex-1 w-full order-2 md:order-1 min-w-0">
-      <UPageGrid>
-        <UFormField v-for="card in cards" :key="card.id" :label="card.label">
-          <UInput
-            :model-value="String(card.value)"
-            :name="card.id"
-            :inputmode="active === 'numbers' ? 'text' : 'decimal'"
-            type="text"
-            size="xl"
-            class="w-full font-mono text-lg font-medium transition-all duration-300 focus:ring-2 focus:ring-secondary-500"
-            variant="subtle"
-            @update:model-value="update(card.id, $event)"
-            @focus="focused = card.id"
-            @blur="blur($event)"
-          >
-            <template #trailing>
-              <div v-show="focused === card.id || copied === card.id">
-                <UButton
-                  v-if="copied !== card.id"
-                  variant="ghost"
-                  color="neutral"
-                  class="focus:text-primary hover:text-primary"
-                  icon="i-heroicons-document-duplicate"
-                  aria-label="Copy to clipboard"
-                  @click="copy(card.id, card.value)"
-                  @blur="focused = null"
-                />
-                <UButton
-                  v-else
-                  variant="ghost"
-                  color="primary"
-                  icon="i-heroicons-check"
-                  class="pointer-events-none"
-                  aria-label="Copied!"
-                />
-              </div>
-            </template>
-          </UInput>
-        </UFormField>
-      </UPageGrid>
-    </UCard>
-
+  <div class="space-y-6">
+    <h1 class="text-2xl md:text-3xl font-bold text-white mb-2">
+      Unit Converter
+    </h1>
+    <p class="text-base-400">
+      Convert between units of length, weight, temperature, etc.
+    </p>
     <div
-      class="md:w-full lg:w-56 shrink-0 order-1 md:order-2 md:sticky overflow-x-auto hide-scrollbar"
+      class="max-w-screen mx-auto flex flex-col md:flex-row gap-4 items-start"
     >
-      <UTabs
-        v-model="active"
-        :items="tabs"
-        aria-label="Select category"
-        color="primary"
-        variant="link"
-        orientation="horizontal"
-        :content="false"
-        class="w-full md:hidden"
-      />
+      <UCard class="flex-1 w-full order-2 md:order-1 min-w-0">
+        <UPageGrid>
+          <UFormField v-for="card in cards" :key="card.id" :label="card.label">
+            <UInput
+              :model-value="String(card.value)"
+              :name="card.id"
+              :inputmode="active === 'numbers' ? 'text' : 'decimal'"
+              type="text"
+              size="xl"
+              class="w-full font-mono text-lg font-medium transition-all duration-300 focus:ring-2 focus:ring-secondary-500"
+              variant="subtle"
+              @update:model-value="update(card.id, $event)"
+              @focus="focused = card.id"
+              @blur="blur($event)"
+            >
+              <template #trailing>
+                <div v-show="focused === card.id || copied === card.id">
+                  <UButton
+                    v-if="copied !== card.id"
+                    variant="ghost"
+                    color="neutral"
+                    class="focus:text-primary hover:text-primary"
+                    icon="i-heroicons-document-duplicate"
+                    aria-label="Copy to clipboard"
+                    @click="copy(card.id, card.value)"
+                    @blur="focused = null"
+                  />
+                  <UButton
+                    v-else
+                    variant="ghost"
+                    color="primary"
+                    icon="i-heroicons-check"
+                    class="pointer-events-none"
+                    aria-label="Copied!"
+                  />
+                </div>
+              </template>
+            </UInput>
+          </UFormField>
+        </UPageGrid>
+      </UCard>
 
-      <UTabs
-        v-model="active"
-        :items="tabs"
-        aria-label="Select category"
-        color="primary"
-        variant="link"
-        orientation="vertical"
-        :content="false"
-        class="hidden md:block w-full"
-      />
+      <div
+        class="md:w-full lg:w-56 shrink-0 order-1 md:order-2 md:sticky overflow-x-auto hide-scrollbar"
+      >
+        <UTabs
+          v-model="active"
+          :items="tabs"
+          aria-label="Select category"
+          color="primary"
+          variant="link"
+          orientation="horizontal"
+          :content="false"
+          class="w-full md:hidden"
+        />
+
+        <UTabs
+          v-model="active"
+          :items="tabs"
+          aria-label="Select category"
+          color="primary"
+          variant="link"
+          orientation="vertical"
+          :content="false"
+          class="hidden md:block w-full"
+        />
+      </div>
     </div>
   </div>
 </template>

@@ -403,8 +403,10 @@ export function getAltCal(date: Date, calendar: string) {
 
 <template>
   <div class="space-y-6">
-    <h1 class="text-2xl md:text-3xl font-bold text-white">Time Converter</h1>
-
+    <h1 class="text-2xl md:text-3xl font-bold text-white mb-2">
+      Time Converter
+    </h1>
+    <p class="text-base-400">Convert time between different formats.</p>
     <UCard class="border border-base-800">
       <div class="space-y-6">
         <UFormField>
