@@ -61,37 +61,34 @@ const config: Record<string, ToolConfig> = {
 
 export const useTools = () => {
   const registry: Record<string, { label: string; file: string }> = {};
+  const groups: Record<string, ToolItem[]> = {};
 
-  const rawGroups = Object.entries(config).reduce(
-    (acc, [file, meta]) => {
-      const id = file
-        .replace(/([A-Z])/g, '-$1')
-        .toLowerCase()
-        .replace(/^-/, '');
-      const label = file.replace(/([A-Z])/g, ' $1').trim();
-      const to = `/${id}`;
+  for (const file of Object.keys(config).sort()) {
+    const meta = config[file];
 
-      registry[to] = { label, file };
+    const id = file
+      .replace(/([A-Z])/g, '-$1')
+      .toLowerCase()
+      .replace(/^-/, '');
 
-      acc[meta.category] ??= [];
-      acc[meta.category].push({ id, label, to, ...meta });
+    const label = file.replace(/([A-Z])/g, ' $1').trim();
+    const path = `/${id}`;
 
-      return acc;
-    },
-    {} as Record<string, ToolItem[]>,
-  );
+    registry[path] = { label, file };
 
-  const groups = Object.keys(rawGroups)
-    .sort((a, b) => a.localeCompare(b))
+    groups[meta.category] ??= [];
+    groups[meta.category]?.push({ id, label, to: path, ...meta });
+  }
+
+  const sortedGroups = Object.keys(groups)
+    .sort()
     .reduce(
-      (acc, category) => {
-        acc[category] = rawGroups[category].sort((a, b) =>
-          (a.label as string).localeCompare(b.label as string),
-        );
+      (acc, cat) => {
+        acc[cat] = groups[cat];
         return acc;
       },
       {} as Record<string, ToolItem[]>,
     );
 
-  return { registry, groups };
+  return { registry, groups: sortedGroups };
 };

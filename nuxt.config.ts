@@ -5,6 +5,10 @@ export default defineNuxtConfig({
   ssr: true,
   nitro: {
     preset: 'netlify',
+    prerender: {
+      crawlLinks: true,
+      routes: ['/'],
+    },
   },
   runtimeConfig: {
     public: {
