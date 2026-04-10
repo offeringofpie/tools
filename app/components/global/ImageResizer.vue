@@ -347,26 +347,26 @@ async function download() {
               </h2>
             </template>
             <div class="space-y-6">
-              <UFormGroup label="Resize Strategy">
+              <UFormField label="Resize Strategy">
                 <USelect v-model="mode" :items="options" class="w-full mb-6" />
-              </UFormGroup>
+              </UFormField>
 
               <div
                 v-if="['custom', 'auto-height', 'auto-width'].includes(mode)"
                 class="grid grid-cols-2 gap-3"
               >
-                <UFormGroup
+                <UFormField
                   v-if="['custom', 'auto-height'].includes(mode)"
                   label="Width"
                 >
                   <UInput v-model.number="targetW" type="number" suffix="px" />
-                </UFormGroup>
-                <UFormGroup
+                </UFormField>
+                <UFormField
                   v-if="['custom', 'auto-width'].includes(mode)"
                   label="Height"
                 >
                   <UInput v-model.number="targetH" type="number" suffix="px" />
-                </UFormGroup>
+                </UFormField>
               </div>
 
               <UButton

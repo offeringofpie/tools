@@ -60,17 +60,10 @@ const config: Record<string, ToolConfig> = {
 };
 
 export const useTools = () => {
-  const files = import.meta.glob('../components/global/*.vue', { eager: true });
   const registry: Record<string, { label: string; file: string }> = {};
 
-  const rawGroups = Object.keys(files).reduce(
-    (acc, path) => {
-      const file = path.split('/').pop()?.replace('.vue', '');
-      if (!file || file === 'HelloWorld') return acc;
-
-      const meta = config[file];
-      if (!meta) throw new Error(`Missing config for tool: ${file}`);
-
+  const rawGroups = Object.entries(config).reduce(
+    (acc, [file, meta]) => {
       const id = file
         .replace(/([A-Z])/g, '-$1')
         .toLowerCase()

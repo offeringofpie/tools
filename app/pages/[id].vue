@@ -10,8 +10,8 @@ if (!toolData) {
     statusMessage: 'Tool not found',
   });
 }
-
-const Tool = resolveComponent(toolData.file);
+// https://nuxt.com/docs/4.x/directory-structure/app/components#dynamic-imports
+const Tool = resolveComponent(`Lazy${toolData.file}`);
 
 useSeoMeta({
   title: toolData.label,
