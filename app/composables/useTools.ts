@@ -42,6 +42,21 @@ const config: Record<string, ToolConfig> = {
     icon: 'i-heroicons-code-bracket',
     description: 'Minify and format HTML, CSS, JS, and SVG files.',
   },
+  ImageResizer: {
+    category: 'Design',
+    icon: 'i-heroicons-photo',
+    description: 'Resize images in bulk!',
+  },
+  ColourPalette: {
+    category: 'Design',
+    icon: 'i-heroicons-swatch',
+    description: 'Generates colour palettes.',
+  },
+  SvgOptimizer: {
+    category: 'Design',
+    icon: 'i-heroicons-arrows-pointing-in',
+    description: 'Compress and clean up SVG files.',
+  },
 };
 
 export const useTools = () => {
