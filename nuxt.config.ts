@@ -29,6 +29,10 @@ export default defineNuxtConfig({
   app: {
     baseURL: '/tools/',
   },
+  site: {
+    url: 'https://jlopes.eu/tools',
+    name: 'JL Tools',
+  },
 
   modules: [
     '@nuxt/a11y',
@@ -36,6 +40,8 @@ export default defineNuxtConfig({
     '@nuxt/scripts',
     '@nuxt/image',
     '@nuxt/ui',
+    '@nuxtjs/sitemap',
+    '@nuxtjs/robots',
   ],
 
   devtools: { enabled: true },
@@ -52,6 +58,22 @@ export default defineNuxtConfig({
         'node-html-parser',
       ],
     },
+  },
+
+  sitemap: {
+    urls: [
+      '/unit-converter',
+      '/time-converter',
+      '/markdown-editor',
+      '/cron-helper',
+      '/regex-helper',
+      '/minify-beautify',
+      '/url-inspector',
+      '/utm-builder',
+      '/image-resizer',
+      '/colour-palette',
+      '/svg-optimizer',
+    ],
   },
 
   scripts: {
