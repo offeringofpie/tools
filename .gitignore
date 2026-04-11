@@ -6,6 +6,7 @@
 .cache
 dist
 output
+scripts
 
 # Node dependencies
 node_modules

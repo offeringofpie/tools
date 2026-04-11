@@ -134,7 +134,7 @@ function handleFileSelect(e: Event) {
   }
 }
 
-async function copyOpt(item: SvgItem, overrideId?: string) {
+async function copy(item: SvgItem, overrideId?: string) {
   try {
     await navigator.clipboard.writeText(item.optimized);
     copiedId.value = overrideId || item.id;
@@ -312,7 +312,7 @@ async function downloadZip() {
                     variant="ghost"
                     size="sm"
                     class="flex-1 sm:flex-none justify-center"
-                    @click="copyOpt(item)"
+                    @click="copy(item)"
                   >
                     <span class="sm:hidden">Copy</span>
                   </UButton>
@@ -381,7 +381,7 @@ async function downloadZip() {
                       : 'i-heroicons-clipboard-document'
                   "
                   variant="soft"
-                  @click="copyOpt(pastedItem, 'paste')"
+                  @click="copy(pastedItem, 'paste')"
                 >
                   {{ copiedId === 'paste' ? 'Copied' : 'Copy' }}
                 </UButton>

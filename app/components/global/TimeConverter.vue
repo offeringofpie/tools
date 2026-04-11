@@ -152,7 +152,7 @@ function handleBlur(event: FocusEvent) {
   }
 }
 
-async function copyToClipboard(id: string, value: string) {
+async function copy(id: string, value: string) {
   try {
     await navigator.clipboard.writeText(value);
     copiedField.value = id;
@@ -440,7 +440,7 @@ export function getAltCal(date: Date, calendar: string) {
                     icon="i-heroicons-clipboard-document"
                     class="hover:text-primary focus:text-primary"
                     :padded="false"
-                    @click="copyToClipboard('local', standardFormats.local)"
+                    @click="copy('local', standardFormats.local)"
                   />
                 </div>
               </template>
@@ -510,7 +510,7 @@ export function getAltCal(date: Date, calendar: string) {
                       icon="i-heroicons-clipboard-document"
                       class="hover:text-primary focus:text-primary"
                       :padded="false"
-                      @click="copyToClipboard(field.id, standardFormats.zoned)"
+                      @click="copy(field.id, standardFormats.zoned)"
                     />
                   </div>
                 </template>
@@ -551,7 +551,7 @@ export function getAltCal(date: Date, calendar: string) {
                       class="hover:text-primary focus:text-primary"
                       :padded="false"
                       @click="
-                        copyToClipboard(
+                        copy(
                           field.id,
                           standardFormats[
                             field.id as keyof typeof standardFormats
@@ -580,9 +580,9 @@ export function getAltCal(date: Date, calendar: string) {
           role="button"
           tabindex="0"
           class="group flex items-center justify-between p-4 rounded-lg bg-base-900/40 border border-base-800 hover:border-primary-500 cursor-pointer transition-all outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
-          @click="copyToClipboard(alt.id, alt.value)"
-          @keydown.enter="copyToClipboard(alt.id, alt.value)"
-          @keydown.space.prevent="copyToClipboard(alt.id, alt.value)"
+          @click="copy(alt.id, alt.value)"
+          @keydown.enter="copy(alt.id, alt.value)"
+          @keydown.space.prevent="copy(alt.id, alt.value)"
         >
           <div class="space-y-0.5">
             <div class="flex items-center gap-1.5">

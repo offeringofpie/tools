@@ -27,6 +27,23 @@ const config: Record<string, ToolConfig> = {
     icon: 'i-heroicons-document-text',
     description: 'A clean, distraction-free Markdown writing environment.',
   },
+  // LoremIpsum: {
+  //   category: 'Text',
+  //   icon: 'i-heroicons-document-duplicate',
+  //   description:
+  //     'Generate placeholder text in Lorem, Hipster, or Bacon flavors.',
+  // },
+  // TextTransformer: {
+  //   category: 'Text',
+  //   icon: 'i-heroicons-language',
+  //   description:
+  //     'Transform text into every case, Unicode style, and silly format at once.',
+  // },
+  // CharacterMap: {
+  //   category: 'Text',
+  //   icon: 'i-heroicons-hashtag',
+  //   description: 'Browse and search symbols, emoji, and special characters.',
+  // },
   CronHelper: {
     category: 'Code',
     icon: 'i-heroicons-clock',
@@ -43,15 +60,20 @@ const config: Record<string, ToolConfig> = {
     description: 'Minify and format HTML, CSS, JS, and SVG files.',
   },
   UrlInspector: {
-    category: 'Social',
+    category: 'Web',
     icon: 'i-heroicons-magnifying-glass',
     description: 'Check url for OpenGraph data',
   },
   UtmBuilder: {
-    category: 'Social',
+    category: 'Web',
     icon: 'i-heroicons-link',
     description: 'Generate URLs for marketing campaigns.',
   },
+  // FaviconGenerator: {
+  //   category: 'Web',
+  //   icon: 'i-heroicons-star',
+  //   description: 'Generate a favicon pack from an image.',
+  // },
   ImageResizer: {
     category: 'Design',
     icon: 'i-heroicons-photo',

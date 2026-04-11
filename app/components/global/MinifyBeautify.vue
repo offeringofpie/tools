@@ -23,7 +23,7 @@ function process(action: 'minify' | 'beautify') {
   busy.value = false;
 }
 
-async function copyToClipboard() {
+async function copy() {
   if (!output.value) return;
 
   try {
@@ -296,7 +296,7 @@ export function beautify(code: string, type: CodeType) {
               icon="i-heroicons-document-duplicate"
               class="cursor-pointer"
               :disabled="!output"
-              @click="copyToClipboard"
+              @click="copy"
               >{{ copied ? 'Copied' : 'Copy' }}</UButton
             >
           </div>
