@@ -42,6 +42,16 @@ const config: Record<string, ToolConfig> = {
     icon: 'i-heroicons-code-bracket',
     description: 'Minify and format HTML, CSS, JS, and SVG files.',
   },
+  UrlInspector: {
+    category: 'Social',
+    icon: 'i-heroicons-magnifying-glass',
+    description: 'Check url for OpenGraph data',
+  },
+  UtmBuilder: {
+    category: 'Social',
+    icon: 'i-heroicons-link',
+    description: 'Generate URLs for marketing campaigns.',
+  },
   ImageResizer: {
     category: 'Design',
     icon: 'i-heroicons-photo',
