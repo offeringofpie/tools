@@ -14,85 +14,88 @@ interface ToolConfig {
 const config: Record<string, ToolConfig> = {
   UnitConverter: {
     category: 'Math',
-    icon: 'i-heroicons-arrows-right-left',
     description: 'Convert between units of length, weight, temperature, etc.',
+    icon: 'i-heroicons-arrows-right-left',
   },
   TimeConverter: {
     category: 'Math',
-    icon: 'i-heroicons-clock',
     description: 'Convert time between different formats.',
+    icon: 'i-heroicons-clock',
   },
   MarkdownEditor: {
     category: 'Text',
-    icon: 'i-heroicons-document-text',
     description: 'A clean, distraction-free Markdown writing environment.',
+    icon: 'i-heroicons-document-text',
   },
   // LoremIpsum: {
   //   category: 'Text',
-  //   icon: 'i-heroicons-document-duplicate',
   //   description:
+  //   icon: 'i-heroicons-document-duplicate',
   //     'Generate placeholder text in Lorem, Hipster, or Bacon flavors.',
   // },
   // TextTransformer: {
   //   category: 'Text',
-  //   icon: 'i-heroicons-language',
   //   description:
+  //   icon: 'i-heroicons-language',
   //     'Transform text into every case, Unicode style, and silly format at once.',
   // },
   // CharacterMap: {
   //   category: 'Text',
-  //   icon: 'i-heroicons-hashtag',
   //   description: 'Browse and search symbols, emoji, and special characters.',
+  //   icon: 'i-heroicons-hashtag',
   // },
   CronHelper: {
     category: 'Code',
-    icon: 'i-heroicons-clock',
     description: 'Helps setup cronjobs.',
+    icon: 'i-heroicons-clock',
   },
   RegexHelper: {
     category: 'Code',
-    icon: 'i-heroicons-funnel',
     description: 'Write and debug regular expressions.',
+    icon: 'i-heroicons-funnel',
   },
   MinifyBeautify: {
     category: 'Code',
-    icon: 'i-heroicons-code-bracket',
     description: 'Minify and format HTML, CSS, JS, and SVG files.',
+    icon: 'i-heroicons-code-bracket',
   },
   UrlInspector: {
     category: 'Web',
-    icon: 'i-heroicons-magnifying-glass',
     description: 'Check url for OpenGraph data',
+    icon: 'i-heroicons-magnifying-glass',
   },
   UtmBuilder: {
     category: 'Web',
-    icon: 'i-heroicons-link',
     description: 'Generate URLs for marketing campaigns.',
+    icon: 'i-heroicons-link',
   },
   // FaviconGenerator: {
   //   category: 'Web',
-  //   icon: 'i-heroicons-star',
   //   description: 'Generate a favicon pack from an image.',
+  //   icon: 'i-heroicons-star',
   // },
   ImageResizer: {
     category: 'Design',
-    icon: 'i-heroicons-photo',
     description: 'Resize images in bulk!',
+    icon: 'i-heroicons-photo',
   },
   ColourPalette: {
     category: 'Design',
-    icon: 'i-heroicons-swatch',
     description: 'Generates colour palettes.',
+    icon: 'i-heroicons-swatch',
   },
   SvgOptimizer: {
     category: 'Design',
-    icon: 'i-heroicons-arrows-pointing-in',
     description: 'Compress and clean up SVG files.',
+    icon: 'i-heroicons-arrows-pointing-in',
   },
 };
 
 export const useTools = () => {
-  const registry: Record<string, { label: string; file: string }> = {};
+  const registry: Record<
+    string,
+    { label: string; file: string; description?: string }
+  > = {};
   const groups: Record<string, ToolItem[]> = {};
 
   for (const file of Object.keys(config).sort()) {
@@ -106,8 +109,7 @@ export const useTools = () => {
     const label = file.replace(/([A-Z])/g, ' $1').trim();
     const path = `/${id}`;
 
-    registry[path] = { label, file };
-
+    registry[path] = { label, file, description: meta.description };
     groups[meta.category] ??= [];
     groups[meta.category]?.push({ id, label, to: path, ...meta });
   }

@@ -2,7 +2,11 @@
 const route = useRoute();
 const { registry } = useTools();
 
-const toolData = registry[route.path];
+const toolData =
+  registry[route.path] ?? registry[route.path.replace('/tools', '')];
+
+if (!toolData)
+  throw createError({ statusCode: 404, statusMessage: 'Tool not found' });
 
 if (!toolData) {
   throw createError({
@@ -14,10 +18,10 @@ if (!toolData) {
 const Tool = resolveComponent(`Lazy${toolData.file}`);
 
 useSeoMeta({
-  title: toolData.label,
-  description: `${toolData.description} | J Lopes`,
-  ogTitle: toolData.label,
-  ogDescription: `${toolData.description} | J Lopes`,
+  title: `${toolData.label} - JL Tools`,
+  ogTitle: `${toolData.label} - JL Tools`,
+  description: toolData.description,
+  ogDescription: toolData.description,
 });
 </script>
 
