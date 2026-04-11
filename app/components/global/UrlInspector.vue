@@ -153,7 +153,7 @@ async function inspectUrl(forceRefresh = false) {
   error.value = '';
   try {
     result.value = await $fetch<InspectResult>(
-      `api/fetch?mode=inspect&url=${encodeURIComponent(next)}${forceRefresh ? '&refresh=true' : ''}`,
+      `/api/fetch?mode=inspect&url=${encodeURIComponent(next)}${forceRefresh ? '&refresh=true' : ''}`,
       { headers },
     );
     activeTab.value = 'preview';
@@ -173,7 +173,7 @@ async function loadScreenshot(forceRefresh = false) {
   screenshotError.value = '';
   try {
     const data = await $fetch<{ url: string }>(
-      `api/fetch?mode=screenshot&url=${encodeURIComponent(next)}${forceRefresh ? '&refresh=true' : ''}`,
+      `/api/fetch?mode=screenshot&url=${encodeURIComponent(next)}${forceRefresh ? '&refresh=true' : ''}`,
       { headers },
     );
     result.value = { ...sr.value, screenshot: data.url };

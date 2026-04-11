@@ -13,6 +13,9 @@ export default defineNuxtConfig({
       'rate-limit': {
         driver: 'memory',
       },
+      cache: {
+        driver: 'memory',
+      },
     },
   },
 
