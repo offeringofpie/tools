@@ -9,7 +9,13 @@ export default defineNuxtConfig({
       crawlLinks: true,
       routes: ['/'],
     },
+    storage: {
+      'rate-limit': {
+        driver: 'memory',
+      },
+    },
   },
+
   runtimeConfig: {
     public: {
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://jlopes.eu/',
@@ -40,6 +46,7 @@ export default defineNuxtConfig({
         '@tiptap/starter-kit',
         'tiptap-markdown',
         'marked',
+        'node-html-parser',
       ],
     },
   },

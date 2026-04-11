@@ -9,5 +9,5 @@
   "tailwindCSS.experimental.classRegex": [["['\"`]([^'\"`]*)['\"`]"]],
   "editor.wordWrap": "wordWrapColumn",
   "editor.wordWrapColumn": 240,
-  "editor.rulers": [240]
+  "editor.wrappingIndent": "indent"
 }

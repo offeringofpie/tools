@@ -208,7 +208,6 @@ const colors = ref<Color[]>(
   })),
 );
 
-// Decouples the live input from the strictly formatted model while typing
 const activeEditId = ref<string | null>(null);
 const activeEditText = ref<string>('');
 
@@ -220,9 +219,7 @@ const handleFocus = (id: string, currentFormatted: string) => {
 const handleInput = (i: number, val: string) => {
   activeEditText.value = val;
   const newHex = parseInputToHex(val);
-  if (newHex) {
-    colors.value[i].hex = newHex;
-  }
+  if (newHex) colors.value[i].hex = newHex;
 };
 
 const handleBlur = () => {
@@ -265,7 +262,6 @@ const copy = async (id: string, textToCopy: string) => {
   try {
     await navigator.clipboard.writeText(textToCopy);
     copied.value = id;
-
     setTimeout(() => {
       if (copied.value === id) copied.value = null;
     }, 1500);
@@ -286,7 +282,7 @@ onUnmounted(() => document.removeEventListener('keydown', onSpace));
 </script>
 
 <template>
-  <div class="space-y-6 max-w-screen mx-auto">
+  <div class="space-y-6">
     <div
       class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
     >
@@ -314,14 +310,115 @@ onUnmounted(() => document.removeEventListener('keydown', onSpace));
     </div>
 
     <div
-      class="flex flex-col md:flex-row h-[40vh] min-h-100 w-full rounded-2xl overflow-y-auto md:overflow-x-auto md:overflow-y-hidden shadow-2xl border border-base-800 bg-base-900 custom-scrollbar"
+      class="flex flex-col gap-2 md:hidden"
       role="list"
       aria-label="Color swatches"
     >
       <div
         v-for="(c, i) in colors"
         :key="c.id"
-        class="flex-1 flex flex-col items-center justify-end md:justify-center p-2 transition-colors duration-300 group relative min-h-25 md:min-h-0 md:min-w-37.5"
+        class="relative flex items-center rounded-xl overflow-hidden min-h-16 transition-colors duration-300"
+        :style="{ backgroundColor: c.hex }"
+        role="listitem"
+      >
+        <div class="flex-1 flex items-center px-4 py-3 min-w-0">
+          <div class="group/input flex-1 min-w-0">
+            <UInput
+              :model-value="
+                activeEditId === c.id
+                  ? activeEditText
+                  : parseColor(c.hex, format)
+              "
+              variant="none"
+              :ui="{
+                base: `font-mono font-bold bg-transparent !opacity-100 ${getTextColor(c.hex)}`,
+              }"
+              :aria-label="`Edit color value for swatch ${i + 1}`"
+              @focus="handleFocus(c.id, parseColor(c.hex, format))"
+              @update:model-value="(val) => handleInput(i, val)"
+              @blur="handleBlur"
+            >
+              <template #trailing>
+                <UButton
+                  :icon="
+                    copied === c.id
+                      ? 'i-heroicons-check'
+                      : 'i-heroicons-document-duplicate'
+                  "
+                  variant="ghost"
+                  size="xs"
+                  :class="getTextColor(c.hex)"
+                  :padded="false"
+                  :aria-label="
+                    copied === c.id
+                      ? 'Copied!'
+                      : `Copy ${parseColor(c.hex, format)}`
+                  "
+                  @click="copy(c.id, parseColor(c.hex, format))"
+                />
+              </template>
+            </UInput>
+          </div>
+        </div>
+
+        <div
+          class="flex items-center gap-1 px-2 shrink-0"
+          role="group"
+          :aria-label="`Controls for swatch ${i + 1}`"
+        >
+          <UButton
+            v-if="!c.locked"
+            icon="i-heroicons-arrow-path"
+            variant="ghost"
+            size="sm"
+            :class="getTextColor(c.hex)"
+            :aria-label="`Regenerate swatch ${i + 1}`"
+            @click="generateSingle(i)"
+          />
+          <UButton
+            :icon="
+              c.locked ? 'i-heroicons-lock-closed' : 'i-heroicons-lock-open'
+            "
+            variant="ghost"
+            size="sm"
+            :class="getTextColor(c.hex)"
+            :aria-label="
+              c.locked ? `Unlock swatch ${i + 1}` : `Lock swatch ${i + 1}`
+            "
+            :aria-pressed="c.locked"
+            @click="lock(i)"
+          />
+          <UButton
+            v-if="colors.length > 2"
+            icon="i-heroicons-x-mark"
+            variant="ghost"
+            size="sm"
+            :class="getTextColor(c.hex)"
+            :aria-label="`Remove swatch ${i + 1}`"
+            @click="deleteSwatch(i)"
+          />
+          <UButton
+            v-if="colors.length < limit"
+            icon="i-heroicons-plus"
+            variant="ghost"
+            size="sm"
+            :class="getTextColor(c.hex)"
+            :aria-label="`Add swatch after ${i + 1}`"
+            @click="addSwatch(i + 1)"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="hidden md:flex h-[40vh] min-h-100 w-full rounded-2xl overflow-x-auto overflow-y-hidden shadow-2xl border border-base-800 bg-base-900 custom-scrollbar"
+      role="list"
+      aria-label="Color swatches"
+    >
+      <div
+        v-for="(c, i) in colors"
+        :key="c.id"
+        class="flex-1 flex flex-col items-center justify-center p-2 transition-colors duration-300 group relative min-w-37.5"
         :style="{ backgroundColor: c.hex }"
         role="listitem"
       >
@@ -329,7 +426,7 @@ onUnmounted(() => document.removeEventListener('keydown', onSpace));
           class="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity focus-within:opacity-100 pointer-events-none"
         >
           <div
-            class="flex flex-col md:flex-row lg:flex-col items-center gap-2 md:gap-4 z-10 pointer-events-auto"
+            class="flex lg:flex-col items-center gap-2 z-10 pointer-events-auto"
             role="group"
             :aria-label="`Controls for swatch ${i + 1}`"
           >
@@ -345,7 +442,6 @@ onUnmounted(() => document.removeEventListener('keydown', onSpace));
               :aria-pressed="c.locked"
               @click="lock(i)"
             />
-
             <UButton
               v-if="!c.locked"
               icon="i-heroicons-arrow-path"
@@ -365,7 +461,7 @@ onUnmounted(() => document.removeEventListener('keydown', onSpace));
           </div>
 
           <div
-            class="absolute inset-x-0 top-0 h-1/4 flex items-center justify-center md:inset-y-0 md:inset-x-auto md:left-0 md:w-1/4 md:h-full max-w-10 max-h-10 md:max-h-none mx-auto md:mx-0 pointer-events-auto"
+            class="absolute inset-y-0 left-0 w-1/4 flex items-center justify-center pointer-events-auto"
           >
             <UButton
               v-if="colors.length < limit"
@@ -378,7 +474,7 @@ onUnmounted(() => document.removeEventListener('keydown', onSpace));
           </div>
 
           <div
-            class="absolute inset-x-0 bottom-0 h-1/4 flex items-center justify-center md:inset-y-0 md:inset-x-auto md:right-0 md:w-1/4 md:h-full max-w-10 max-h-10 md:max-h-none mx-auto md:mx-0 pointer-events-auto"
+            class="absolute inset-y-0 right-0 w-1/4 flex items-center justify-center pointer-events-auto"
           >
             <UButton
               v-if="colors.length < limit"
@@ -391,9 +487,7 @@ onUnmounted(() => document.removeEventListener('keydown', onSpace));
           </div>
         </div>
 
-        <div
-          class="group/input absolute bottom-2 md:static md:mt-auto md:mb-8 z-20 w-full px-2"
-        >
+        <div class="mt-auto mb-8 z-20 w-full px-2 group/input">
           <UInput
             :model-value="
               activeEditId === c.id ? activeEditText : parseColor(c.hex, format)
@@ -426,7 +520,7 @@ onUnmounted(() => document.removeEventListener('keydown', onSpace));
                 :aria-label="
                   copied === c.id
                     ? 'Color copied to clipboard'
-                    : `Copy color ${parseColor(c.hex, format)} to clipboard`
+                    : `Copy ${parseColor(c.hex, format)}`
                 "
                 :padded="false"
                 @click="copy(c.id, parseColor(c.hex, format))"

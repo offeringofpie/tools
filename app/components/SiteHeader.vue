@@ -1,9 +1,9 @@
 <template>
   <header
-    class="bg-default/75 backdrop-blur border-b border-default top-0 z-50 relative py-4 md:py-6 max-w-screen"
+    class="bg-default/75 backdrop-blur border-b border-default top-0 z-50 relative py-4 md:py-6"
   >
     <div
-      class="w-full mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-center gap-3 h-full"
+      class="w-full mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-center h-full"
     >
       <ULink
         to="https://jlopes.eu"
@@ -11,7 +11,7 @@
         class="md:absolute hidden md:block left-5"
       >
         <SiteLogo
-          class="size-10 text-primary hover:text-secondary transition-all"
+          class="size-10 text-primary hover:text-secondary transition-colors"
         />
       </ULink>
 
