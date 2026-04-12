@@ -8,12 +8,6 @@ const toolData =
 if (!toolData)
   throw createError({ statusCode: 404, statusMessage: 'Tool not found' });
 
-if (!toolData) {
-  throw createError({
-    statusCode: 404,
-    statusMessage: 'Tool not found',
-  });
-}
 // https://nuxt.com/docs/4.x/directory-structure/app/components#dynamic-imports
 const Tool = resolveComponent(`Lazy${toolData.file}`);
 

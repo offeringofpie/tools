@@ -21,7 +21,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://jlopes.eu/',
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://jlopes.eu/tools/',
     },
   },
 
@@ -34,6 +34,7 @@ export default defineNuxtConfig({
     name: 'JL Tools',
   },
 
+  experimental: { viewTransition: true },
   modules: [
     '@nuxt/a11y',
     '@nuxt/eslint',
@@ -48,14 +49,18 @@ export default defineNuxtConfig({
   vite: {
     optimizeDeps: {
       include: [
+        '@tiptap/starter-kit',
+        '@tiptap/vue-3',
         '@vue/devtools-core',
         '@vue/devtools-kit',
         '@vueuse/core',
-        '@tiptap/vue-3',
-        '@tiptap/starter-kit',
-        'tiptap-markdown',
+        'cronstrue',
+        'jszip',
         'marked',
         'node-html-parser',
+        'svgo/browser',
+        'tiptap-markdown',
+        'leaflet',
       ],
     },
   },

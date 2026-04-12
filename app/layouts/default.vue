@@ -4,18 +4,18 @@ import type { NavigationMenuItem } from '#ui/types';
 
 const { groups, registry } = useTools();
 const breakpoints = useBreakpoints(breakpointsTailwind);
-const isDesktop = breakpoints.greaterOrEqual('lg');
+const isDesktop = breakpoints.greaterOrEqual('md');
 
-const open = ref(true);
+const open = ref(false);
 const route = useRoute();
 const paletteOpen = ref(false);
 
 onMounted(() => {
-  if (!isDesktop.value) open.value = false;
+  if (isDesktop.value) open.value = true;
 });
 
 watch(route, () => {
-  if (!isDesktop.value) open.value = false;
+  if (isDesktop.value) open.value = true;
 });
 
 watch(isDesktop, (desktop) => {

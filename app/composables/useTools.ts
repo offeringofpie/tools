@@ -11,7 +11,14 @@ interface ToolConfig {
   description: string;
 }
 
+const order = ['General', 'Text', 'Code', 'Design', 'Web', 'Math'];
+
 const config: Record<string, ToolConfig> = {
+  // Weather: {
+  //   category: 'General',
+  //   description: 'Weather forecast with map.',
+  //   icon: 'i-heroicons-sun',
+  // },
   UnitConverter: {
     category: 'Math',
     description: 'Convert between units of length, weight, temperature, etc.',
@@ -30,14 +37,14 @@ const config: Record<string, ToolConfig> = {
   // LoremIpsum: {
   //   category: 'Text',
   //   description:
-  //   icon: 'i-heroicons-document-duplicate',
   //     'Generate placeholder text in Lorem, Hipster, or Bacon flavors.',
+  //   icon: 'i-heroicons-document-duplicate',
   // },
   // TextTransformer: {
   //   category: 'Text',
   //   description:
-  //   icon: 'i-heroicons-language',
   //     'Transform text into every case, Unicode style, and silly format at once.',
+  //   icon: 'i-heroicons-language',
   // },
   // CharacterMap: {
   //   category: 'Text',
@@ -91,38 +98,36 @@ const config: Record<string, ToolConfig> = {
   },
 };
 
-export const useTools = () => {
-  const registry: Record<
-    string,
-    { label: string; file: string; description?: string }
-  > = {};
-  const groups: Record<string, ToolItem[]> = {};
+const registry: Record<
+  string,
+  { label: string; file: string; description?: string }
+> = {};
+const groups: Record<string, ToolItem[]> = {};
 
-  for (const file of Object.keys(config).sort()) {
-    const meta = config[file];
+for (const file of Object.keys(config).sort()) {
+  const meta = config[file];
 
-    const id = file
-      .replace(/([A-Z])/g, '-$1')
-      .toLowerCase()
-      .replace(/^-/, '');
+  const id = file
+    .replace(/([A-Z])/g, '-$1')
+    .toLowerCase()
+    .replace(/^-/, '');
 
-    const label = file.replace(/([A-Z])/g, ' $1').trim();
-    const path = `/${id}`;
+  const label = file.replace(/([A-Z])/g, ' $1').trim();
+  const path = `/${id}`;
 
-    registry[path] = { label, file, description: meta.description };
-    groups[meta.category] ??= [];
-    groups[meta.category]?.push({ id, label, to: path, ...meta });
-  }
+  registry[path] = { label, file, description: meta.description };
+  groups[meta.category] ??= [];
+  groups[meta.category]?.push({ id, label, to: path, ...meta });
+}
 
-  const sortedGroups = Object.keys(groups)
-    .sort()
-    .reduce(
-      (acc, cat) => {
-        acc[cat] = groups[cat];
-        return acc;
-      },
-      {} as Record<string, ToolItem[]>,
-    );
+const sortedGroups = order
+  .filter((cat) => groups[cat])
+  .reduce(
+    (acc, cat) => {
+      acc[cat] = groups[cat];
+      return acc;
+    },
+    {} as Record<string, ToolItem[]>,
+  );
 
-  return { registry, groups: sortedGroups };
-};
+export const useTools = () => ({ registry, groups: sortedGroups });
