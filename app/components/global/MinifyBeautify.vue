@@ -274,6 +274,7 @@ export function beautify(code: string, type: CodeType) {
           :rows="18"
           :maxrows="18"
           size="xl"
+          variant="subtle"
           placeholder="Paste your code here..."
           :ui="{ root: 'w-full', base: 'w-full font-mono text-sm' }"
         />

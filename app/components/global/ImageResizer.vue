@@ -229,11 +229,12 @@ function handleDrop(e: DragEvent) {
   if (e.dataTransfer?.files) processFiles(e.dataTransfer.files);
 }
 
-function handleFileSelect(e: Event) {
+async function handleFileSelect(e: Event) {
   const target = e.target as HTMLInputElement;
   if (target.files) {
-    processFiles(target.files);
+    const files = [...target.files];
     target.value = '';
+    await processFiles(files);
   }
 }
 
@@ -271,9 +272,7 @@ async function generateBlob(
     ctx.drawImage(img, 0, 0, w, h);
   }
 
-  const name =
-    item.name.replace(/\.[^/.]+$/, '') +
-    `_resized.${item.name.split('.').pop() || 'jpg'}`;
+  const name = item.name;
   return new Promise((r, reject) =>
     canvas.toBlob(
       (blob) => (blob ? r({ blob, name }) : reject(new Error('Failed'))),

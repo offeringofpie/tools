@@ -1,4 +1,5 @@
 import type { NavigationMenuItem } from '@nuxt/ui';
+import type ImageForensics from '~/components/ImageForensics.vue';
 
 export interface ToolItem extends NavigationMenuItem {
   id: string;
@@ -34,12 +35,12 @@ const config: Record<string, ToolConfig> = {
     description: 'A clean, distraction-free Markdown writing environment.',
     icon: 'i-heroicons-document-text',
   },
-  // LoremIpsum: {
-  //   category: 'Text',
-  //   description:
-  //     'Generate placeholder text in Lorem, Hipster, or Bacon flavors.',
-  //   icon: 'i-heroicons-document-duplicate',
-  // },
+  LoremIpsum: {
+    category: 'Text',
+    description:
+      'Generate placeholder text in Lorem, Hipster, or Bacon flavors.',
+    icon: 'i-heroicons-document-duplicate',
+  },
   // TextTransformer: {
   //   category: 'Text',
   //   description:
