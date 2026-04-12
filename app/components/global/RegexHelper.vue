@@ -287,13 +287,13 @@ const run = computed(() => {
               title="Flags"
             />
           </div>
-          <p v-if="err" class="text-error-400 text-sm mt-2 font-mono">
+          <p v-if="err" class="text-error-400 mt-2 font-mono">
             {{ err }}
           </p>
         </div>
 
         <div>
-          <label class="block text-sm font-semibold text-white mb-2 mt-6"
+          <label class="block font-semibold text-white mb-2 mt-6"
             >Test String</label
           >
           <UTextarea
@@ -316,7 +316,7 @@ const run = computed(() => {
           color="neutral"
           variant="ghost"
           block
-          class="justify-between uppercase font-semibold text-sm px-4 py-3"
+          class="justify-between uppercase font-semibold px-4 py-3"
           :icon="
             openDocs ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'
           "
@@ -357,7 +357,7 @@ const run = computed(() => {
 
         <div class="space-y-4">
           <div
-            class="max-h-48 overflow-y-auto custom-scrollbar rounded-lg border border-base-800 bg-base-900/70 p-4 font-mono text-sm whitespace-pre-wrap break-words"
+            class="max-h-48 overflow-y-auto custom-scrollbar rounded-lg border border-base-800 bg-base-900/70 p-4 font-mono whitespace-pre-wrap break-words"
           >
             <template v-for="(node, i) in run.parts" :key="i">
               <span v-if="node.text" class="text-base-300">{{
@@ -378,7 +378,7 @@ const run = computed(() => {
             <div
               v-for="(cap, i) in run.groups"
               :key="i"
-              class="bg-base-950 p-3 rounded border border-base-800 text-sm font-mono"
+              class="bg-base-950 p-3 rounded border border-base-800 font-mono"
             >
               <div class="text-white mb-2">
                 <span class="text-base-500 mr-2">Match {{ i + 1 }}</span>
@@ -421,7 +421,7 @@ const run = computed(() => {
           color="neutral"
           variant="ghost"
           block
-          class="justify-between uppercase font-semibold text-sm px-4 py-3"
+          class="justify-between uppercase font-semibold px-4 py-3"
           :icon="
             openTpl ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'
           "
@@ -434,10 +434,9 @@ const run = computed(() => {
             <UButton
               v-for="t in templates"
               :key="t.label"
-              size="xs"
               variant="soft"
               color="neutral"
-              class="font-mono text-xs justify-start border border-base-800"
+              class="font-mono justify-start border border-base-800"
               @click="
                 pattern = t.exp;
                 flags = t.flags;
@@ -457,7 +456,7 @@ const run = computed(() => {
           color="neutral"
           variant="ghost"
           block
-          class="justify-between uppercase font-semibold text-sm px-4 py-3"
+          class="justify-between uppercase font-semibold px-4 py-3"
           :icon="
             openCheat ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'
           "
