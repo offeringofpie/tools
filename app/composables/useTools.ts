@@ -1,5 +1,4 @@
 import type { NavigationMenuItem } from '@nuxt/ui';
-import type ImageForensics from '~/components/ImageForensics.vue';
 
 export interface ToolItem extends NavigationMenuItem {
   id: string;
