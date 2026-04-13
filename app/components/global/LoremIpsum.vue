@@ -16,7 +16,7 @@ const WORDS: Record<Flavor, string[]> = {
       ' ',
     ),
   corporate:
-    'synergy leverage stakeholder actionable bandwidth scalable paradigm disruptive agile pivot ideate circle back touch base deep dive low-hanging fruit move the needle boil the ocean bleeding edge mission critical core competency value add deliverable roadmap alignment cadence runway burn rate north star moving forward win-win granular holistic ecosystem vertical streamline optimize iterate strategic incentivize operationalize rightsize downsize'.split(
+    'synergy leverage stakeholder actionable bandwidth scalable paradigm disruptive agile pivot ideate circle back touch base deep dive low-hanging fruit move the needle bleeding edge mission critical core competency value add deliverable roadmap alignment cadence runway burn rate north star moving forward win-win granular holistic ecosystem vertical streamline optimize iterate strategic incentivize operationalize rightsize downsize'.split(
       ' ',
     ),
   cyberpunk:
@@ -198,7 +198,6 @@ async function copy() {
         :icon="copied ? 'i-heroicons-check' : 'i-heroicons-document-duplicate'"
         color="neutral"
         variant="soft"
-        size="xs"
         class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity"
         aria-label="Copy output"
         @click="copy"

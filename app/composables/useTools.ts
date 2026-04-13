@@ -14,6 +14,11 @@ interface ToolConfig {
 const order = ['General', 'Text', 'Code', 'Design', 'Web', 'Math'];
 
 const config: Record<string, ToolConfig> = {
+  WhatIsMyIp: {
+    category: 'General',
+    description: 'Your public IP and network info.',
+    icon: 'i-heroicons-map-pin',
+  },
   // Weather: {
   //   category: 'General',
   //   description: 'Weather forecast with map.',

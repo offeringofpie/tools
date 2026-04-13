@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onBeforeUnmount } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import JSZip from 'jszip';
 
 interface ImgItem {
@@ -85,31 +85,51 @@ function centerGuide(img: HTMLImageElement) {
 }
 
 async function processFiles(files: FileList | File[]) {
-  for (const file of files) {
-    if (!file.type.startsWith('image/')) continue;
-    const url = URL.createObjectURL(file);
-    const img = new Image();
-    img.src = url;
-    await new Promise((r) => {
-      img.onload = () => {
-        const focus = centerGuide(img);
-        items.value.push({
-          id: crypto.randomUUID(),
-          file,
-          name: file.name,
-          url,
-          w: img.width,
-          h: img.height,
-          panX: focus.x,
-          panY: focus.y,
-        });
-        r(true);
-      };
-    });
-  }
+  await Promise.all(
+    [...files]
+      .filter((f) => f.type.startsWith('image/'))
+      .map(
+        (file) =>
+          new Promise<void>((resolve) => {
+            const url = URL.createObjectURL(file);
+            const img = new Image();
+            img.src = url;
+            img.onload = () => {
+              const focus = centerGuide(img);
+              items.value.push({
+                id: crypto.randomUUID(),
+                file,
+                name: file.name,
+                url,
+                w: img.width,
+                h: img.height,
+                panX: focus.x,
+                panY: focus.y,
+              });
+              resolve();
+            };
+          }),
+      ),
+  );
 }
 
-onBeforeUnmount(() => items.value.forEach((i) => URL.revokeObjectURL(i.url)));
+const handlePaste = (e: ClipboardEvent) => {
+  const file =
+    e.clipboardData?.files[0] ?? e.clipboardData?.items[0]?.getAsFile();
+  if (!file?.type.startsWith('image/')) return;
+
+  e.preventDefault();
+  processFiles([file]);
+};
+
+onMounted(() => {
+  window.addEventListener('paste', handlePaste);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('paste', handlePaste); // must reference same function
+  items.value.forEach((i) => URL.revokeObjectURL(i.url));
+});
 
 function getDimensions(item: ImgItem) {
   if (mode.value === 'auto-height')
@@ -318,10 +338,8 @@ async function download() {
     />
 
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
-      <div>
-        <h1 class="text-2xl md:text-3xl font-bold text-white mb-1">
-          Image Resizer
-        </h1>
+      <div class="space-y-2">
+        <h1 class="text-2xl md:text-3xl font-bold text-white">Image Resizer</h1>
         <p class="text-base-400">Resize Images in bulk!</p>
       </div>
       <div v-if="items.length">
@@ -392,6 +410,7 @@ async function download() {
               ? 'border-primary-500 bg-primary-500/10'
               : 'border-base-800 bg-base-900/30'
           "
+          role="button"
           @dragover.prevent="dragging = true"
           @dragleave.prevent="dragging = false"
           @drop.prevent="handleDrop"
@@ -407,9 +426,6 @@ async function download() {
             <h3 class="text-lg font-medium text-white mb-2">
               Drop images here
             </h3>
-            <p class="text-base-500">
-              Supports multiple JPG, PNG, and WebP files.
-            </p>
           </div>
         </UCard>
 

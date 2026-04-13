@@ -432,7 +432,6 @@ async function loadScreenshot(forceRefresh = false) {
               </h2>
               <UButton
                 v-if="sr.screenshot"
-                size="xs"
                 variant="ghost"
                 color="neutral"
                 :loading="loadingShot"

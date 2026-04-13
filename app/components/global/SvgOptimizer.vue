@@ -186,22 +186,23 @@ async function downloadZip() {
 
 <template>
   <div class="space-y-8 max-w-6xl mx-auto">
-    <div class="space-y-2">
-      <h1 class="text-2xl md:text-3xl font-bold text-white">SVG Optimizer</h1>
-      <p class="text-base-400">Compress and clean up SVG files.</p>
-    </div>
-
-    <div class="space-y-4">
+    <div class="flex w-full align-bottom justify-between">
+      <div class="space-y-2">
+        <h1 class="text-2xl md:text-3xl font-bold text-white">SVG Optimizer</h1>
+        <p class="text-base-400">Compress and clean up SVG files.</p>
+      </div>
       <UTabs
         v-model="activeTab"
         :items="tabs"
         :content="false"
         class="w-full md:w-80"
       />
+    </div>
 
+    <div class="space-y-4">
       <div v-if="activeTab === 'upload'" class="pt-2 space-y-8">
         <UCard
-          class="border-2 border-dashed transition-all duration-200 min-h-62.5 flex items-center justify-center"
+          class="rounded-lg overflow-hidden ring ring-default divide-y divide-default border-2 border-dashed min-h-100 flex items-center justify-center transition-all border-base-800 bg-base-900/30"
           :class="
             dragging
               ? 'border-primary-500 bg-primary-500/10'
@@ -219,12 +220,10 @@ async function downloadZip() {
             @keydown.enter="picker?.click()"
           >
             <UIcon
-              name="i-heroicons-cloud-arrow-up"
-              class="w-12 h-12 text-base-500 mb-4 group-hover:text-primary-500 transition-colors"
+              name="i-heroicons-photo"
+              class="w-16 h-16 text-base-500 mb-4 group-hover:text-primary-500 transition-colors"
             />
-            <p class="text-base font-medium text-white">
-              Click or drag SVGs here
-            </p>
+            <p class="text-base font-medium text-white">Drop SVGs here</p>
             <input
               ref="picker"
               type="file"
@@ -334,7 +333,9 @@ async function downloadZip() {
       </div>
 
       <div v-else-if="activeTab === 'paste'" class="pt-2">
-        <UCard class="border border-base-800 bg-base-900/30 flex flex-col">
+        <UCard
+          class="rounded-lg overflow-hidden ring ring-default divide-y divide-default border-2 min-h-100 transition-all border-base-800 bg-base-900/30"
+        >
           <div class="space-y-4 flex-1 flex flex-col">
             <div class="space-y-2">
               <label
@@ -343,9 +344,9 @@ async function downloadZip() {
               >
               <UTextarea
                 v-model="inputText"
-                :rows="6"
+                :rows="15"
                 placeholder="<svg>...</svg>"
-                class="font-mono w-full mt-3"
+                class="font-mono w-full mt-3 h-full"
                 variant="subtle"
               />
             </div>
