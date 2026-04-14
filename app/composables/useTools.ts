@@ -5,7 +5,7 @@ export interface ToolItem extends NavigationMenuItem {
   description: string;
 }
 
-interface ToolConfig {
+export interface ToolConfig {
   category: string;
   icon: string;
   description: string;
@@ -13,7 +13,7 @@ interface ToolConfig {
 
 const order = ['General', 'Text', 'Code', 'Design', 'Web', 'Math'];
 
-const config: Record<string, ToolConfig> = {
+export const config: Record<string, ToolConfig> = {
   WhatIsMyIp: {
     category: 'General',
     description: 'Your public IP and network info.',
@@ -71,6 +71,11 @@ const config: Record<string, ToolConfig> = {
     description: 'Minify and format HTML, CSS, JS, and SVG files.',
     icon: 'i-heroicons-code-bracket',
   },
+  // DataConverter: {
+  //   category: 'Code',
+  //   description: 'Convert between JSON, CSV, and YAML.',
+  //   icon: 'i-heroicons-table-cells',
+  // },
   UrlInspector: {
     category: 'Web',
     description: 'Check url for OpenGraph data',
@@ -91,6 +96,11 @@ const config: Record<string, ToolConfig> = {
     description: 'Resize images in bulk!',
     icon: 'i-heroicons-photo',
   },
+  // ShadowGenerator: {
+  //   category: 'Design',
+  //   description: 'Build and preview layered CSS box shadows.',
+  //   icon: 'i-heroicons-squares-2x2',
+  // },
   ColourPalette: {
     category: 'Design',
     description: 'Generates colour palettes.',
@@ -102,6 +112,17 @@ const config: Record<string, ToolConfig> = {
     icon: 'i-heroicons-arrows-pointing-in',
   },
 };
+
+export function getSlug(file: string) {
+  return file
+    .replace(/([A-Z])/g, '-$1')
+    .toLowerCase()
+    .replace(/^-/, '');
+}
+
+export function getLabel(file: string) {
+  return file.replace(/([A-Z])/g, ' $1').trim();
+}
 
 const registry: Record<
   string,
@@ -120,9 +141,11 @@ for (const file of Object.keys(config).sort()) {
   const label = file.replace(/([A-Z])/g, ' $1').trim();
   const path = `/${id}`;
 
-  registry[path] = { label, file, description: meta.description };
-  groups[meta.category] ??= [];
-  groups[meta.category]?.push({ id, label, to: path, ...meta });
+  if (meta) {
+    registry[path] = { label, file, description: meta.description };
+    groups[meta.category] ??= [];
+    groups[meta.category]?.push({ id, label, to: path, ...meta });
+  }
 }
 
 const sortedGroups = order
