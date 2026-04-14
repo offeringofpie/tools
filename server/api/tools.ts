@@ -5,7 +5,7 @@ import {
   getLabel,
 } from '~/composables/useTools';
 
-const BASE_URL = 'https://jlopes.eu';
+const BASE_URL = 'https://jlopes.eu/tools';
 
 export default defineEventHandler(() => {
   return Object.keys(config).map((file) => {
