@@ -19,11 +19,11 @@ export const config: Record<string, ToolConfig> = {
     description: 'Your public IP and network info.',
     icon: 'i-heroicons-map-pin',
   },
-  // Weather: {
-  //   category: 'General',
-  //   description: 'Weather forecast with map.',
-  //   icon: 'i-heroicons-sun',
-  // },
+  Weather: {
+    category: 'General',
+    description: 'Weather forecast with map.',
+    icon: 'i-heroicons-sun',
+  },
   UnitConverter: {
     category: 'Math',
     description: 'Convert between units of length, weight, temperature, etc.',
@@ -99,6 +99,16 @@ export const config: Record<string, ToolConfig> = {
   // ShadowGenerator: {
   //   category: 'Design',
   //   description: 'Build and preview layered CSS box shadows.',
+  //   icon: 'i-heroicons-squares-2x2',
+  // },
+  // FlexboxGenerator: {
+  //   category: 'Design',
+  //   description: 'Helps create FlexBox layouts',
+  //   icon: 'i-heroicons-squares-2x2',
+  // },
+  // GridGenerator: {
+  //   category: 'Design',
+  //   description: 'Helps create Grid layouts',
   //   icon: 'i-heroicons-squares-2x2',
   // },
   ColourPalette: {

@@ -20,8 +20,10 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    owmKey: process.env.OWM_KEY,
     public: {
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://jlopes.eu/tools/',
+      // owmKey: process.env.OWM_KEY,
     },
   },
 
