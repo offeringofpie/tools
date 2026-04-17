@@ -37,6 +37,12 @@ interface Place {
   region?: string;
 }
 
+interface CityItem {
+  label: string;
+  suffix?: string;
+  place: Place;
+}
+
 const unit = ref<'C' | 'F'>('C');
 
 function toF(c: number) {
@@ -56,16 +62,26 @@ const POPULAR: Place[] = [
   { name: 'Seattle', lat: 47.6062, lon: -122.3321, country: 'US' },
 ];
 
+const POPULAR_ITEMS: CityItem[] = POPULAR.map((p) => ({
+  label: p.name,
+  suffix: p.country,
+  place: p,
+}));
+
 const status = ref<'idle' | 'loading' | 'ready' | 'error'>('idle');
 const errMsg = ref('');
 const pos = ref<{ lat: number; lon: number } | null>(null);
 const data = ref<any>(null);
 const title = ref('');
-
 const query = ref('');
-const results = ref<Place[]>([]);
 const searching = ref(false);
 const tab = ref('now');
+const geoResults = ref<CityItem[]>([]);
+const mapWrapper = ref<HTMLElement | null>(null);
+
+const suggestions = computed<CityItem[]>(() =>
+  query.value.length < 2 ? POPULAR_ITEMS : geoResults.value,
+);
 
 const mapEl = ref<HTMLElement | null>(null);
 let map: any = null;
@@ -161,10 +177,10 @@ async function load() {
   }
 }
 
-async function search() {
+watch(query, (val) => {
   if (timer) clearTimeout(timer);
-  if (query.value.length < 2) {
-    results.value = [];
+  if (val.length < 2) {
+    geoResults.value = [];
     return;
   }
   timer = setTimeout(async () => {
@@ -172,29 +188,35 @@ async function search() {
     try {
       const res = await $fetch<any>(
         'https://geocoding-api.open-meteo.com/v1/search',
-        {
-          params: { name: query.value, count: 5, format: 'json' },
-        },
+        { params: { name: val, count: 5, format: 'json' } },
       );
-      results.value = (res.results ?? []).map((r: any) => ({
-        name: r.name,
-        lat: r.latitude,
-        lon: r.longitude,
-        country: r.country,
-        region: r.admin1,
+      geoResults.value = (res.results ?? []).map((r: any) => ({
+        label: r.name,
+        suffix: [r.admin1, r.country].filter(Boolean).join(', '),
+        place: {
+          name: r.name,
+          lat: r.latitude,
+          lon: r.longitude,
+          country: r.country,
+          region: r.admin1,
+        },
       }));
     } finally {
       searching.value = false;
     }
   }, 300);
-}
+});
 
 async function pick(p: Place) {
   pos.value = { lat: p.lat, lon: p.lon };
   title.value = [p.name, p.country].filter(Boolean).join(', ');
   query.value = '';
-  results.value = [];
+  geoResults.value = [];
   await load();
+}
+
+function onCitySelect(item: CityItem) {
+  pick(item.place);
 }
 
 async function gps(silent = false) {
@@ -218,6 +240,21 @@ async function gps(silent = false) {
         : ((errMsg.value = 'GPS denied'), (status.value = 'error')),
     { timeout: 5000 },
   );
+}
+
+const isFullscreen = ref(false);
+
+function onFullscreenChange() {
+  isFullscreen.value = !!document.fullscreenElement;
+}
+
+function toggleFullscreen() {
+  if (!mapWrapper.value) return;
+  if (!document.fullscreenElement) {
+    mapWrapper.value.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
 }
 
 function destroyMap() {
@@ -296,70 +333,61 @@ watch(status, async (val) => {
 
 onMounted(() => {
   pick(POPULAR[0] as Place);
+  document.addEventListener('fullscreenchange', onFullscreenChange);
 });
 
-onBeforeUnmount(destroyMap);
+onBeforeUnmount(() => {
+  destroyMap();
+  document.removeEventListener('fullscreenchange', onFullscreenChange);
+});
 </script>
 
 <template>
   <div class="max-w-6xl mx-auto space-y-4">
-    <div class="relative">
-      <div class="flex items-center gap-2">
-        <UButton
-          icon="i-heroicons-map-pin"
-          color="primary"
-          variant="soft"
-          size="xl"
-          title="Use current location"
-          @click="gps(false)"
-        />
-        <div class="relative flex-1">
-          <UInput
-            v-model="query"
-            icon="i-heroicons-magnifying-glass"
-            placeholder="Search city…"
-            size="xl"
-            variant="subtle"
-            class="text-lg bg-base-900/50 rounded-lg border border-base-800 w-full"
-            :loading="searching"
-            @input="search"
-          />
-        </div>
-        <UFieldGroup size="sm" orientation="horizontal">
-          <UButton
-            :variant="unit === 'C' ? 'solid' : 'subtle'"
-            color="primary"
-            label="°C"
-            size="xl"
-            @click="unit = 'C'"
-          />
-          <UButton
-            :variant="unit === 'F' ? 'solid' : 'subtle'"
-            color="primary"
-            label="°F"
-            size="xl"
-            @click="unit = 'F'"
-          />
-        </UFieldGroup>
-      </div>
-
-      <div
-        v-if="results.length"
-        class="absolute z-50 w-full mt-2 bg-base-900 border border-base-700 rounded-lg shadow-xl overflow-hidden"
+    <div class="flex items-center gap-2">
+      <UButton
+        icon="i-heroicons-map-pin"
+        color="primary"
+        variant="soft"
+        size="xl"
+        title="Use current location"
+        @click="gps(false)"
+      />
+      <UInputMenu
+        v-model:search-term="query"
+        :items="suggestions"
+        :loading="searching"
+        ignore-filter
+        icon="i-heroicons-magnifying-glass"
+        placeholder="Search city…"
+        size="xl"
+        variant="subtle"
+        class="flex-1"
+        @update:model-value="onCitySelect"
       >
-        <button
-          v-for="p in results"
-          :key="`${p.lat}-${p.lon}`"
-          class="w-full px-4 py-3 text-left hover:bg-base-800 flex justify-between items-center transition-colors"
-          @click="pick(p)"
-        >
-          <span class="text-base-100">
-            {{ p.name }},
-            <span class="text-base-500 text-sm">{{ p.region }}</span>
+        <template #item-label="{ item }">
+          <span>{{ item.label }}</span>
+          <span v-if="item.suffix" class="ml-1.5 text-xs text-muted">
+            {{ item.suffix }}
           </span>
-          <span class="text-xs text-base-500">{{ p.country }}</span>
-        </button>
-      </div>
+        </template>
+      </UInputMenu>
+      <UFieldGroup size="sm" orientation="horizontal">
+        <UButton
+          :variant="unit === 'C' ? 'solid' : 'subtle'"
+          color="primary"
+          label="°C"
+          size="xl"
+          @click="unit = 'C'"
+        />
+        <UButton
+          :variant="unit === 'F' ? 'solid' : 'subtle'"
+          color="primary"
+          label="°F"
+          size="xl"
+          @click="unit = 'F'"
+        />
+      </UFieldGroup>
     </div>
 
     <UAlert
@@ -370,18 +398,8 @@ onBeforeUnmount(destroyMap);
       icon="i-heroicons-exclamation-circle"
     />
 
-    <div v-if="title && status !== 'error'" class="px-1 flex justify-between">
+    <div v-if="title && status !== 'error'" class="px-1">
       <h2 class="text-2xl font-semibold text-base-100">{{ title }}</h2>
-      <div class="flex flex-wrap gap-2 justify-end-safe">
-        <button
-          v-for="p in POPULAR"
-          :key="`p-${p.lat}-${p.lon}`"
-          class="px-3 py-1.5 text-sm bg-base-800 hover:bg-base-700 rounded-full transition-colors"
-          @click="pick(p)"
-        >
-          {{ p.name }}
-        </button>
-      </div>
     </div>
 
     <div>
@@ -457,13 +475,38 @@ onBeforeUnmount(destroyMap);
         </div>
       </div>
 
-      <div v-show="tab === 'map'">
+      <div v-show="tab === 'map'" ref="mapWrapper" class="relative">
         <div
           ref="mapEl"
           class="h-120 max-h-full w-full rounded-xl bg-base-900"
         />
+        <UButton
+          :icon="
+            isFullscreen
+              ? 'i-heroicons-arrows-pointing-in'
+              : 'i-heroicons-arrows-pointing-out'
+          "
+          :title="isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'"
+          color="neutral"
+          variant="soft"
+          size="sm"
+          class="absolute top-3 right-3 z-[1000] backdrop-blur-sm"
+          @click="toggleFullscreen"
+        />
+        <UButton
+          v-if="isFullscreen"
+          icon="i-heroicons-x-mark"
+          label="Exit fullscreen"
+          title="Exit fullscreen"
+          color="neutral"
+          variant="solid"
+          size="sm"
+          class="absolute top-3 left-3 z-[1000]"
+          @click="toggleFullscreen"
+        />
       </div>
     </div>
+
     <div class="flex items-center justify-center gap-1.5 pt-2 flex-wrap">
       <p class="text-xs text-base-600">
         Data provided by
@@ -515,5 +558,13 @@ onBeforeUnmount(destroyMap);
 }
 .leaflet-control-attribution a {
   color: #3b82f6 !important;
+}
+
+.relative:fullscreen {
+  background: #111;
+}
+.relative:fullscreen .h-120 {
+  height: 100vh !important;
+  border-radius: 0 !important;
 }
 </style>
