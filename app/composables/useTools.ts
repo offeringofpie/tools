@@ -14,6 +14,11 @@ export interface ToolConfig {
 const order = ['General', 'Text', 'Code', 'Design', 'Web', 'Math'];
 
 export const config: Record<string, ToolConfig> = {
+  // PeriodicTable: {
+  //   category: 'General',
+  //   description: 'Table information of all the elements',
+  //   icon: 'i-heroicons-beaker',
+  // },
   WhatIsMyIp: {
     category: 'General',
     description: 'Your public IP and network info.',
@@ -96,16 +101,21 @@ export const config: Record<string, ToolConfig> = {
     description: 'Resize images in bulk!',
     icon: 'i-heroicons-photo',
   },
+  // ImageFx: {
+  //   category: 'Design',
+  //   description: 'Add effects to images!',
+  //   icon: 'i-heroicons-photo',
+  // },
   // ShadowGenerator: {
   //   category: 'Design',
   //   description: 'Build and preview layered CSS box shadows.',
   //   icon: 'i-heroicons-squares-2x2',
   // },
-  // FlexboxGenerator: {
-  //   category: 'Design',
-  //   description: 'Helps create FlexBox layouts',
-  //   icon: 'i-heroicons-squares-2x2',
-  // },
+  FlexboxGenerator: {
+    category: 'Design',
+    description: 'Learn and build Flexbox CSS.',
+    icon: 'i-heroicons-squares-2x2',
+  },
   // GridGenerator: {
   //   category: 'Design',
   //   description: 'Helps create Grid layouts',

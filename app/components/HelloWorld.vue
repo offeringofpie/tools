@@ -49,9 +49,9 @@ const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-');
           orientation="horizontal"
           :ui="{
             root: [
-              'group p-4 rounded-lg ring ring-default bg-default',
+              'group p-4 rounded-lg ring ring-default bg-base-800',
               'transition-all duration-200',
-              'hover:ring-primary hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/5',
+              'hover:ring-primary hover:shadow-lg hover:shadow-primary/5',
             ],
             leadingIcon:
               'transition-transform duration-200 group-hover:scale-110',
