@@ -1,5 +1,6 @@
-<script setup lang="ts">
-interface Item {
+<script lang="ts">
+
+export interface Item {
   id: number;
   label: string;
   width: string | null;
@@ -11,7 +12,7 @@ interface Item {
   order: number | null;
 }
 
-interface Container {
+export interface Container {
   direction: string;
   wrap: string;
   justifyContent: string;
@@ -20,6 +21,118 @@ interface Container {
   alignContent: string;
 }
 
+export const toNum = (value: string): number | null => {
+  const number = parseFloat(value);
+  return isNaN(number) ? null : number;
+};
+
+export const parsePx = (raw: string): string => {
+  const s = raw.trim();
+  if (!s) return '0px';
+  if (/^\d*\.?\d+(px|em|rem|%|vw|vh)$/.test(s)) return s;
+  const n = parseFloat(s);
+  return isNaN(n) ? '0px' : `${n}px`;
+};
+
+export const parsedGap = (gapValue: string): { row: string; col: string } => {
+  const parts = gapValue.trim().split(/\s+/);
+  const row = parsePx(parts[0] ?? '');
+  const col = parsePx(parts[1] ?? parts[0] ?? '');
+  return { row, col };
+};
+
+let nextId = 0;
+
+export const newItem = (i: number, overrides: Partial<Item> = {}): Item => ({
+  id: nextId++, label: String(i + 1),
+  width: '20%', height: '5rem',
+  grow: null, shrink: null, basis: null, alignSelf: null, order: null,
+  ...overrides,
+});
+
+export const newItems = (n: number, overrides?: Partial<Item>): Item[] =>
+  Array.from({ length: n }, (_, i) => newItem(i, overrides));
+
+export const styleFor = (item: Item): Record<string, string> => {
+  const s: Record<string, string> = { flexShrink: String(item.shrink ?? 0) };
+  if (item.width) s.width = item.width;
+  if (item.height) s.height = item.height;
+  if (item.grow !== null) s.flexGrow = String(item.grow);
+  if (item.basis !== null) s.flexBasis = item.basis;
+  if (item.alignSelf !== null) s.alignSelf = item.alignSelf;
+  if (item.order !== null) s.order = String(item.order);
+  return s;
+};
+
+export const containerStyle = (
+  container: Container,
+  display: 'flex' | 'inline-flex',
+  gapValue: string,
+): Record<string, string> => {
+  const { row, col } = parsedGap(gapValue);
+  return {
+    display,
+    flexDirection: container.direction,
+    flexWrap: container.wrap,
+    justifyContent: container.justifyContent,
+    justifyItems: container.justifyItems,
+    alignItems: container.alignItems,
+    alignContent: container.alignContent,
+    ...(row === col ? { gap: row } : { rowGap: row, columnGap: col }),
+  };
+};
+
+export const buildCss = (
+  container: Container,
+  display: 'flex' | 'inline-flex',
+  gapValue: string,
+  items: Item[],
+): string => {
+  const { row, col } = parsedGap(gapValue);
+  const gapLines = row === col ? [`gap: ${row};`] : [`row-gap: ${row};`, `column-gap: ${col};`];
+
+  const lines = [
+    `display: ${display};`,
+    `flex-flow: ${container.direction} ${container.wrap};`,
+    `justify-content: ${container.justifyContent};`,
+    ...(container.justifyItems !== 'normal' ? [`justify-items: ${container.justifyItems};`] : []),
+    `align-items: ${container.alignItems};`,
+    ...(container.alignContent !== 'normal' ? [`align-content: ${container.alignContent};`] : []),
+    ...gapLines,
+  ];
+
+  const groups = new Map<string, number[]>();
+  items.forEach((item, i) => {
+    const props = [
+      item.width !== null && `width: ${item.width};`,
+      item.height !== null && `height: ${item.height};`,
+      item.grow !== null && `flex-grow: ${item.grow};`,
+      item.shrink !== null && `flex-shrink: ${item.shrink};`,
+      item.basis !== null && `flex-basis: ${item.basis};`,
+      item.alignSelf !== null && `align-self: ${item.alignSelf};`,
+      item.order !== null && `order: ${item.order};`,
+    ].filter(Boolean).join('|');
+    groups.set(props, [...(groups.get(props) ?? []), i + 1]);
+  });
+
+  const overrides = [...groups.entries()]
+    .filter(([k]) => k)
+    .map(([k, nums]) => {
+      const sel = nums.length === items.length
+        ? '.container > *'
+        : nums.map(n => `.container > :nth-child(${n})`).join(',\n');
+      const body = k.split('|').map(l => `  ${l}`).join('\n');
+      return `${sel} {\n${body}\n}`;
+    });
+
+  const block = (sel: string, ls: string[]) => `${sel} {\n${ls.map(l => `  ${l}`).join('\n')}\n}`;
+  return [block('.container', lines), ...overrides].join('\n\n');
+};
+
+export const selectItems = (opts: readonly string[]) => opts.map(v => ({ label: v, value: v }));
+</script>
+
+<script setup lang="ts">
 const containerOpts = [
   { key: 'direction', label: 'flex-direction', opts: ['row', 'row-reverse', 'column', 'column-reverse'] },
   { key: 'wrap', label: 'flex-wrap', opts: ['nowrap', 'wrap', 'wrap-reverse'] },
@@ -44,33 +157,6 @@ const FlexOpts = [
   { key: 'order' as const, label: 'order', ph: '0' },
 ];
 
-let nextId = 0;
-
-const toNum = (value: string): number | null => {
-  const number = parseFloat(value);
-  return isNaN(number) ? null : number;
-};
-
-const selectItems = (opts: readonly string[]) => opts.map(v => ({ label: v, value: v }));
-
-const parsePx = (raw: string): string => {
-  const s = raw.trim();
-  if (!s) return '0px';
-  if (/^\d*\.?\d+(px|em|rem|%|vw|vh)$/.test(s)) return s;
-  const n = parseFloat(s);
-  return isNaN(n) ? '0px' : `${n}px`;
-};
-
-const newItem = (i: number, overrides: Partial<Item> = {}): Item => ({
-  id: nextId++, label: String(i + 1),
-  width: '20%', height: '5rem',
-  grow: null, shrink: null, basis: null, alignSelf: null, order: null,
-  ...overrides,
-});
-
-const newItems = (n: number, overrides?: Partial<Item>) =>
-  Array.from({ length: n }, (_, i) => newItem(i, overrides));
-
 const TEMPLATES = [
   { id: 'centered', label: 'Centered', cfg: { direction: 'row', wrap: 'nowrap', justifyContent: 'center', alignItems: 'center' }, gap: '0', items: () => [newItem(0)] },
   { id: 'navbar', label: 'Nav Bar', cfg: { direction: 'row', wrap: 'nowrap', justifyContent: 'space-between', alignItems: 'center' }, gap: '8', items: () => newItems(4) },
@@ -93,79 +179,9 @@ const activeTemplate = ref('');
 const openSection = ref<string | null>('container');
 const copied = ref(false);
 
-const parsedGap = computed(() => {
-  const parts = gap.value.trim().split(/\s+/);
-  const row = parsePx(parts[0] ?? '');
-  const col = parsePx(parts[1] ?? parts[0] ?? '');
-  return { row, col };
-});
+const computedContainerStyle = computed(() => containerStyle(container, display.value, gap.value));
 
-const containerStyle = computed(() => {
-  const { row, col } = parsedGap.value;
-  return {
-    display: display.value,
-    flexDirection: container.direction,
-    flexWrap: container.wrap,
-    justifyContent: container.justifyContent,
-    justifyItems: container.justifyItems,
-    alignItems: container.alignItems,
-    alignContent: container.alignContent,
-    ...(row === col ? { gap: row } : { rowGap: row, columnGap: col }),
-  };
-});
-
-const styleFor = (item: Item) => {
-  const s: Record<string, string> = { flexShrink: String(item.shrink ?? 0) };
-  if (item.width) s.width = item.width;
-  if (item.height) s.height = item.height;
-  if (item.grow !== null) s.flexGrow = String(item.grow);
-  if (item.basis !== null) s.flexBasis = item.basis;
-  if (item.alignSelf !== null) s.alignSelf = item.alignSelf;
-  if (item.order !== null) s.order = String(item.order);
-  return s;
-};
-
-const css = computed(() => {
-  const { row, col } = parsedGap.value;
-  const gapLines = row === col ? [`gap: ${row};`] : [`row-gap: ${row};`, `column-gap: ${col};`];
-
-  const lines = [
-    `display: ${display.value};`,
-    `flex-flow: ${container.direction} ${container.wrap};`,
-    `justify-content: ${container.justifyContent};`,
-    ...(container.justifyItems !== 'normal' ? [`justify-items: ${container.justifyItems};`] : []),
-    `align-items: ${container.alignItems};`,
-    ...(container.alignContent !== 'normal' ? [`align-content: ${container.alignContent};`] : []),
-    ...gapLines,
-  ];
-
-  const groups = new Map<string, number[]>();
-  items.value.forEach((item, i) => {
-    const props = [
-      item.width !== null && `width: ${item.width};`,
-      item.height !== null && `height: ${item.height};`,
-      item.grow !== null && `flex-grow: ${item.grow};`,
-      item.shrink !== null && `flex-shrink: ${item.shrink};`,
-      item.basis !== null && `flex-basis: ${item.basis};`,
-      item.alignSelf !== null && `align-self: ${item.alignSelf};`,
-      item.order !== null && `order: ${item.order};`,
-    ].filter(Boolean).join('|');
-    groups.set(props, [...(groups.get(props) ?? []), i + 1]);
-  });
-
-  const overrides = [...groups.entries()]
-    .filter(([k]) => k)
-    .map(([k, nums]) => {
-      const sel = nums.length === items.value.length
-        ? '.container > *'
-        : nums.map(n => `.container > :nth-child(${n})`).join(',\n');
-      const body = k.split('|').map(l => `  ${l}`).join('\n');
-      return `${sel} {\n${body}\n}`;
-    });
-
-  const block = (sel: string, ls: string[]) => `${sel} {\n${ls.map(l => `  ${l}`).join('\n')}\n}`;
-  return [block('.container', lines), ...overrides].join('\n\n');
-});
+const css = computed(() => buildCss(container, display.value, gap.value, items.value));
 
 const addItem = () => items.value.push(newItem(items.value.length));
 
@@ -182,7 +198,6 @@ const select = (item: Item) => {
 };
 
 const applyTemplate = (tpl: (typeof TEMPLATES)[number]) => {
-  nextId = 0;
   Object.assign(container, { alignContent: 'normal', justifyItems: 'normal', ...tpl.cfg });
   gap.value = tpl.gap;
   selected.value = null;
@@ -196,7 +211,6 @@ const copy = async () => {
     copied.value = true;
     setTimeout(() => (copied.value = false), 1500);
   } catch {
-    // noop
   }
 };
 
@@ -221,7 +235,7 @@ const tabs = [
           <template #preview>
             <div
               class="flex-1 rounded-xl border border-dashed border-default bg-elevated overflow-auto min-h-44 p-4"
-              :style="containerStyle"
+              :style="computedContainerStyle"
             >
               <UButton
                 v-for="item in items" :key="item.id"
