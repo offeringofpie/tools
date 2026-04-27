@@ -22,15 +22,34 @@ watch(isDesktop, (desktop) => {
   open.value = desktop;
 });
 
+const tool = computed(() => registry[route.path]);
+
 const title = computed(() => {
   if (route.path === '/') return 'Home';
-  return registry[route.path]?.label ?? 'Not Found';
+  return tool.value?.label ?? 'Not Found';
 });
 
 const repo = computed(() => {
   const base = 'https://github.com/offeringofpie/tools';
-  const file = registry[route.path]?.file;
-  return file ? `${base}/blob/main/app/components/global/${file}.vue` : base;
+  return tool.value?.file
+    ? `${base}/blob/main/app/components/global/${tool.value.file}.vue`
+    : base;
+});
+
+useSeoMeta({
+  title: () => (tool.value ? `${tool.value.label} — JL Tools` : 'JL Tools'),
+  ogTitle: () => tool.value?.label,
+  description: () => tool.value?.description,
+  ogDescription: () => tool.value?.description,
+  ogImage: () =>
+    tool.value
+      ? `https://jlopes.eu/og/tools/${route.path.slice(1)}.jpg`
+      : undefined,
+  twitterCard: 'summary_large_image',
+  twitterImage: () =>
+    tool.value
+      ? `https://jlopes.eu/og/tools/${route.path.slice(1)}.jpg`
+      : undefined,
 });
 
 const home: NavigationMenuItem = {
@@ -47,7 +66,6 @@ const home: NavigationMenuItem = {
     <div class="flex flex-1 overflow-hidden w-full bg-bg text-base-50">
       <USidebar
         v-model:open="open"
-        variant="default"
         collapsible="offcanvas"
         side="left"
         class="lg:shrink-0"
@@ -136,7 +154,7 @@ const home: NavigationMenuItem = {
             {{ title }}
           </span>
 
-          <UTooltip text="View code in GitHub" class="ml-auto">
+          <UTooltip :text="`View ${title} code in GitHub`" class="ml-auto">
             <UBanner
               v-if="route.path !== '/'"
               :title="title"
