@@ -9,9 +9,10 @@ export interface ToolConfig {
   category: string;
   icon: string;
   description: string;
+  title?: string;
 }
 
-const order = ['General', 'Text', 'Code', 'Design', 'Web', 'Math'];
+const order = ['General', 'Text', 'Code', 'Design', 'Web', 'Math', 'Other'];
 
 export const config: Record<string, ToolConfig> = {
   // PeriodicTable: {
@@ -116,6 +117,12 @@ export const config: Record<string, ToolConfig> = {
     description: 'Learn and build Flexbox CSS.',
     icon: 'i-heroicons-squares-2x2',
   },
+  NthChild: {
+    category: 'Design',
+    description: 'Define nth-child patterns',
+    icon: 'i-heroicons-squares-plus',
+    title: ':nth-child Helper',
+  },
   // GridGenerator: {
   //   category: 'Design',
   //   description: 'Helps create Grid layouts',
@@ -131,6 +138,12 @@ export const config: Record<string, ToolConfig> = {
     description: 'Compress and clean up SVG files.',
     icon: 'i-heroicons-arrows-pointing-in',
   },
+  // ThumbsDb: {
+  //   category: 'Other',
+  //   title: 'Thumbs.db Reader',
+  //   description: 'Read and Extract thumbs.db files',
+  //   icon: 'i-heroicons-photo',
+  // },
 };
 
 export function getSlug(file: string) {
@@ -140,8 +153,8 @@ export function getSlug(file: string) {
     .replace(/^-/, '');
 }
 
-export function getLabel(file: string) {
-  return file.replace(/([A-Z])/g, ' $1').trim();
+export function getLabel(file: string, title?: string) {
+  return title ?? file.replace(/([A-Z])/g, ' $1').trim();
 }
 
 const registry: Record<
@@ -158,10 +171,10 @@ for (const file of Object.keys(config).sort()) {
     .toLowerCase()
     .replace(/^-/, '');
 
-  const label = file.replace(/([A-Z])/g, ' $1').trim();
   const path = `/${id}`;
 
   if (meta) {
+    const label = meta.title ?? file.replace(/([A-Z])/g, ' $1').trim();
     registry[path] = { label, file, description: meta.description };
     groups[meta.category] ??= [];
     groups[meta.category]?.push({ id, label, to: path, ...meta });
