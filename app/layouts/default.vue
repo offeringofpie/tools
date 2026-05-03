@@ -2,7 +2,7 @@
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
 import type { NavigationMenuItem } from '#ui/types';
 
-const { groups, registry } = useTools();
+const { groups, registry, categories } = useTools();
 const breakpoints = useBreakpoints(breakpointsTailwind);
 const isDesktop = breakpoints.greaterOrEqual('md');
 
@@ -119,15 +119,20 @@ const home: NavigationMenuItem = {
           >
             <USeparator class="my-2 border-base-800" />
             <h3
-              class="px-2 text-xs font-semibold text-base-500 uppercase tracking-wider"
+              :class="`px-2 text-xs font-semibold text-${categories[category]?.color} uppercase tracking-wider`"
             >
               {{ category }}
             </h3>
             <UNavigationMenu
               :items="links"
+              color="primary"
               orientation="vertical"
               :aria-label="`${category} tools`"
-              :ui="{ link: 'p-1.5 overflow-hidden' }"
+              :ui="{
+                link: `p-1.5 overflow-hidden`,
+                linkLeadingIcon: `text-${categories[category]?.color} opacity-60 group-data-[active]:opacity-100 group-data-[active]:text-primary`,
+                linkLabel: `group-data-[active]:text-${categories[category]?.color}`,
+              }"
             />
           </div>
         </div>

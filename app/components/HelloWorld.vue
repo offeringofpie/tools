@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { groups } = useTools();
+const { groups, categories } = useTools();
 const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 </script>
 
@@ -33,11 +33,11 @@ const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-');
       class="space-y-4"
     >
       <h2
-        :id="`cat-${slug(category)}`"
-        class="text font-semibold uppercase tracking-widest text-primary"
+        :class="`text font-semibold uppercase tracking-widest text-${categories[category]?.color}`"
       >
         {{ category }}
       </h2>
+
       <UPageGrid :ui="{ base: 'gap-x-6 gap-y-4' }">
         <UPageFeature
           v-for="tool in tools"
@@ -49,13 +49,12 @@ const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-');
           orientation="horizontal"
           :ui="{
             root: [
-              'group p-4 rounded-lg ring ring-default bg-base-800',
-              'transition-all duration-200',
-              'hover:ring-primary hover:shadow-lg hover:shadow-primary/5',
+              'group p-4 rounded-lg ring ring-default bg-base-800 hover:bg-base-700',
+              'transition-all duration-200 hover:shadow-lg',
+              `hover:ring-${categories[category]?.color}`,
             ],
-            leadingIcon:
-              'transition-transform duration-200 group-hover:scale-110',
-            title: 'transition-colors group-hover:text-primary',
+            leadingIcon: `transition-transform duration-200 group-hover:scale-110 text-${categories[category]?.color}`,
+            title: `transition-colors group-hover:text-primary group-hover:text-${categories[category]?.color} text-${categories[category]?.color}`,
           }"
         />
       </UPageGrid>

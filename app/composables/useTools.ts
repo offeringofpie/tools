@@ -12,7 +12,22 @@ export interface ToolConfig {
   title?: string;
 }
 
-const order = ['General', 'Text', 'Code', 'Design', 'Web', 'Math', 'Other'];
+export interface CategoryConfig {
+  color: string;
+  icon: string;
+}
+
+export const categories: Record<string, CategoryConfig> = {
+  General: { color: 'secondary', icon: 'i-heroicons-home' },
+  Text: { color: 'warning', icon: 'i-heroicons-document-text' },
+  Code: { color: 'primary', icon: 'i-heroicons-code-bracket' },
+  Design: { color: 'success', icon: 'i-heroicons-swatch' },
+  Web: { color: 'info', icon: 'i-heroicons-globe-alt' },
+  Math: { color: 'error', icon: 'i-heroicons-calculator' },
+  Other: { color: 'base-500', icon: 'i-heroicons-swatch' },
+};
+
+const order = ['General', 'Code', 'Design', 'Text', 'Web', 'Math', 'Other'];
 
 export const config: Record<string, ToolConfig> = {
   // PeriodicTable: {
@@ -24,6 +39,7 @@ export const config: Record<string, ToolConfig> = {
     category: 'General',
     description: 'Your public IP and network info.',
     icon: 'i-heroicons-map-pin',
+    title: 'What is my IP?',
   },
   Weather: {
     category: 'General',
@@ -191,4 +207,4 @@ const sortedGroups = order
     {} as Record<string, ToolItem[]>,
   );
 
-export const useTools = () => ({ registry, groups: sortedGroups });
+export const useTools = () => ({ registry, groups: sortedGroups, categories });
