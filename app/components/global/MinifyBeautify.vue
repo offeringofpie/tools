@@ -14,13 +14,18 @@ function process(action: 'minify' | 'beautify') {
   }
 
   busy.value = true;
-  const type = detectCode(input.value);
-  codeType.value = type;
-  output.value =
-    action === 'minify'
-      ? minify(input.value, type)
-      : beautify(input.value, type);
-  busy.value = false;
+
+  try {
+    const type = detectCode(input.value);
+    codeType.value = type;
+
+    output.value =
+      action === 'minify'
+        ? minify(input.value, type)
+        : beautify(input.value, type);
+  } finally {
+    busy.value = false;
+  }
 }
 
 async function copy() {
@@ -55,12 +60,6 @@ export function detectCode(code: string): CodeType {
     return 'html';
 
   if (
-    v.includes('{') &&
-    (v.includes(':') || v.includes('px') || v.includes('color'))
-  )
-    return 'css';
-
-  if (
     v.includes('function') ||
     v.includes('const ') ||
     v.includes('let ') ||
@@ -69,50 +68,104 @@ export function detectCode(code: string): CodeType {
   )
     return 'javascript';
 
+  if (
+    v.includes('{') &&
+    (v.includes(':') || v.includes('px') || v.includes('color'))
+  )
+    return 'css';
+
   return 'html';
 }
 
-export function minifyHTML(html: string) {
-  return html
+const SENSITIVE_TAGS = ['pre', 'code', 'textarea', 'script', 'style'];
+
+function minifyLooseText(value: string): string {
+  return value
     .replace(/<!--[\s\S]*?-->/g, '')
     .replace(/>\s+</g, '><')
-    .replace(/(<[^>]*>)|\s+/g, (m, tag) => (tag ? tag : ' '))
+    .replace(/\s+/g, ' ')
     .trim();
 }
 
-export function minifyCSS(css: string) {
+export function minifyHTML(html: string): string {
+  const tagRegex = new RegExp(
+    `<\\s*(${SENSITIVE_TAGS.join('|')})\\b[\\s\\S]*?>[\\s\\S]*?<\\/\\s*\\1\\s*>`,
+    'gi',
+  );
+
+  const parts: string[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = tagRegex.exec(html))) {
+    const before = html.slice(lastIndex, match.index);
+
+    if (before.trim()) {
+      parts.push(minifyLooseText(before));
+    }
+
+    parts.push(match[0]);
+    lastIndex = match.index + match[0].length;
+  }
+
+  const tail = html.slice(lastIndex);
+  if (tail.trim()) {
+    parts.push(minifyLooseText(tail));
+  }
+
+  return parts.join('');
+}
+
+export function minifyCSS(css: string): string {
   return css
     .replace(/\/\*[\s\S]*?\*\//g, '')
-    .replace(/\s*([{}:;,])\s*/g, '$1')
+    .replace(/\s*([{}:;,>+~])\s*/g, '$1')
     .replace(/;}/g, '}')
     .replace(/\s+/g, ' ')
     .trim();
 }
 
-export function minifyJavaScript(js: string) {
-  let result = js;
+function preserveQuotedStrings(code: string) {
+  const strings: string[] = [];
 
-  result = result.replace(/\/\*[\s\S]*?\*\//g, '');
-
-  result = result.replace(
-    /(?:^|[^"'\\])\/\/(?![^"']*["'])[^\n]*/gm,
-    (match, offset, source) => {
-      const before = source.slice(0, offset + 1);
-      const odd = (q: string) =>
-        (before.match(new RegExp(`(?<!\\\\)${q}`, 'g')) || []).length % 2 === 1;
-      if (odd('"') || odd("'") || odd('`')) return match;
-      return match.slice(0, match.indexOf('//'));
+  const protectedCode = code.replace(
+    /(["'`])(?:\\[\s\S]|(?!\1)[^\\])*\1/g,
+    (match) => {
+      const token = `___STRING_${strings.length}___`;
+      strings.push(match);
+      return token;
     },
   );
 
-  return result
-    .replace(/\s*([=+\-*/%<>!&|^~?:,;(){}[\]])\s*/g, '$1')
-    .replace(/\s*\.\s*/g, '.')
-    .replace(/\s+/g, ' ')
-    .trim();
+  return {
+    protectedCode,
+    restore(value: string) {
+      return value.replace(
+        /___STRING_(\d+)___/g,
+        (_, index) => strings[+index],
+      );
+    },
+  };
 }
 
-export function minifySVG(svg: string) {
+export function minifyJavaScript(js: string): string {
+  const { protectedCode, restore } = preserveQuotedStrings(js);
+
+  let result = protectedCode;
+
+  result = result.replace(/\/\*[\s\S]*?\*\//g, '');
+  result = result.replace(/(^|[^\w/:])\/\/[^\n\r]*/gm, '$1');
+
+  result = result
+    .replace(/\s+/g, ' ')
+    .replace(/\s*([=+\-*/%<>!&|^~?:,;(){}[\]])\s*/g, '$1')
+    .replace(/\s*\.\s*/g, '.')
+    .trim();
+
+  return restore(result);
+}
+
+export function minifySVG(svg: string): string {
   return svg
     .replace(/<!--[\s\S]*?-->/g, '')
     .replace(/<\?xml[\s\S]*?\?>/g, '')
@@ -126,7 +179,7 @@ function indented(line: string, depth: number) {
   return '  '.repeat(depth) + line;
 }
 
-export function beautifyHTML(code: string) {
+export function beautifyHTML(code: string): string {
   const lines = code
     .replace(/>\s*</g, '>\n<')
     .split('\n')
@@ -147,7 +200,7 @@ export function beautifyHTML(code: string) {
   return out.join('\n');
 }
 
-export function beautifyCSS(css: string) {
+export function beautifyCSS(css: string): string {
   const lines = css
     .replace(/\{/g, ' {\n')
     .replace(/;/g, ';\n')
@@ -169,7 +222,7 @@ export function beautifyCSS(css: string) {
   return out.join('\n');
 }
 
-export function beautifyJavaScript(js: string) {
+export function beautifyJavaScript(js: string): string {
   const lines = js
     .replace(/\{/g, ' {\n')
     .replace(/\}/g, '\n}\n')
@@ -190,7 +243,7 @@ export function beautifyJavaScript(js: string) {
   return out.join('\n');
 }
 
-export function minify(code: string, type: CodeType) {
+export function minify(code: string, type: CodeType): string {
   switch (type) {
     case 'html':
       return minifyHTML(code);
@@ -205,10 +258,9 @@ export function minify(code: string, type: CodeType) {
   }
 }
 
-export function beautify(code: string, type: CodeType) {
+export function beautify(code: string, type: CodeType): string {
   switch (type) {
     case 'html':
-      return beautifyHTML(code);
     case 'svg':
       return beautifyHTML(code);
     case 'css':
@@ -252,8 +304,9 @@ export function beautify(code: string, type: CodeType) {
                   base: 'hover:bg-primary-100/20 hover:text-primary-200 cursor-pointer',
                 }"
                 @click="process('minify')"
-                >Minify</UButton
               >
+                Minify
+              </UButton>
               <UButton
                 color="primary"
                 variant="outline"
@@ -263,8 +316,9 @@ export function beautify(code: string, type: CodeType) {
                   base: 'hover:bg-primary-100/20 hover:text-primary-200 cursor-pointer',
                 }"
                 @click="process('beautify')"
-                >Beautify</UButton
               >
+                Beautify
+              </UButton>
             </UFieldGroup>
           </div>
         </template>
@@ -298,8 +352,9 @@ export function beautify(code: string, type: CodeType) {
               class="cursor-pointer"
               :disabled="!output"
               @click="copy"
-              >{{ copied ? 'Copied' : 'Copy' }}</UButton
             >
+              {{ copied ? 'Copied' : 'Copy' }}
+            </UButton>
           </div>
         </template>
 

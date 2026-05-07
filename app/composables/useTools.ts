@@ -67,6 +67,13 @@ export const config: Record<string, ToolConfig> = {
       'Generate placeholder text in Lorem, Hipster, or Bacon flavors.',
     icon: 'i-heroicons-document-duplicate',
   },
+  // PdfHelper: {
+  //   category: 'Text',
+  //   description:
+  //     'Create or Optimise PDF files',
+  //   icon: 'i-heroicons-document',
+  //   title: 'PDF Helper',
+  // },
   // TextTransformer: {
   //   category: 'Text',
   //   description:

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import JSZip from 'jszip';
 
 interface ImgItem {
@@ -20,6 +20,10 @@ type SizingMode =
   | '9:16'
   | '4:3'
   | '3:4'
+  | '3:2'
+  | '2:3'
+  | '5:4'
+  | '4:5'
   | '1:1'
   | 'auto-height'
   | 'auto-width';
@@ -35,15 +39,24 @@ const busy = ref(false);
 const picker = ref<HTMLInputElement | null>(null);
 
 const options = [
-  { value: 'custom', label: 'Custom Dimensions' },
-  { value: '1.91:1', label: 'OpenGraph (1220x630)' },
-  { value: '16:9', label: '16:9' },
-  { value: '9:16', label: '9:16' },
-  { value: '4:3', label: '4:3' },
-  { value: '3:4', label: '3:4' },
-  { value: '1:1', label: '1:1 (Square)' },
+  { type: 'label' as const, label: 'Other' },
+  { value: 'custom', label: 'Custom' },
+  { value: '1:1', label: '1:1  Square' },
   { value: 'auto-height', label: 'Auto Height' },
   { value: 'auto-width', label: 'Auto Width' },
+  { type: 'separator' as const },
+  { type: 'label' as const, label: 'Landscape' },
+  { value: '1.91:1', label: 'OpenGraph (1220x630)' },
+  { value: '3:2', label: '3:2' },
+  { value: '4:3', label: '4:3' },
+  { value: '5:4', label: '5:4' },
+  { value: '16:9', label: '16:9' },
+  { type: 'separator' as const },
+  { type: 'label' as const, label: 'Portrait' },
+  { value: '2:3', label: '2:3' },
+  { value: '3:4', label: '3:4' },
+  { value: '4:5', label: '4:5' },
+  { value: '9:16', label: '9:16' },
 ];
 
 function centerGuide(img: HTMLImageElement) {
@@ -127,7 +140,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener('paste', handlePaste); // must reference same function
+  window.removeEventListener('paste', handlePaste);
   items.value.forEach((i) => URL.revokeObjectURL(i.url));
 });
 
@@ -187,6 +200,11 @@ function getCropStyle(item: ImgItem) {
     left: `${(item.panX / 100) * (100 - boxW)}%`,
     top: `${(item.panY / 100) * (100 - boxH)}%`,
   };
+}
+
+function remove(item: ImgItem) {
+  URL.revokeObjectURL(item.url);
+  items.value = items.value.filter((i) => i.id !== item.id);
 }
 
 const active = ref<ImgItem | null>(null);
@@ -318,7 +336,7 @@ async function download() {
     a.download = 'resized_images.zip';
     a.click();
     URL.revokeObjectURL(url);
-  } catch (err) {
+  } catch {
     alert('Failed to generate ZIP.');
   } finally {
     busy.value = false;
@@ -404,11 +422,11 @@ async function download() {
       <div class="flex-1 space-y-6">
         <UCard
           v-if="!items.length"
-          class="border-2 border-dashed min-h-100 flex items-center justify-center transition-all"
+          class="border-2 border-dashed min-h-100 flex items-center justify-center transition-all group"
           :class="
             dragging
               ? 'border-primary-500 bg-primary-500/10'
-              : 'border-base-800 bg-base-900/30'
+              : 'border-base-800 bg-base-900/30 hover:border-base-700 hover:bg-base-900/40'
           "
           role="button"
           @dragover.prevent="dragging = true"
@@ -455,10 +473,20 @@ async function download() {
             :ui="{ body: { padding: 'p-0' } }"
           >
             <div
-              class="flex items-center justify-center p-3 border-b border-base-800 bg-base-900/80 text-xs font-medium text-white truncate"
+              class="flex items-center justify-between gap-2 px-3 py-2 border-b border-base-800 bg-base-900/80"
             >
-              {{ item.name }}
+              <span class="text-xs font-medium text-white truncate">{{
+                item.name
+              }}</span>
+              <UButton
+                size="xs"
+                variant="subtle"
+                color="error"
+                icon="i-heroicons-x-mark"
+                @click.stop="remove(item)"
+              />
             </div>
+
             <div
               class="relative w-full bg-base-950 overflow-hidden select-none flex items-center justify-center min-h-50"
             >
