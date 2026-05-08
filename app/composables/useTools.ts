@@ -74,12 +74,12 @@ export const config: Record<string, ToolConfig> = {
   //   icon: 'i-heroicons-document',
   //   title: 'PDF Helper',
   // },
-  // TextTransformer: {
-  //   category: 'Text',
-  //   description:
-  //     'Transform text into every case, Unicode style, and silly format at once.',
-  //   icon: 'i-heroicons-language',
-  // },
+  TextTransformer: {
+    category: 'Text',
+    description:
+      'Transform text into every case, Unicode style, and silly format at once.',
+    icon: 'i-heroicons-language',
+  },
   // CharacterMap: {
   //   category: 'Text',
   //   description: 'Browse and search symbols, emoji, and special characters.',
