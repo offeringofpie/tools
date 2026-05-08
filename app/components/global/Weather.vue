@@ -277,14 +277,15 @@ async function initMap() {
 
   map = L.map(mapEl.value, {
     zoomControl: false,
-    scrollWheelZoom: false,
-    doubleClickZoom: false,
+    scrollWheelZoom: true,
+    doubleClickZoom: true,
+    touchZoom: true,
     maxZoom: 12,
   }).setView([pos.value.lat, pos.value.lon], 7);
 
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
     attribution: '© OpenStreetMap, © CARTO',
-    maxZoom: 7,
+    maxZoom: 12,
   }).addTo(map);
 
   const rv = await $fetch<any>(
@@ -296,8 +297,8 @@ async function initMap() {
       `https://tilecache.rainviewer.com${frame.path}/256/{z}/{x}/{y}/2/1_1.png`,
       {
         opacity: 0.6,
-        maxNativeZoom: 10,
-        maxZoom: 20,
+        maxNativeZoom: 7,
+        maxZoom: 7,
         attribution: '© RainViewer',
       },
     ).addTo(map);
