@@ -140,7 +140,7 @@ const writeCache = (db: IDBDatabase, val: CharData): Promise<void> =>
   });
 
 const fetchData = async (db: IDBDatabase) => {
-  const res = await fetch('/data/character-map.json');
+  const res = await fetch('/tools/data/character-map.json');
   if (!res.ok) throw new Error(`HTTP ${res.status}: Failed to load data`);
   data.value = await res.json();
   await writeCache(db, data.value!).catch(() => {});
