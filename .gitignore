@@ -6,7 +6,6 @@
 .cache
 dist
 output
-scripts
 
 # Node dependencies
 node_modules
@@ -29,3 +28,5 @@ logs
 coverage/
 .vitest/
 .nuxtrc
+# Local Netlify folder
+.netlify

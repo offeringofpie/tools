@@ -80,11 +80,11 @@ export const config: Record<string, ToolConfig> = {
       'Transform text into every case, Unicode style, and silly format at once.',
     icon: 'i-heroicons-language',
   },
-  // CharacterMap: {
-  //   category: 'Text',
-  //   description: 'Browse and search symbols, emoji, and special characters.',
-  //   icon: 'i-heroicons-hashtag',
-  // },
+  CharacterMap: {
+    category: 'Text',
+    description: 'Browse symbols, emojis, and special characters.',
+    icon: 'i-heroicons-hashtag',
+  },
   CronHelper: {
     category: 'Code',
     description: 'Helps setup cronjobs.',
