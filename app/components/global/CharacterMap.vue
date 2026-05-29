@@ -534,7 +534,7 @@ const modalDetails = computed(() => {
       <UModal
         v-if="modalOpen"
         v-model:open="modalOpen"
-        :ui="{ content: 'sm:max-w-2xl' }"
+        :ui="{ content: 'sm:max-w-2xl', overlay: 'backdrop-blur-sm' }"
       >
         <template #content>
           <div

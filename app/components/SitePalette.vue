@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { CommandPaletteGroup } from '@nuxt/ui';
 
-const { groups } = useTools();
+const { groups, categories } = useTools();
 const router = useRouter();
 const open = defineModel<boolean>('open', { default: false });
 
@@ -12,6 +12,7 @@ const commandGroups = computed<CommandPaletteGroup[]>(() =>
     items: tools.map((t) => ({
       label: t.label,
       icon: t.icon,
+      ui: { itemLeadingIcon: `text-${categories[category]?.color}` },
       suffix: t.description,
       to: t.to,
       onSelect() {
@@ -31,7 +32,7 @@ defineShortcuts({
 </script>
 
 <template>
-  <UModal v-model:open="open" :ui="{ content: 'p-0 overflow-hidden' }">
+  <UModal v-model:open="open" :ui="{ content: 'p-0 overflow-hidden', overlay: 'backdrop-blur-sm' }">
     <template #content>
       <UCommandPalette
         placeholder="Search tools…"

@@ -13,6 +13,8 @@ node_modules
 # Logs
 logs
 *.log
+/*.md
+!README.md
 
 # Misc
 .DS_Store

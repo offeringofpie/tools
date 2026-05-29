@@ -125,6 +125,11 @@ export const config: Record<string, ToolConfig> = {
     description: 'Resize images in bulk!',
     icon: 'i-heroicons-photo',
   },
+  IconSearch: {
+    category: 'Design',
+    description: 'Search for the ideal icon.',
+    icon: 'i-heroicons-photo',
+  },
   // ImageFx: {
   //   category: 'Design',
   //   description: 'Add effects to images!',
@@ -161,12 +166,6 @@ export const config: Record<string, ToolConfig> = {
     description: 'Compress and clean up SVG files.',
     icon: 'i-heroicons-arrows-pointing-in',
   },
-  // ThumbsDb: {
-  //   category: 'Other',
-  //   title: 'Thumbs.db Reader',
-  //   description: 'Read and Extract thumbs.db files',
-  //   icon: 'i-heroicons-photo',
-  // },
 };
 
 export function getSlug(file: string) {
