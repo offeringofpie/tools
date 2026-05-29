@@ -128,7 +128,7 @@ export const config: Record<string, ToolConfig> = {
   IconSearch: {
     category: 'Design',
     description: 'Search for the ideal icon.',
-    icon: 'i-heroicons-photo',
+    icon: 'i-lucide-shapes',
   },
   // ImageFx: {
   //   category: 'Design',

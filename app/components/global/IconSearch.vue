@@ -1,22 +1,11 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import {
   refDebounced,
   useBreakpoints,
   breakpointsTailwind,
 } from '@vueuse/core';
 import { useVirtualizer } from '@tanstack/vue-virtual';
-
-import { icons as heroicons } from '@iconify-json/heroicons';
-import { icons as lucide } from '@iconify-json/lucide';
-import { icons as ph } from '@iconify-json/ph';
-import { icons as solar } from '@iconify-json/solar';
-import { icons as fa6Solid } from '@iconify-json/fa6-solid';
-import { icons as fa6Regular } from '@iconify-json/fa6-regular';
-import { icons as fa6Brands } from '@iconify-json/fa6-brands';
-import { icons as carbon } from '@iconify-json/carbon';
-import { icons as simpleIcons } from '@iconify-json/simple-icons';
-import lucideTags from 'lucide-static/tags.json';
 
 interface IconEntry {
   id: string;
@@ -104,33 +93,53 @@ function processSet(
   }));
 }
 
-const allIcons: IconEntry[] = [
-  ...processSet(heroicons, 'heroicons', 'heroicons', heroBaseName),
-  ...processSet(
-    lucide,
-    'lucide',
-    'lucide',
-    (n) => n,
-    lucideTags as Record<string, string[]>,
-  ),
-  ...processSet(ph, 'ph', 'ph', phBaseName, {}, 256, 256),
-  ...processSet(solar, 'solar', 'solar', solarBaseName),
-  ...processSet(fa6Solid, 'fa6', 'fa6-solid', (n) => n, {}, 512, 512),
-  ...processSet(fa6Regular, 'fa6', 'fa6-regular', (n) => n, {}, 512, 512),
-  ...processSet(fa6Brands, 'fa6', 'fa6-brands', (n) => n, {}, 512, 512),
-  ...processSet(carbon, 'carbon', 'carbon', (n) => n, {}, 32, 32),
-  ...processSet(
-    simpleIcons,
-    'simple-icons',
-    'simple-icons',
-    (n) => n,
-    {},
-    24,
-    24,
-  ),
-];
+const allIcons = ref<IconEntry[]>([]);
+const iconsLoaded = ref(false);
 
-const iconById = new Map(allIcons.map((icon) => [icon.id, icon]));
+onMounted(async () => {
+  const [
+    { icons: heroiconsSet },
+    { icons: lucideSet },
+    { icons: phSet },
+    { icons: solarSet },
+    { icons: fa6SolidSet },
+    { icons: fa6RegularSet },
+    { icons: fa6BrandsSet },
+    { icons: carbonSet },
+    { icons: simpleIconsSet },
+    lucideTagsMod,
+  ] = await Promise.all([
+    import('@iconify-json/heroicons'),
+    import('@iconify-json/lucide'),
+    import('@iconify-json/ph'),
+    import('@iconify-json/solar'),
+    import('@iconify-json/fa6-solid'),
+    import('@iconify-json/fa6-regular'),
+    import('@iconify-json/fa6-brands'),
+    import('@iconify-json/carbon'),
+    import('@iconify-json/simple-icons'),
+    import('lucide-static/tags.json'),
+  ]);
+
+  const lucideTags = lucideTagsMod.default as Record<string, string[]>;
+
+  allIcons.value = [
+    ...processSet(heroiconsSet, 'heroicons', 'heroicons', heroBaseName),
+    ...processSet(lucideSet, 'lucide', 'lucide', (n) => n, lucideTags),
+    ...processSet(phSet, 'ph', 'ph', phBaseName, {}, 256, 256),
+    ...processSet(solarSet, 'solar', 'solar', solarBaseName),
+    ...processSet(fa6SolidSet, 'fa6', 'fa6-solid', (n) => n, {}, 512, 512),
+    ...processSet(fa6RegularSet, 'fa6', 'fa6-regular', (n) => n, {}, 512, 512),
+    ...processSet(fa6BrandsSet, 'fa6', 'fa6-brands', (n) => n, {}, 512, 512),
+    ...processSet(carbonSet, 'carbon', 'carbon', (n) => n, {}, 32, 32),
+    ...processSet(simpleIconsSet, 'simple-icons', 'simple-icons', (n) => n),
+  ];
+  iconsLoaded.value = true;
+});
+
+const iconById = computed(
+  () => new Map(allIcons.value.map((icon) => [icon.id, icon])),
+);
 
 const makeSvg = (icon: IconEntry, size?: number) => {
   const sizeAttrs = size ? ` width="${size}" height="${size}"` : '';
@@ -139,15 +148,22 @@ const makeSvg = (icon: IconEntry, size?: number) => {
 
 const iconClass = (icon: IconEntry) => `i-${icon.id.replace(':', '-')}`;
 
-const allLibs = Object.entries(
-  allIcons.reduce<Record<string, number>>((counts, icon) => {
-    counts[icon.lib] = (counts[icon.lib] ?? 0) + 1;
-    return counts;
+const libCounts = computed(() =>
+  allIcons.value.reduce<Record<string, number>>((acc, icon) => {
+    acc[icon.lib] = (acc[icon.lib] ?? 0) + 1;
+    return acc;
   }, {}),
-).map(([key, count]) => ({
-  key,
-  label: `${libLabels[key] ?? key} (${count.toLocaleString()})`,
-}));
+);
+
+const allLibs = computed(() =>
+  Object.entries(libLabels).map(([key, label]) => {
+    const count = libCounts.value[key];
+    return {
+      key,
+      label: count ? `${label} (${count.toLocaleString()})` : label,
+    };
+  }),
+);
 
 const query = ref('');
 const search = refDebounced(query, 150);
@@ -159,11 +175,6 @@ const selectedIcon = ref<IconEntry | null>(null);
 const modalOpen = ref(false);
 
 const hasFilters = computed(() => search.value || filterLibs.value.length);
-
-const reset = () => {
-  query.value = '';
-  filterLibs.value = [];
-};
 
 const openIcon = (icon: IconEntry) => {
   selectedIcon.value = icon;
@@ -191,8 +202,8 @@ const copy = async (text: string, key: string, label: string) => {
 
 const filteredIcons = computed(() => {
   let icons = filterLibs.value.length
-    ? allIcons.filter((icon) => filterLibs.value.includes(icon.lib))
-    : allIcons;
+    ? allIcons.value.filter((icon) => filterLibs.value.includes(icon.lib))
+    : allIcons.value;
 
   const term = search.value.trim().toLowerCase();
   if (term)
@@ -207,9 +218,12 @@ const filteredIcons = computed(() => {
   return icons.slice(0, maxResults);
 });
 
-const featuredIcons = featuredIds
-  .map((id) => iconById.get(id))
-  .filter(Boolean) as IconEntry[];
+const featuredIcons = computed(
+  () =>
+    featuredIds
+      .map((id) => iconById.value.get(id))
+      .filter(Boolean) as IconEntry[],
+);
 
 const breakpoints = useBreakpoints(breakpointsTailwind);
 const cols = computed(() => (breakpoints.greaterOrEqual('lg').value ? 12 : 4));
@@ -319,7 +333,14 @@ const tileClass =
       </UPopover>
     </div>
 
-    <template v-if="!hasFilters">
+    <template v-if="!iconsLoaded">
+      <div class="flex items-center justify-center h-40 gap-3 text-muted">
+        <UIcon name="i-heroicons-arrow-path" class="size-5 animate-spin" />
+        <span>Loading icons…</span>
+      </div>
+    </template>
+
+    <template v-else-if="!hasFilters">
       <div class="grid grid-cols-4 lg:grid-cols-12 gap-2 my-6">
         <UTooltip
           v-for="icon in featuredIcons"
@@ -395,12 +416,15 @@ const tileClass =
     <UModal
       v-model:open="modalOpen"
       :ui="{
-        content: 'sm:max-w-lg p-0 overflow-hidden gap-0 min-h-xl',
+        content: 'sm:max-w-lg p-0 overflow-hidden gap-0 min-h-100',
         overlay: 'backdrop-blur-sm',
       }"
     >
       <template #content>
-        <div v-if="selectedIcon" class="flex flex-col sm:flex-row">
+        <div
+          v-if="selectedIcon"
+          class="flex flex-col sm:flex-row h-full min-h-100"
+        >
           <div
             class="flex flex-col items-center gap-4 p-6 sm:w-44 shrink-0 border-b sm:border-b-0 sm:border-r border-default bg-elevated/50"
           >
@@ -489,6 +513,8 @@ const tileClass =
                 variant="soft"
                 readonly
                 :value="makeSvg(selectedIcon)"
+                class="flex-1"
+                :ui="{ base: 'h-full resize-none' }"
               />
             </div>
           </div>

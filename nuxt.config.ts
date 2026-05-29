@@ -47,14 +47,12 @@ export default defineNuxtConfig({
     '@nuxtjs/robots',
   ],
 
-  devtools: { enabled: true },
+  devtools: { enabled: process.env.NODE_ENV === 'development' },
   vite: {
     optimizeDeps: {
       include: [
         '@tiptap/starter-kit',
         '@tiptap/vue-3',
-        '@vue/devtools-core',
-        '@vue/devtools-kit',
         '@vueuse/core',
         'cronstrue',
         'jszip',
@@ -62,7 +60,6 @@ export default defineNuxtConfig({
         'node-html-parser',
         'svgo/browser',
         'tiptap-markdown',
-        'leaflet',
       ],
     },
   },
