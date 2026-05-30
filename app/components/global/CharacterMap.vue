@@ -607,6 +607,20 @@ const modalDetails = computed(() => {
         </template>
       </UModal>
     </template>
+
+    <div class="flex items-center justify-center gap-1.5 pt-2 flex-wrap">
+      <p class="text-xs text-base-600">
+        Character data from
+        <ULink
+          to="https://unicode.org"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-base-500 hover:text-base-300 underline underline-offset-2 transition-colors"
+        >
+          Unicode Consortium
+        </ULink>
+      </p>
+    </div>
   </div>
 </template>
 

@@ -521,5 +521,73 @@ const tileClass =
         </div>
       </template>
     </UModal>
+
+    <div class="flex items-center justify-center gap-1.5 pt-2 flex-wrap">
+      <p class="text-xs text-base-600">
+        Icons from
+        <ULink
+          to="https://heroicons.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-base-500 hover:text-base-300 underline underline-offset-2 transition-colors"
+        >
+          Heroicons
+        </ULink>
+        ·
+        <ULink
+          to="https://lucide.dev"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-base-500 hover:text-base-300 underline underline-offset-2 transition-colors"
+        >
+          Lucide
+        </ULink>
+        ·
+        <ULink
+          to="https://phosphoricons.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-base-500 hover:text-base-300 underline underline-offset-2 transition-colors"
+        >
+          Phosphor
+        </ULink>
+        ·
+        <ULink
+          to="https://solar-icons.vercel.app/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-base-500 hover:text-base-300 underline underline-offset-2 transition-colors"
+        >
+          Solar
+        </ULink>
+        ·
+        <ULink
+          to="https://fontawesome.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-base-500 hover:text-base-300 underline underline-offset-2 transition-colors"
+        >
+          Font Awesome
+        </ULink>
+        ·
+        <ULink
+          to="https://carbondesignsystem.com/elements/icons/library/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-base-500 hover:text-base-300 underline underline-offset-2 transition-colors"
+        >
+          Carbon
+        </ULink>
+        ·
+        <ULink
+          to="https://simpleicons.org"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-base-500 hover:text-base-300 underline underline-offset-2 transition-colors"
+        >
+          Simple Icons
+        </ULink>
+      </p>
+    </div>
   </div>
 </template>
