@@ -188,6 +188,17 @@ const toggleLib = (key: string) => {
     : [...filterLibs.value, key];
 };
 
+const downloadSvg = (icon: IconEntry) => {
+  const svg = makeSvg(icon);
+  const blob = new Blob([svg], { type: 'image/svg+xml' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${icon.id.replace(':', '-')}.svg`;
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
 const copy = async (text: string, key: string, label: string) => {
   try {
     await navigator.clipboard.writeText(text);
@@ -444,43 +455,43 @@ const tileClass =
                 {{ libLabels[selectedIcon.lib] ?? selectedIcon.lib }}
               </p>
             </div>
+            <div class="flex flex-col gap-2 w-full">
+              <UButton
+                :icon="
+                  copied === `cls:${selectedIcon.id}`
+                    ? 'i-heroicons-check'
+                    : 'i-heroicons-document-duplicate'
+                "
+                :color="
+                  copied === `cls:${selectedIcon.id}` ? 'success' : 'neutral'
+                "
+                variant="soft"
+                class="w-full justify-center"
+                :aria-label="`Copy CSS class for ${selectedIcon.name}`"
+                @click="
+                  copy(
+                    iconClass(selectedIcon),
+                    `cls:${selectedIcon.id}`,
+                    `class for ${selectedIcon.name}`,
+                  )
+                "
+              >
+                {{ copied === `cls:${selectedIcon.id}` ? '' : 'Copy class' }}
+              </UButton>
+              <UButton
+                icon="i-heroicons-arrow-down-tray"
+                color="neutral"
+                variant="soft"
+                class="w-full justify-center"
+                :aria-label="`Download SVG for ${selectedIcon.name}`"
+                @click="downloadSvg(selectedIcon)"
+              >
+                Download
+              </UButton>
+            </div>
           </div>
 
           <div class="flex-1 flex flex-col divide-y divide-default min-w-0">
-            <div class="p-4 flex flex-col gap-1.5">
-              <span
-                class="text-xs font-medium uppercase tracking-widest text-muted"
-                >CSS Class</span
-              >
-              <div class="flex items-center gap-2">
-                <code
-                  class="font-mono text-sm flex-1 min-w-0 truncate text-default"
-                  >{{ iconClass(selectedIcon) }}</code
-                >
-                <UButton
-                  :icon="
-                    copied === `cls:${selectedIcon.id}`
-                      ? 'i-heroicons-check'
-                      : 'i-heroicons-document-duplicate'
-                  "
-                  :color="
-                    copied === `cls:${selectedIcon.id}` ? 'success' : 'neutral'
-                  "
-                  variant="ghost"
-                  size="xs"
-                  :padded="false"
-                  :aria-label="`Copy CSS class for ${selectedIcon.name}`"
-                  @click="
-                    copy(
-                      iconClass(selectedIcon),
-                      `cls:${selectedIcon.id}`,
-                      `class for ${selectedIcon.name}`,
-                    )
-                  "
-                />
-              </div>
-            </div>
-
             <div class="p-4 flex flex-col gap-1.5 flex-1">
               <div class="flex items-center justify-between">
                 <span
