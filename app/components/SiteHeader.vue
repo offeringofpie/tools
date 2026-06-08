@@ -21,28 +21,39 @@
       >
         <ULink
           raw
-          to="https://jlopes.eu"
-          class="text-primary hover:text-secondary transition-colors border-0 border-b-2 border-transparent hover:border-secondary"
-          >Home</ULink
+          to="https://jlopes.eu/"
+          class="text-primary transition-colors border-0 border-b-2 border-transparent hover:border-primary"
         >
+          Home
+        </ULink>
         <ULink
           raw
-          to="https://jlopes.eu/about"
+          to="https://jlopes.eu/about/"
           class="text-secondary hover:text-secondary transition-colors border-0 border-b-2 border-transparent hover:border-secondary"
-          >About</ULink
         >
+          About
+        </ULink>
         <ULink
           raw
-          to="https://jlopes.eu/blog"
-          class="text-success hover:text-secondary transition-colors border-0 border-b-2 border-transparent hover:border-secondary"
-          >Blog</ULink
+          to="https://jlopes.eu/work/"
+          class="text-warning transition-colors border-0 border-b-2 border-transparent hover:border-warning"
         >
+          Work
+        </ULink>
         <ULink
           raw
-          to="https://jlopes.eu/tools"
-          class="text-warning transition-colors border-0 border-b-2 border-warning hover:border-warning"
-          >Tools</ULink
+          to="https://jlopes.eu/blog/"
+          class="text-success transition-colors border-0 border-b-2 border-transparent hover:border-success"
         >
+          Blog
+        </ULink>
+        <ULink
+          raw
+          to="https://jlopes.eu/tools/"
+          class="text-error transition-colors border-0 border-b-2 border-error"
+        >
+          Tools
+        </ULink>
       </nav>
     </div>
   </header>
