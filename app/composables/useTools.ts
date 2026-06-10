@@ -41,6 +41,12 @@ export const config: Record<string, ToolConfig> = {
     icon: 'i-heroicons-map-pin',
     title: 'What is my IP?',
   },
+  // DecisionRoulette: {
+  //   category: 'General',
+  //   description: 'Spin a wheel to make random decisions.',
+  //   icon: 'i-heroicons-arrow-path',
+  //   title: 'Decision Roulette',
+  // },
   Weather: {
     category: 'General',
     description: 'Weather forecast with map.',
@@ -90,15 +96,31 @@ export const config: Record<string, ToolConfig> = {
     description: 'Helps setup cronjobs.',
     icon: 'i-heroicons-clock',
   },
-  RegexHelper: {
+  FlexboxGenerator: {
     category: 'Code',
-    description: 'Write and debug regular expressions.',
-    icon: 'i-heroicons-funnel',
+    description: 'Learn and build Flexbox CSS.',
+    icon: 'i-heroicons-squares-2x2',
+  },
+  NthChild: {
+    category: 'Code',
+    description: 'Define nth-child patterns',
+    icon: 'i-heroicons-squares-plus',
+    title: ':nth-child Helper',
+  },
+  IconSearch: {
+    category: 'Code',
+    description: 'Search for the ideal icon.',
+    icon: 'i-lucide-shapes',
   },
   MinifyBeautify: {
     category: 'Code',
     description: 'Minify and format HTML, CSS, JS, and SVG files.',
     icon: 'i-heroicons-code-bracket',
+  },
+  RegexHelper: {
+    category: 'Code',
+    description: 'Write and debug regular expressions.',
+    icon: 'i-heroicons-funnel',
   },
   // DataConverter: {
   //   category: 'Code',
@@ -125,11 +147,6 @@ export const config: Record<string, ToolConfig> = {
     description: 'Resize images in bulk!',
     icon: 'i-heroicons-photo',
   },
-  IconSearch: {
-    category: 'Design',
-    description: 'Search for the ideal icon.',
-    icon: 'i-lucide-shapes',
-  },
   // ImageFx: {
   //   category: 'Design',
   //   description: 'Add effects to images!',
@@ -140,17 +157,7 @@ export const config: Record<string, ToolConfig> = {
   //   description: 'Build and preview layered CSS box shadows.',
   //   icon: 'i-heroicons-squares-2x2',
   // },
-  FlexboxGenerator: {
-    category: 'Design',
-    description: 'Learn and build Flexbox CSS.',
-    icon: 'i-heroicons-squares-2x2',
-  },
-  NthChild: {
-    category: 'Design',
-    description: 'Define nth-child patterns',
-    icon: 'i-heroicons-squares-plus',
-    title: ':nth-child Helper',
-  },
+
   // GridGenerator: {
   //   category: 'Design',
   //   description: 'Helps create Grid layouts',
@@ -161,6 +168,13 @@ export const config: Record<string, ToolConfig> = {
     description: 'Generates colour palettes.',
     icon: 'i-heroicons-swatch',
   },
+  // PaperSizes: {
+  //   category: 'Design',
+  //   description:
+  //     'Reference for A, B, C, and US paper sizes with unit conversion.',
+  //   icon: 'i-heroicons-document',
+  //   title: 'Paper Sizes',
+  // },
   SvgOptimizer: {
     category: 'Design',
     description: 'Compress and clean up SVG files.',
