@@ -32,7 +32,7 @@ export default defineNuxtConfig({
     baseURL: '/tools/',
   },
   site: {
-    url: 'https://jlopes.eu/tools',
+    url: 'https://jlopes.eu',
     name: 'JL Tools',
   },
 
@@ -77,6 +77,7 @@ export default defineNuxtConfig({
       '/image-resizer',
       '/colour-palette',
       '/svg-optimizer',
+      '/decision-roulette',
     ],
   },
 
