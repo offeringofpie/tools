@@ -38,7 +38,7 @@ onMounted(fetchIp);
   <div class="space-y-6">
     <div class="flex items-start justify-between gap-4 flex-wrap">
       <div>
-        <h1 class="text-2xl md:text-3xl font-bold text-white mb-1">My IP</h1>
+        <h1 class="text-2xl md:text-3xl font-bold text-white mb-2">My IP</h1>
         <p class="text-base-400">Your public IP and network info.</p>
       </div>
       <UButton

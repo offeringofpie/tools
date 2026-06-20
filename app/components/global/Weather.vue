@@ -345,6 +345,10 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="max-w-6xl mx-auto space-y-4">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-bold text-white mb-2">Weather</h1>
+      <p class="text-base-400">Weather forecast with map.</p>
+    </div>
     <div class="flex items-center gap-2">
       <UButton
         icon="i-heroicons-map-pin"
