@@ -4,7 +4,7 @@ import type { NavigationMenuItem } from '#ui/types';
 
 const { groups, registry, categories } = useTools();
 const breakpoints = useBreakpoints(breakpointsTailwind);
-const isDesktop = breakpoints.greaterOrEqual('md');
+const isDesktop = breakpoints.greaterOrEqual('lg');
 
 const open = ref(false);
 const route = useRoute();
@@ -15,7 +15,7 @@ onMounted(() => {
 });
 
 watch(route, () => {
-  if (isDesktop.value) open.value = true;
+  open.value = isDesktop.value;
 });
 
 watch(isDesktop, (desktop) => {
@@ -61,10 +61,18 @@ const home: NavigationMenuItem = {
 
 <template>
   <div class="flex flex-col h-screen w-full bg-bg text-base-50">
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:absolute focus:z-100 focus:top-2 focus:left-2 focus:px-4 focus:py-2 focus:bg-bg focus:text-base-50 focus:rounded focus:ring-2 focus:ring-primary"
+    >
+      Skip to content
+    </a>
+
     <SiteHeader />
 
     <div class="flex flex-1 overflow-hidden w-full bg-bg text-base-50">
       <USidebar
+        id="tool-sidebar"
         v-model:open="open"
         collapsible="offcanvas"
         side="left"
@@ -87,7 +95,7 @@ const home: NavigationMenuItem = {
                 @click="open = false"
               />
             </div>
-            <div class="px-2 pb-2 hidden md:block">
+            <div class="px-2 pb-2">
               <UButton
                 color="neutral"
                 variant="subtle"
@@ -97,7 +105,7 @@ const home: NavigationMenuItem = {
                 @click="paletteOpen = true"
               >
                 <span class="flex-1 text-left">Search tools…</span>
-                <UKbd value="⌘K" size="sm" class="hidden lg:flex" />
+                <UKbd value="?" size="sm" class="hidden lg:flex" />
               </UButton>
             </div>
           </div>
@@ -109,6 +117,7 @@ const home: NavigationMenuItem = {
           <UNavigationMenu
             :items="[home]"
             orientation="vertical"
+            aria-label="Home"
             :ui="{ link: 'p-1.5 overflow-hidden' }"
           />
 
@@ -140,7 +149,7 @@ const home: NavigationMenuItem = {
 
       <div class="flex-1 flex flex-col overflow-hidden bg-bg">
         <div
-          class="h-16 shrink-0 flex items-center gap-3 px-2 bg-bg border-b border-base-800"
+          class="h-16 shrink-0 flex items-center gap-3 px-4 bg-bg border-b border-base-800"
         >
           <UButton
             icon="i-heroicons-bars-3"
@@ -148,9 +157,20 @@ const home: NavigationMenuItem = {
             variant="ghost"
             :aria-label="open ? 'Close sidebar' : 'Open sidebar'"
             :aria-expanded="open"
+            aria-controls="tool-sidebar"
             class="lg:hidden"
             @click="open = !open"
           />
+
+          <ULink
+            to="https://jlopes.eu"
+            aria-label="Go to jlopes.eu"
+            class="md:hidden shrink-0"
+          >
+            <SiteLogo
+              class="size-11 text-primary hover:text-secondary transition-colors"
+            />
+          </ULink>
 
           <span
             v-if="route.path !== '/'"
@@ -159,24 +179,25 @@ const home: NavigationMenuItem = {
             {{ title }}
           </span>
 
-          <UTooltip :text="`View ${title} code in GitHub`" class="ml-auto">
-            <UBanner
+          <UTooltip :text="`View ${title} source on GitHub`" class="ml-auto">
+            <UButton
               v-if="route.path !== '/'"
-              :title="title"
-              icon="i-lucide-github"
               :to="repo"
               target="_blank"
-              class="bg-transparent! border-none shadow-none hover:opacity-80 transition-opacity"
-              :ui="{
-                title: '!text-primary-500 font-semibold',
-                icon: '!text-primary-500',
-              }"
-              aria-label="View source code on Github"
+              color="primary"
+              variant="ghost"
+              size="sm"
+              :label="`${title} on GitHub`"
+              icon="i-lucide-github"
+              :aria-label="`View ${title} source on GitHub`"
             />
           </UTooltip>
         </div>
 
-        <main class="flex-1 p-4 md:p-8 overflow-y-auto custom-scrollbar">
+        <main
+          id="main-content"
+          class="flex-1 p-4 md:p-8 overflow-y-auto custom-scrollbar"
+        >
           <div class="max-w-6xl mx-auto">
             <slot />
           </div>
