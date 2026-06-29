@@ -2,6 +2,7 @@
 import { ref, onBeforeUnmount } from 'vue';
 import { useEditor, EditorContent } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit';
+import Image from '@tiptap/extension-image';
 import { Markdown } from 'tiptap-markdown';
 import { marked } from 'marked';
 
@@ -11,7 +12,7 @@ const inline = /(\*\*|__|`|~~).+?\1/;
 const copied = ref<'none' | 'md' | 'rich'>('none');
 
 const editor = useEditor({
-  extensions: [StarterKit, Markdown],
+  extensions: [StarterKit, Image, Markdown],
   content: `# Hello World!
 
 This is a simple markdown editor
@@ -27,6 +28,21 @@ This is a simple markdown editor
       'aria-label': 'Markdown editor content',
     },
     handlePaste(_view, event) {
+      const files = event.clipboardData?.files;
+      if (files?.length) {
+        const image = Array.from(files).find((f) => f.type.startsWith('image/'));
+        if (image) {
+          event.preventDefault();
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const src = e.target?.result as string;
+            editor.value?.chain().focus().setImage({ src }).run();
+          };
+          reader.readAsDataURL(image);
+          return true;
+        }
+      }
+
       const text = event.clipboardData?.getData('text/plain');
       if (!text) return false;
 
