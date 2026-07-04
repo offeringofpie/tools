@@ -56,85 +56,20 @@ const featuredIds = [
   'lucide:sun',
 ];
 
-const stripSuffix = (name: string, suffixes: string[]) => {
-  for (const suffix of suffixes)
-    if (name.endsWith(`-${suffix}`)) return name.slice(0, -(suffix.length + 1));
-  return name;
-};
-
-const heroBaseName = (name: string) =>
-  stripSuffix(name, ['16-solid', '20-solid', 'solid']);
-const phBaseName = (name: string) =>
-  stripSuffix(name, ['bold', 'duotone', 'fill', 'light', 'thin']);
-const solarBaseName = (name: string) =>
-  stripSuffix(name, ['linear', 'outline', 'bold', 'broken', 'duotone']);
-
-type RawIconSet = {
-  icons: Record<string, { body: string; width?: number; height?: number }>;
-};
-
-function processSet(
-  set: RawIconSet,
-  lib: string,
-  prefix: string,
-  baseName: (name: string) => string,
-  tags: Record<string, string[]> = {},
-  defaultW = 24,
-  defaultH = 24,
-): IconEntry[] {
-  return Object.entries(set.icons).map(([name, icon]) => ({
-    id: `${prefix}:${name}`,
-    name: baseName(name),
-    lib,
-    tags: tags[name] ?? [],
-    body: icon.body,
-    w: icon.width ?? defaultW,
-    h: icon.height ?? defaultH,
-  }));
-}
-
 const allIcons = ref<IconEntry[]>([]);
 const iconsLoaded = ref(false);
+const loadError = ref(false);
 
 onMounted(async () => {
-  const [
-    { icons: heroiconsSet },
-    { icons: lucideSet },
-    { icons: phSet },
-    { icons: solarSet },
-    { icons: fa6SolidSet },
-    { icons: fa6RegularSet },
-    { icons: fa6BrandsSet },
-    { icons: carbonSet },
-    { icons: simpleIconsSet },
-    lucideTagsMod,
-  ] = await Promise.all([
-    import('@iconify-json/heroicons'),
-    import('@iconify-json/lucide'),
-    import('@iconify-json/ph'),
-    import('@iconify-json/solar'),
-    import('@iconify-json/fa6-solid'),
-    import('@iconify-json/fa6-regular'),
-    import('@iconify-json/fa6-brands'),
-    import('@iconify-json/carbon'),
-    import('@iconify-json/simple-icons'),
-    import('lucide-static/tags.json'),
-  ]);
-
-  const lucideTags = lucideTagsMod.default as Record<string, string[]>;
-
-  allIcons.value = [
-    ...processSet(heroiconsSet, 'heroicons', 'heroicons', heroBaseName),
-    ...processSet(lucideSet, 'lucide', 'lucide', (n) => n, lucideTags),
-    ...processSet(phSet, 'ph', 'ph', phBaseName, {}, 256, 256),
-    ...processSet(solarSet, 'solar', 'solar', solarBaseName),
-    ...processSet(fa6SolidSet, 'fa6', 'fa6-solid', (n) => n, {}, 512, 512),
-    ...processSet(fa6RegularSet, 'fa6', 'fa6-regular', (n) => n, {}, 512, 512),
-    ...processSet(fa6BrandsSet, 'fa6', 'fa6-brands', (n) => n, {}, 512, 512),
-    ...processSet(carbonSet, 'carbon', 'carbon', (n) => n, {}, 32, 32),
-    ...processSet(simpleIconsSet, 'simple-icons', 'simple-icons', (n) => n),
-  ];
-  iconsLoaded.value = true;
+  try {
+    const res = await fetch('/tools/data/icon-search.json');
+    if (!res.ok) throw new Error(res.statusText);
+    const data = (await res.json()) as { icons: IconEntry[] };
+    allIcons.value = data.icons;
+    iconsLoaded.value = true;
+  } catch {
+    loadError.value = true;
+  }
 });
 
 const iconById = computed(

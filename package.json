@@ -8,7 +8,10 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "test": "vitest"
+    "test": "vitest",
+    "lib": "pnpm lib:unicode && pnpm lib:icons",
+    "lib:unicode": "node scripts/unicode.mjs",
+    "lib:icons": "node scripts/icons.mjs"
   },
   "dependencies": {
     "@iconify-json/carbon": "^1.2.21",
@@ -21,7 +24,6 @@
     "@iconify-json/solar": "^1.2.5",
     "@nuxt/a11y": "1.0.0-alpha.1",
     "@nuxt/eslint": "^1.15.2",
-    "@nuxt/image": "^2.0.0",
     "@nuxt/scripts": "^0.13.4",
     "@nuxt/ui": "^4.7.1",
     "@nuxtjs/robots": "^6.0.8",
@@ -32,7 +34,6 @@
     "@tiptap/starter-kit": "^3.22.5",
     "@tiptap/vue-3": "^3.22.5",
     "cronstrue": "^3.14.0",
-    "docx": "^9.6.1",
     "jszip": "^3.10.1",
     "leaflet": "^1.9.4",
     "lucide-static": "^1.16.0",

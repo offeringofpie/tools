@@ -37,11 +37,16 @@ export default defineNuxtConfig({
   },
 
   experimental: { viewTransition: true },
+  sourcemap: { server: false },
+  icon: {
+    serverBundle: {
+      collections: ['heroicons', 'lucide'],
+    },
+  },
   modules: [
     '@nuxt/a11y',
     '@nuxt/eslint',
     '@nuxt/scripts',
-    '@nuxt/image',
     '@nuxt/ui',
     '@nuxtjs/sitemap',
     '@nuxtjs/robots',
