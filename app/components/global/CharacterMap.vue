@@ -139,8 +139,10 @@ const writeCache = (db: IDBDatabase, val: CharData): Promise<void> =>
     req.onerror = () => reject(req.error);
   });
 
+const dataUrl = `${useRuntimeConfig().app.baseURL}data/character-map.json`;
+
 const fetchData = async (db: IDBDatabase) => {
-  const res = await fetch('/tools/data/character-map.json');
+  const res = await fetch(dataUrl);
   if (!res.ok) throw new Error(`HTTP ${res.status}: Failed to load data`);
   data.value = await res.json();
   await writeCache(db, data.value!).catch(() => {});
@@ -152,7 +154,7 @@ if (import.meta.client) {
       {
         rel: 'preload',
         as: 'fetch',
-        href: '/data/character-map.json',
+        href: dataUrl,
         crossorigin: 'anonymous',
       },
     ],

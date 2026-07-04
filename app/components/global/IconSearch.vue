@@ -60,9 +60,11 @@ const allIcons = ref<IconEntry[]>([]);
 const iconsLoaded = ref(false);
 const loadError = ref(false);
 
+const dataUrl = `${useRuntimeConfig().app.baseURL}data/icon-search.json`;
+
 onMounted(async () => {
   try {
-    const res = await fetch('/tools/data/icon-search.json');
+    const res = await fetch(dataUrl);
     if (!res.ok) throw new Error(res.statusText);
     const data = (await res.json()) as { icons: IconEntry[] };
     allIcons.value = data.icons;
