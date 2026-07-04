@@ -45,8 +45,8 @@
 
   --color-success-500: hsl(158, 53%, 56%);
   --color-warning-500: hsl(44, 100%, 61%);
-  --color-error-500: hsl(11, 82%, 43%);
-  --color-info-500: hsl(180, 100%, 20%);
+  --color-error-500: hsl(11, 84%, 55%);
+  --color-info-500: hsl(205, 90%, 62%);
 }
 
 :root {

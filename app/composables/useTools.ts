@@ -3,6 +3,7 @@ import type { NavigationMenuItem } from '@nuxt/ui';
 export interface ToolItem extends NavigationMenuItem {
   id: string;
   description: string;
+  category: string;
 }
 
 export interface ToolConfig {
