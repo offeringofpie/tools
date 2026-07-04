@@ -26,8 +26,6 @@ const commandGroups = computed<CommandPaletteGroup[]>(() =>
 defineShortcuts({
   meta_k: () => (open.value = !open.value),
   ctrl_k: () => (open.value = !open.value),
-  '?': () => (open.value = !open.value),
-  ',': () => (open.value = !open.value),
 });
 </script>
 

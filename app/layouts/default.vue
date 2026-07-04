@@ -1,32 +1,40 @@
 <script setup lang="ts">
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
-import type { NavigationMenuItem } from '#ui/types';
+import type { BreadcrumbItem, NavigationMenuItem } from '#ui/types';
 
-const { groups, registry, categories } = useTools();
+const { groups, registry, colours } = useTools();
 const breakpoints = useBreakpoints(breakpointsTailwind);
 const isDesktop = breakpoints.greaterOrEqual('lg');
+const config = useRuntimeConfig();
 
-const open = ref(false);
+const open = ref(true);
 const route = useRoute();
 const paletteOpen = ref(false);
+const main = ref<HTMLElement | null>(null);
 
-onMounted(() => {
-  if (isDesktop.value) open.value = true;
-});
-
-watch(route, () => {
-  open.value = isDesktop.value;
-});
-
-watch(isDesktop, (desktop) => {
-  open.value = desktop;
-});
+watch(
+  () => route.path,
+  () => {
+    if (!isDesktop.value) open.value = false;
+    if (main.value) main.value.scrollTop = 0;
+  },
+);
 
 const tool = computed(() => registry[route.path]);
 
 const title = computed(() => {
   if (route.path === '/') return 'Home';
   return tool.value?.label ?? 'Not Found';
+});
+
+const breadcrumb = computed<BreadcrumbItem[]>(() => {
+  if (!tool.value) return [];
+  const items: BreadcrumbItem[] = [
+    { label: 'Tools', to: '/', icon: 'i-heroicons-home' },
+  ];
+  if (tool.value.category) items.push({ label: tool.value.category });
+  items.push({ label: tool.value.label });
+  return items;
 });
 
 const repo = computed(() => {
@@ -36,21 +44,43 @@ const repo = computed(() => {
     : base;
 });
 
+const siteUrl = computed(() => config.public.siteUrl.replace(/\/$/, ''));
+
+const ogImage = computed(
+  () => `https://jlopes.eu/og/tools/${route.path.slice(1)}.jpg`,
+);
+
 useSeoMeta({
-  title: () => (tool.value ? `${tool.value.label} — JL Tools` : 'JL Tools'),
-  ogTitle: () => tool.value?.label,
+  title: () => tool.value?.label,
+  ogTitle: () => (tool.value ? `${tool.value.label} - JL Tools` : undefined),
   description: () => tool.value?.description,
   ogDescription: () => tool.value?.description,
-  ogImage: () =>
-    tool.value
-      ? `https://jlopes.eu/og/tools/${route.path.slice(1)}.jpg`
-      : undefined,
+  ogImage: () => (tool.value ? ogImage.value : undefined),
   twitterCard: 'summary_large_image',
-  twitterImage: () =>
-    tool.value
-      ? `https://jlopes.eu/og/tools/${route.path.slice(1)}.jpg`
-      : undefined,
+  twitterImage: () => (tool.value ? ogImage.value : undefined),
 });
+
+useHead(
+  computed(() => ({
+    script: tool.value
+      ? [
+          {
+            type: 'application/ld+json',
+            innerHTML: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'SoftwareApplication',
+              name: tool.value.label,
+              description: tool.value.description,
+              applicationCategory: 'UtilitiesApplication',
+              operatingSystem: 'Web',
+              url: `${siteUrl.value}${route.path}`,
+              offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+            }),
+          },
+        ]
+      : [],
+  })),
+);
 
 const home: NavigationMenuItem = {
   label: 'Hello',
@@ -78,7 +108,6 @@ const home: NavigationMenuItem = {
         side="left"
         class="lg:shrink-0"
         :ui="{
-          wrapper: 'lg:static',
           container:
             'lg:relative lg:inset-auto lg:translate-x-0 lg:h-full border-r border-base-800 bg-bg',
         }"
@@ -100,12 +129,15 @@ const home: NavigationMenuItem = {
                 color="neutral"
                 variant="subtle"
                 icon="i-heroicons-magnifying-glass"
-                class="w-full justify-start font-normal text-base-500"
+                class="w-full justify-start font-normal text-base-400"
                 aria-label="Search tools"
                 @click="paletteOpen = true"
               >
                 <span class="flex-1 text-left">Search tools…</span>
-                <UKbd value="?" size="sm" class="hidden lg:flex" />
+                <span class="hidden lg:flex items-center gap-0.5">
+                  <UKbd value="meta" size="sm" />
+                  <UKbd value="k" size="sm" />
+                </span>
               </UButton>
             </div>
           </div>
@@ -128,7 +160,10 @@ const home: NavigationMenuItem = {
           >
             <USeparator class="my-2 border-base-800" />
             <h3
-              :class="`px-2 text-xs font-semibold text-${categories[category]?.color} uppercase tracking-wider`"
+              :class="[
+                'px-2 text-xs font-semibold uppercase tracking-wider',
+                colours(category).text,
+              ]"
             >
               {{ category }}
             </h3>
@@ -138,9 +173,9 @@ const home: NavigationMenuItem = {
               orientation="vertical"
               :aria-label="`${category} tools`"
               :ui="{
-                link: `p-1.5 overflow-hidden`,
-                linkLeadingIcon: `text-${categories[category]?.color} opacity-60 group-data-[active]:opacity-100 group-data-[active]:text-primary`,
-                linkLabel: `group-data-[active]:text-${categories[category]?.color}`,
+                link: 'p-1.5 overflow-hidden',
+                linkLeadingIcon: `${colours(category).text} opacity-60 group-data-[active]:opacity-100 group-data-[active]:text-primary`,
+                linkLabel: colours(category).activeText,
               }"
             />
           </div>
@@ -179,6 +214,12 @@ const home: NavigationMenuItem = {
             {{ title }}
           </span>
 
+          <UBreadcrumb
+            v-if="breadcrumb.length"
+            :items="breadcrumb"
+            class="hidden lg:flex min-w-0"
+          />
+
           <UTooltip :text="`View ${title} source on GitHub`" class="ml-auto">
             <UButton
               v-if="route.path !== '/'"
@@ -187,15 +228,17 @@ const home: NavigationMenuItem = {
               color="primary"
               variant="ghost"
               size="sm"
-              :label="`${title} on GitHub`"
               icon="i-lucide-github"
               :aria-label="`View ${title} source on GitHub`"
-            />
+            >
+              <span class="hidden lg:inline">Source</span>
+            </UButton>
           </UTooltip>
         </div>
 
         <main
           id="main-content"
+          ref="main"
           class="flex-1 p-4 md:p-8 overflow-y-auto custom-scrollbar"
         >
           <div class="max-w-6xl mx-auto">

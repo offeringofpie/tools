@@ -1,6 +1,10 @@
 <script setup lang="ts">
 const route = useRoute();
 const config = useRuntimeConfig();
+const siteUrl = config.public.siteUrl.replace(/\/$/, '');
+const description =
+  'A collection of useful open-source utilities, designed to make daily tasks a little bit easier.';
+
 useHead({
   htmlAttrs: {
     lang: 'en',
@@ -9,7 +13,10 @@ useHead({
     return titleChunk ? `${titleChunk} - J Lopes` : 'J Lopes';
   },
   link: [
-    { rel: 'canonical', href: () => `${config.public.siteUrl}${route.path}` },
+    {
+      rel: 'canonical',
+      href: () => (route.path === '/' ? siteUrl : `${siteUrl}${route.path}`),
+    },
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
     { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
     {
@@ -19,17 +26,27 @@ useHead({
       onload: "this.media='all'",
     },
   ],
+  script: [
+    {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: 'JL Tools',
+        url: siteUrl,
+        description,
+      }),
+    },
+  ],
 });
 
 useSeoMeta({
-  description:
-    'A collection of useful open-source utilities, designed to make daily tasks a little bit easier.',
+  description,
   ogType: 'website',
   ogSiteName: 'J Lopes',
   ogTitle: 'J Lopes',
-  ogDescription:
-    'A collection of useful open-source utilities, designed to make daily tasks a little bit easier.',
-  ogImage: `${config.public.siteUrl}/img/jl-facebook.jpg`,
+  ogDescription: description,
+  ogImage: `${siteUrl}/img/jl-facebook.jpg`,
   twitterCard: 'summary_large_image',
 });
 </script>

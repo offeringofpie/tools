@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { groups, categories } = useTools();
+const { groups, colours } = useTools();
 const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
 const byPath = Object.fromEntries(
@@ -154,7 +154,10 @@ const toolsFor = (value: string) => {
       class="space-y-4"
     >
       <h2
-        :class="`text font-semibold uppercase tracking-widest text-${categories[category]?.color}`"
+        :class="[
+          'text font-semibold uppercase tracking-widest',
+          colours(category).text,
+        ]"
       >
         {{ category }}
       </h2>
@@ -172,10 +175,10 @@ const toolsFor = (value: string) => {
             root: [
               'group p-4 rounded-lg ring ring-default bg-base-800 hover:bg-base-700',
               'transition-all duration-200 hover:shadow-lg',
-              `hover:ring-${categories[category]?.color}`,
+              colours(category).hoverRing,
             ],
-            leadingIcon: `transition-transform duration-200 group-hover:scale-110 text-${categories[category]?.color}`,
-            title: `transition-colors group-hover:text-primary group-hover:text-${categories[category]?.color} text-${categories[category]?.color}`,
+            leadingIcon: `transition-transform duration-200 group-hover:scale-110 ${colours(category).text}`,
+            title: `transition-colors ${colours(category).groupHoverText} ${colours(category).text}`,
           }"
         />
       </UPageGrid>

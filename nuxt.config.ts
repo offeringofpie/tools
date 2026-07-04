@@ -22,7 +22,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     owmKey: process.env.OWM_KEY,
     public: {
-      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://jlopes.eu/tools/',
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://jlopes.eu/tools',
       // owmKey: process.env.OWM_KEY,
     },
   },
@@ -70,28 +70,13 @@ export default defineNuxtConfig({
   },
 
   sitemap: {
-    urls: [
-      '/character-map',
-      '/colour-palette',
-      '/cron-helper',
-      '/decision-roulette',
-      '/flexbox-generator',
-      '/icon-search',
-      '/image-resizer',
-      '/lorem-ipsum',
-      '/markdown-editor',
-      '/minify-beautify',
-      '/nth-child',
-      '/regex-helper',
-      '/svg-optimizer',
-      '/text-transformer',
-      '/time-converter',
-      '/unit-converter',
-      '/url-inspector',
-      '/utm-builder',
-      '/weather',
-      '/what-is-my-ip',
-    ],
+    sources: ['/api/__sitemap__/urls'],
+    excludeAppSources: true,
+  },
+
+  // Served under /tools/; the parent site owns the domain-root robots.txt.
+  robots: {
+    robotsTxt: false,
   },
 
   scripts: {

@@ -25,8 +25,65 @@ export const categories: Record<string, CategoryConfig> = {
   Design: { color: 'success', icon: 'i-heroicons-swatch' },
   Web: { color: 'info', icon: 'i-heroicons-globe-alt' },
   Math: { color: 'error', icon: 'i-heroicons-calculator' },
-  Other: { color: 'base-500', icon: 'i-heroicons-swatch' },
+  Other: { color: 'base-300', icon: 'i-heroicons-swatch' },
 };
+
+interface ColorClass {
+  text: string;
+  hoverRing: string;
+  groupHoverText: string;
+  activeText: string;
+}
+
+// Literal class strings so Tailwind can see them; never interpolate `text-${color}`.
+export const colorClasses: Record<string, ColorClass> = {
+  primary: {
+    text: 'text-primary',
+    hoverRing: 'hover:ring-primary',
+    groupHoverText: 'group-hover:text-primary',
+    activeText: 'group-data-[active]:text-primary',
+  },
+  secondary: {
+    text: 'text-secondary',
+    hoverRing: 'hover:ring-secondary',
+    groupHoverText: 'group-hover:text-secondary',
+    activeText: 'group-data-[active]:text-secondary',
+  },
+  success: {
+    text: 'text-success',
+    hoverRing: 'hover:ring-success',
+    groupHoverText: 'group-hover:text-success',
+    activeText: 'group-data-[active]:text-success',
+  },
+  info: {
+    text: 'text-info',
+    hoverRing: 'hover:ring-info',
+    groupHoverText: 'group-hover:text-info',
+    activeText: 'group-data-[active]:text-info',
+  },
+  warning: {
+    text: 'text-warning',
+    hoverRing: 'hover:ring-warning',
+    groupHoverText: 'group-hover:text-warning',
+    activeText: 'group-data-[active]:text-warning',
+  },
+  error: {
+    text: 'text-error',
+    hoverRing: 'hover:ring-error',
+    groupHoverText: 'group-hover:text-error',
+    activeText: 'group-data-[active]:text-error',
+  },
+  'base-300': {
+    text: 'text-base-300',
+    hoverRing: 'hover:ring-base-300',
+    groupHoverText: 'group-hover:text-base-300',
+    activeText: 'group-data-[active]:text-base-300',
+  },
+};
+
+export function colours(category: string): ColorClass {
+  return colorClasses[categories[category]?.color ?? 'primary'] ?? colorClasses.primary!;
+}
 
 const order = ['General', 'Code', 'Design', 'Text', 'Web', 'Math', 'Other'];
 
@@ -196,7 +253,7 @@ export function getLabel(file: string, title?: string) {
 
 const registry: Record<
   string,
-  { label: string; file: string; description?: string }
+  { label: string; file: string; description?: string; category: string }
 > = {};
 const groups: Record<string, ToolItem[]> = {};
 
@@ -212,7 +269,12 @@ for (const file of Object.keys(config).sort()) {
 
   if (meta) {
     const label = meta.title ?? file.replace(/([A-Z])/g, ' $1').trim();
-    registry[path] = { label, file, description: meta.description };
+    registry[path] = {
+      label,
+      file,
+      description: meta.description,
+      category: meta.category,
+    };
     groups[meta.category] ??= [];
     groups[meta.category]?.push({ id, label, to: path, ...meta });
   }
@@ -228,4 +290,9 @@ const sortedGroups = order
     {} as Record<string, ToolItem[]>,
   );
 
-export const useTools = () => ({ registry, groups: sortedGroups, categories });
+export const useTools = () => ({
+  registry,
+  groups: sortedGroups,
+  categories,
+  colours,
+});
