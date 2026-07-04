@@ -35,7 +35,6 @@ interface ColorClass {
   activeText: string;
 }
 
-// Literal class strings so Tailwind can see them; never interpolate `text-${color}`.
 export const colorClasses: Record<string, ColorClass> = {
   primary: {
     text: 'text-primary',
