@@ -1,6 +1,11 @@
 <script setup lang="ts">
 useHead({
-  title: 'Hello! These are my tools',
+  title: 'Free Online Tools for Developers & Designers',
+});
+
+useSeoMeta({
+  description:
+    'A growing collection of free, open-source tools: converters, generators, and helpers for developers, designers, and marketers. No signup, no tracking.',
 });
 </script>
 

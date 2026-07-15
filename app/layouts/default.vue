@@ -50,11 +50,15 @@ const ogImage = computed(
   () => `https://jlopes.eu/og/tools/${route.path.slice(1)}.jpg`,
 );
 
+const seoDescription = computed(() => {
+  return tool.value?.seoDescription ?? tool.value?.description;
+});
+
 useSeoMeta({
-  title: () => tool.value?.label,
+  title: () => tool.value?.seoTitle ?? tool.value?.label,
   ogTitle: () => (tool.value ? `${tool.value.label} - JL Tools` : undefined),
-  description: () => tool.value?.description,
-  ogDescription: () => tool.value?.description,
+  description: () => seoDescription.value,
+  ogDescription: () => seoDescription.value,
   ogImage: () => (tool.value ? ogImage.value : undefined),
   twitterCard: 'summary_large_image',
   twitterImage: () => (tool.value ? ogImage.value : undefined),
@@ -70,7 +74,7 @@ useHead(
               '@context': 'https://schema.org',
               '@type': 'SoftwareApplication',
               name: tool.value.label,
-              description: tool.value.description,
+              description: seoDescription.value,
               applicationCategory: 'UtilitiesApplication',
               operatingSystem: 'Web',
               url: `${siteUrl.value}${route.path}`,

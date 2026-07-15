@@ -11,6 +11,8 @@ export interface ToolConfig {
   icon: string;
   description: string;
   title?: string;
+  seoTitle?: string;
+  seoDescription?: string;
 }
 
 export interface CategoryConfig {
@@ -81,22 +83,23 @@ export const colorClasses: Record<string, ColorClass> = {
 };
 
 export function colours(category: string): ColorClass {
-  return colorClasses[categories[category]?.color ?? 'primary'] ?? colorClasses.primary!;
+  return (
+    colorClasses[categories[category]?.color ?? 'primary'] ??
+    colorClasses.primary!
+  );
 }
 
 const order = ['General', 'Code', 'Design', 'Text', 'Web', 'Math', 'Other'];
 
 export const config: Record<string, ToolConfig> = {
-  // PeriodicTable: {
-  //   category: 'General',
-  //   description: 'Table information of all the elements',
-  //   icon: 'i-heroicons-beaker',
-  // },
   WhatIsMyIp: {
     category: 'General',
     description: 'Your public IP and network info.',
     icon: 'i-heroicons-map-pin',
     title: 'What is my IP?',
+    seoTitle: 'What Is My IP? Check Your Public IP Address',
+    seoDescription:
+      'See your public IP address at a glance, along with your ISP, city, country, and time zone.',
   },
   // DecisionRoulette: {
   //   category: 'General',
@@ -108,27 +111,43 @@ export const config: Record<string, ToolConfig> = {
     category: 'General',
     description: 'Weather forecast with map.',
     icon: 'i-heroicons-sun',
+    seoTitle: 'Weather Forecast Map: 7-Day Local Forecast',
+    seoDescription:
+      'Check the 7-day weather forecast for anywhere in the world.',
   },
   UnitConverter: {
     category: 'Math',
-    description: 'Convert between units of length, weight, temperature, etc.',
+    description:
+      'Convert between units of length, weight, temperature, and more.',
     icon: 'i-heroicons-arrows-right-left',
+    seoTitle: 'Unit Converter: Length, Weight, Temperature',
+    seoDescription:
+      'Convert between metric and imperial units for length, weight, temperature, speed, area, volume, pressure, digital storage, and number bases.',
   },
   TimeConverter: {
     category: 'Math',
     description: 'Convert time between different formats.',
     icon: 'i-heroicons-clock',
+    seoTitle: 'Time Converter: Unix Timestamp & Time Zones',
+    seoDescription:
+      'Convert Unix epoch timestamps, ISO 8601 dates, and time zones in one place. Paste any value and read it back in every format.',
   },
   MarkdownEditor: {
     category: 'Text',
     description: 'A clean, distraction-free Markdown writing environment.',
     icon: 'i-heroicons-document-text',
+    seoTitle: 'Markdown Editor with Live Preview',
+    seoDescription:
+      'A clean, distraction-free Markdown editor with live preview. Write, format, and copy your Markdown without anything leaving your browser.',
   },
   LoremIpsum: {
     category: 'Text',
     description:
       'Generate placeholder text in Lorem, Hipster, or Bacon flavors.',
     icon: 'i-heroicons-document-duplicate',
+    seoTitle: 'Lorem Ipsum Generator: Placeholder Text',
+    seoDescription:
+      'Generate placeholder text in Lorem Ipsum, Hipster, or Bacon flavours.',
   },
   // PdfHelper: {
   //   category: 'Text',
@@ -142,57 +161,81 @@ export const config: Record<string, ToolConfig> = {
     description:
       'Transform text into every case, Unicode style, and silly format at once.',
     icon: 'i-heroicons-language',
+    seoTitle: 'Text Case Converter: camelCase, snake_case etc',
+    seoDescription:
+      'Paste text once and get every case at once: uppercase, title case, camelCase, PascalCase, snake_case, kebab-case, etc.',
   },
   CharacterMap: {
     category: 'Text',
     description: 'Browse symbols, emojis, and special characters.',
     icon: 'i-heroicons-hashtag',
+    seoTitle: 'Character Map: Unicode Symbols and Emojis',
+    seoDescription:
+      'Search thousands of Unicode symbols, emojis, arrows, and accented characters.',
   },
   CronHelper: {
     category: 'Code',
-    description: 'Helps setup cronjobs.',
+    description: 'Build and decode cron schedules.',
     icon: 'i-heroicons-clock',
+    seoTitle: 'Cron Expression Generator & Crontab Helper',
+    seoDescription:
+      'Build cron expressions and read them back in plain English.',
   },
   FlexboxGenerator: {
     category: 'Code',
     description: 'Learn and build Flexbox CSS.',
     icon: 'i-heroicons-squares-2x2',
+    seoTitle: 'Flexbox Generator: Build CSS Flex Layouts',
+    seoDescription: 'Build a Flexbox layout visually and copy the CSS.',
   },
   NthChild: {
     category: 'Code',
-    description: 'Define nth-child patterns',
+    description: 'Test and build :nth-child patterns.',
     icon: 'i-heroicons-squares-plus',
     title: ':nth-child Helper',
+    seoTitle: 'CSS :nth-child Tester and Pattern Generator',
+    seoDescription:
+      'Work out exactly which elements a CSS :nth-child formula selects.',
   },
   IconSearch: {
     category: 'Code',
     description: 'Search for the ideal icon.',
     icon: 'i-lucide-shapes',
+    seoTitle: 'Icon Search: Find Open-Source Icons',
+    seoDescription:
+      'Search thousands of open-source icons from popular icon sets in one place.',
   },
   MinifyBeautify: {
     category: 'Code',
     description: 'Minify and format HTML, CSS, JS, and SVG files.',
     icon: 'i-heroicons-code-bracket',
+    seoTitle: 'Minify and Beautify HTML, CSS, JS & SVG',
+    seoDescription:
+      'Minify code to ship it smaller, or beautify it to read it. Works with HTML, CSS, JavaScript, and SVG.',
   },
   RegexHelper: {
     category: 'Code',
     description: 'Write and debug regular expressions.',
     icon: 'i-heroicons-funnel',
+    seoTitle: 'Regex Tester: Write and Debug Regular Expressions',
+    seoDescription:
+      'Write a regular expression and test it against your own text.',
   },
-  // DataConverter: {
-  //   category: 'Code',
-  //   description: 'Convert between JSON, CSV, and YAML.',
-  //   icon: 'i-heroicons-table-cells',
-  // },
   UrlInspector: {
     category: 'Web',
-    description: 'Check url for OpenGraph data',
+    description: 'Check a URL for OpenGraph and meta data.',
     icon: 'i-heroicons-magnifying-glass',
+    seoTitle: 'URL Inspector: Check OpenGraph & Meta Tags',
+    seoDescription:
+      'Paste a URL to see its title, description, OpenGraph, and Twitter card tags, exactly as search engines and social networks read them.',
   },
   UtmBuilder: {
     category: 'Web',
     description: 'Generate URLs for marketing campaigns.',
     icon: 'i-heroicons-link',
+    seoTitle: 'UTM Builder: Campaign URL Generator',
+    seoDescription:
+      'Build tagged campaign URLs for your marketing links. Fill in source, medium, and campaign, and copy a clean, correctly encoded UTM link.',
   },
   // FaviconGenerator: {
   //   category: 'Web',
@@ -203,12 +246,10 @@ export const config: Record<string, ToolConfig> = {
     category: 'Design',
     description: 'Resize images in bulk!',
     icon: 'i-heroicons-photo',
+    seoTitle: 'Bulk Image Resizer: Resize Images Online',
+    seoDescription:
+      'Resize and crop images in bulk, with presets for common aspect ratios, then download them as a zip. Nothing is uploaded, it all runs in your browser.',
   },
-  // ImageFx: {
-  //   category: 'Design',
-  //   description: 'Add effects to images!',
-  //   icon: 'i-heroicons-photo',
-  // },
   // ShadowGenerator: {
   //   category: 'Design',
   //   description: 'Build and preview layered CSS box shadows.',
@@ -222,8 +263,11 @@ export const config: Record<string, ToolConfig> = {
   // },
   ColourPalette: {
     category: 'Design',
-    description: 'Generates colour palettes.',
+    description: 'Generate and export colour palettes.',
     icon: 'i-heroicons-swatch',
+    seoTitle: 'Colour Palette Generator: Build Colour Schemes',
+    seoDescription:
+      'Generate a colour palette with a keystroke, lock the colours you want to keep, and export the colour codes when done.',
   },
   // PaperSizes: {
   //   category: 'Design',
@@ -236,6 +280,9 @@ export const config: Record<string, ToolConfig> = {
     category: 'Design',
     description: 'Compress and clean up SVG files.',
     icon: 'i-heroicons-arrows-pointing-in',
+    seoTitle: 'SVG Optimizer: Compress and Clean SVG Files',
+    seoDescription:
+      'Shrink SVG files by stripping out editor cruft, with a live preview and the optimized size before you commit.',
   },
 };
 
@@ -252,7 +299,14 @@ export function getLabel(file: string, title?: string) {
 
 const registry: Record<
   string,
-  { label: string; file: string; description?: string; category: string }
+  {
+    label: string;
+    file: string;
+    description?: string;
+    category: string;
+    seoTitle?: string;
+    seoDescription?: string;
+  }
 > = {};
 const groups: Record<string, ToolItem[]> = {};
 
@@ -273,6 +327,8 @@ for (const file of Object.keys(config).sort()) {
       file,
       description: meta.description,
       category: meta.category,
+      seoTitle: meta.seoTitle,
+      seoDescription: meta.seoDescription,
     };
     groups[meta.category] ??= [];
     groups[meta.category]?.push({ id, label, to: path, ...meta });
