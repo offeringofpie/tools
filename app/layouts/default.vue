@@ -66,6 +66,7 @@ useSeoMeta({
 
 useHead(
   computed(() => ({
+    meta: [{ name: 'author', content: 'J Lopes' }],
     script: tool.value
       ? [
           {
@@ -79,6 +80,11 @@ useHead(
               operatingSystem: 'Web',
               url: `${siteUrl.value}${route.path}`,
               offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+              author: {
+                '@type': 'Person',
+                name: 'J Lopes',
+                url: 'https://jlopes.eu',
+              },
             }),
           },
         ]
@@ -248,6 +254,18 @@ const home: NavigationMenuItem = {
           <div class="max-w-6xl mx-auto">
             <slot />
           </div>
+          <footer
+            class="max-w-6xl mx-auto mt-12 pt-4 border-t border-base-800 text-sm text-base-400"
+          >
+            Built by
+            <ULink
+              raw
+              to="https://jlopes.eu"
+              class="text-primary hover:text-secondary transition-colors"
+            >
+              J Lopes
+            </ULink>
+          </footer>
         </main>
       </div>
     </div>
