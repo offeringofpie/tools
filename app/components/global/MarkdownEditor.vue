@@ -6,8 +6,13 @@ import Image from '@tiptap/extension-image';
 import { Markdown } from 'tiptap-markdown';
 import { marked } from 'marked';
 
-const blocks = /^(#{1,6}\s|\*|-|\+|>|\d+\.\s|```)/m;
-const inline = /(\*\*|__|`|~~).+?\1/;
+const markdownSyntax =
+  /^#{1,6}\s|^```|^>\s|\[[^\]]+\]\([^)]+\)|(\*\*|__|~~)\S[\s\S]*?\1|`[^`\n]+`/m;
+const listSyntax = /^\s*([*+-]|\d+[.)])\s+\S/m;
+
+function looksLikeMarkdown(text: string, hasHtml: boolean) {
+  return markdownSyntax.test(text) || (!hasHtml && listSyntax.test(text));
+}
 
 const copied = ref<'none' | 'md' | 'rich'>('none');
 
@@ -46,7 +51,9 @@ This is a simple markdown editor
       const text = event.clipboardData?.getData('text/plain');
       if (!text) return false;
 
-      if (blocks.test(text) || inline.test(text)) {
+      const html = event.clipboardData?.getData('text/html');
+
+      if (looksLikeMarkdown(text, Boolean(html))) {
         event.preventDefault();
         editor.value?.commands.insertContent(marked.parse(text));
         return true;
