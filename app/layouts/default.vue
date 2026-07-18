@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
+import {
+  breakpointsTailwind,
+  useBreakpoints,
+  useLocalStorage,
+} from '@vueuse/core';
 import type { BreadcrumbItem, NavigationMenuItem } from '#ui/types';
 
 const { groups, registry, colours } = useTools();
@@ -7,10 +11,63 @@ const breakpoints = useBreakpoints(breakpointsTailwind);
 const isDesktop = breakpoints.greaterOrEqual('lg');
 const config = useRuntimeConfig();
 
+const sidebarPref = useLocalStorage('sidebar-open', true);
 const open = ref(true);
+const ready = ref(false);
 const route = useRoute();
 const paletteOpen = ref(false);
 const main = ref<HTMLElement | null>(null);
+
+const isRail = (state: string) => {
+  return isDesktop.value && state === 'collapsed';
+};
+
+function toggleSidebar() {
+  if (!isDesktop.value) return;
+  open.value = !open.value;
+}
+
+onMounted(() => {
+  if (isDesktop.value) open.value = sidebarPref.value;
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      ready.value = true;
+    });
+  });
+});
+
+watch(open, (value) => {
+  if (ready.value && isDesktop.value) sidebarPref.value = value;
+});
+
+defineShortcuts({
+  meta_b: toggleSidebar,
+  ctrl_b: toggleSidebar,
+});
+
+const sidebarUi = computed(() => {
+  return {
+    container: [
+      'lg:relative lg:inset-auto lg:translate-x-0 lg:h-full border-r border-base-800 bg-bg',
+      ready.value ? '' : 'transition-none',
+    ],
+    gap: ready.value ? '' : 'transition-none',
+    header: 'group-data-[state=collapsed]/sidebar:px-2',
+    body: 'group-data-[state=collapsed]/sidebar:px-2',
+  };
+});
+
+const navUi = (category: string, rail: boolean) => {
+  return {
+    link: rail
+      ? 'p-1.5 overflow-hidden justify-center'
+      : 'p-1.5 overflow-hidden',
+    linkLeadingIcon: `${colours(category).text} opacity-60 group-data-[active]:opacity-100 group-data-[active]:text-primary`,
+    linkLabel: rail
+      ? `${colours(category).activeText} sr-only block`
+      : colours(category).activeText,
+  };
+};
 
 watch(
   () => route.path,
@@ -114,82 +171,106 @@ const home: NavigationMenuItem = {
       <USidebar
         id="tool-sidebar"
         v-model:open="open"
-        collapsible="offcanvas"
+        collapsible="icon"
         side="left"
         class="lg:shrink-0"
-        :ui="{
-          container:
-            'lg:relative lg:inset-auto lg:translate-x-0 lg:h-full border-r border-base-800 bg-bg',
-        }"
+        :ui="sidebarUi"
       >
-        <template #header>
-          <div>
-            <div class="flex items-center justify-between w-full px-2 py-2">
+        <template #header="{ state }">
+          <div class="w-full">
+            <div
+              class="flex items-center justify-between w-full px-2 py-2 lg:hidden"
+            >
               <UButton
                 icon="i-heroicons-x-mark"
                 color="neutral"
                 variant="ghost"
                 aria-label="Close sidebar"
-                class="lg:hidden"
                 @click="open = false"
               />
             </div>
-            <div class="px-2 pb-2">
-              <UButton
-                color="neutral"
-                variant="subtle"
-                icon="i-heroicons-magnifying-glass"
-                class="w-full justify-start font-normal text-base-400"
-                aria-label="Search tools"
-                @click="paletteOpen = true"
+            <div
+              :class="isRail(state) ? 'flex justify-center pb-2' : 'px-2 pb-2'"
+            >
+              <UTooltip
+                text="Search tools"
+                :kbds="['meta', 'k']"
+                :disabled="!isRail(state)"
               >
-                <span class="flex-1 text-left">Search tools…</span>
-                <span class="hidden lg:flex items-center gap-0.5">
-                  <UKbd value="meta" size="sm" />
-                  <UKbd value="k" size="sm" />
-                </span>
-              </UButton>
+                <UButton
+                  color="neutral"
+                  variant="subtle"
+                  icon="i-heroicons-magnifying-glass"
+                  :square="isRail(state)"
+                  :class="
+                    isRail(state)
+                      ? ''
+                      : 'w-full justify-start font-normal text-base-400'
+                  "
+                  aria-label="Search tools"
+                  @click="paletteOpen = true"
+                >
+                  <template v-if="!isRail(state)">
+                    <span class="flex-1 text-left">Search tools…</span>
+                    <span class="hidden lg:flex items-center gap-0.5">
+                      <UKbd value="meta" size="sm" />
+                      <UKbd value="k" size="sm" />
+                    </span>
+                  </template>
+                </UButton>
+              </UTooltip>
             </div>
           </div>
         </template>
 
-        <div
-          class="flex-1 overflow-y-auto px-2 py-2 space-y-4 custom-scrollbar"
-        >
-          <UNavigationMenu
-            :items="[home]"
-            orientation="vertical"
-            aria-label="Home"
-            :ui="{ link: 'p-1.5 overflow-hidden' }"
-          />
-
+        <template #default="{ state }">
           <div
-            v-for="(links, category) in groups"
-            :key="category"
-            class="space-y-2"
+            :class="[
+              'flex-1 overflow-y-auto py-2 space-y-4 custom-scrollbar',
+              isRail(state) ? 'px-0' : 'px-2',
+            ]"
           >
-            <USeparator class="my-2 border-base-800" />
-            <h3
-              :class="[
-                'px-2 text-xs font-semibold uppercase tracking-wider',
-                colours(category).text,
-              ]"
-            >
-              {{ category }}
-            </h3>
             <UNavigationMenu
-              :items="links"
-              color="primary"
+              :items="[home]"
               orientation="vertical"
-              :aria-label="`${category} tools`"
+              aria-label="Home"
+              :collapsed="isRail(state)"
+              tooltip
               :ui="{
-                link: 'p-1.5 overflow-hidden',
-                linkLeadingIcon: `${colours(category).text} opacity-60 group-data-[active]:opacity-100 group-data-[active]:text-primary`,
-                linkLabel: colours(category).activeText,
+                link: isRail(state)
+                  ? 'p-1.5 overflow-hidden justify-center'
+                  : 'p-1.5 overflow-hidden',
+                linkLabel: isRail(state) ? 'sr-only block' : '',
               }"
             />
+
+            <div
+              v-for="(links, category) in groups"
+              :key="category"
+              class="space-y-2"
+            >
+              <USeparator class="my-2 border-base-800" />
+              <h3
+                v-if="!isRail(state)"
+                :class="[
+                  'px-2 text-xs font-semibold uppercase tracking-wider',
+                  colours(category).text,
+                ]"
+              >
+                {{ category }}
+              </h3>
+              <UNavigationMenu
+                :items="links"
+                color="primary"
+                orientation="vertical"
+                :aria-label="`${category} tools`"
+                :collapsed="isRail(state)"
+                tooltip
+                :ui="navUi(category, isRail(state))"
+              />
+            </div>
           </div>
-        </div>
+        </template>
       </USidebar>
 
       <div class="flex-1 flex flex-col overflow-hidden bg-bg">
@@ -206,6 +287,23 @@ const home: NavigationMenuItem = {
             class="lg:hidden"
             @click="open = !open"
           />
+
+          <UTooltip
+            :text="open ? 'Collapse sidebar' : 'Expand sidebar'"
+            :kbds="['meta', 'b']"
+          >
+            <UButton
+              :icon="
+                open ? 'i-lucide-panel-left-close' : 'i-lucide-panel-left-open'
+              "
+              color="neutral"
+              variant="ghost"
+              :aria-label="open ? 'Collapse sidebar' : 'Expand sidebar'"
+              aria-controls="tool-sidebar"
+              class="hidden lg:inline-flex"
+              @click="toggleSidebar"
+            />
+          </UTooltip>
 
           <ULink
             to="https://jlopes.eu"
