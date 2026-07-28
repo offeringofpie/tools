@@ -32,3 +32,5 @@ coverage/
 .nuxtrc
 # Local Netlify folder
 .netlify
+
+deno.lock

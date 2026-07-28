@@ -27,7 +27,6 @@
     "@nuxt/scripts": "^0.13.4",
     "@nuxt/ui": "^4.7.1",
     "@nuxtjs/robots": "^6.0.8",
-    "@nuxtjs/sitemap": "^8.0.15",
     "@tailwindcss/typography": "^0.5.19",
     "@tanstack/vue-virtual": "^3.13.24",
     "@tiptap/extension-image": "^3.22.5",

@@ -5,3 +5,40 @@
 [build.environment]
   NODE_VERSION = "22"
   NODE_OPTIONS = "--max-old-space-size=6144"
+
+[[edge_functions]]
+  function = "canonical-url"
+  path = "/tools"
+
+[[edge_functions]]
+  function = "canonical-url"
+  path = "/tools/*"
+  excludedPath = ["/tools/_*"]
+
+[[headers]]
+  for = "/tools/_nuxt/*"
+  [headers.values]
+    cache-control = "public, max-age=31536000, immutable"
+    X-Robots-Tag = "noindex"
+
+[[headers]]
+  for = "/tools/_nuxt/builds/*"
+  [headers.values]
+    cache-control = "public, max-age=1, immutable"
+    X-Robots-Tag = "noindex"
+
+[[headers]]
+  for = "/tools/_nuxt/builds/meta/*"
+  [headers.values]
+    cache-control = "public, max-age=31536000, immutable"
+    X-Robots-Tag = "noindex"
+
+[[headers]]
+  for = "/tools/_fonts/*"
+  [headers.values]
+    cache-control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/tools/_scripts/*"
+  [headers.values]
+    cache-control = "public, max-age=31536000, immutable"

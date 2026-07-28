@@ -15,7 +15,9 @@ useHead({
   link: [
     {
       rel: 'canonical',
-      href: () => (route.path === '/' ? siteUrl : `${siteUrl}${route.path}`),
+      href: () => {
+        return route.path === '/' ? `${siteUrl}/` : `${siteUrl}${route.path}`;
+      },
     },
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
     { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
@@ -46,7 +48,7 @@ useSeoMeta({
   ogSiteName: 'J Lopes',
   ogTitle: 'J Lopes',
   ogDescription: description,
-  ogImage: `${siteUrl}/img/jl-facebook.jpg`,
+  ogImage: 'https://jlopes.eu/img/jl-facebook.jpg',
   twitterCard: 'summary_large_image',
 });
 </script>

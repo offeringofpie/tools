@@ -7,7 +7,7 @@ export default defineNuxtConfig({
     preset: 'netlify',
     prerender: {
       crawlLinks: true,
-      routes: ['/'],
+      routes: ['/', '/sitemap.xml'],
     },
     storage: {
       'rate-limit': {
@@ -48,7 +48,6 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/scripts',
     '@nuxt/ui',
-    '@nuxtjs/sitemap',
     '@nuxtjs/robots',
   ],
 
@@ -67,11 +66,6 @@ export default defineNuxtConfig({
         'tiptap-markdown',
       ],
     },
-  },
-
-  sitemap: {
-    sources: ['/api/__sitemap__/urls'],
-    excludeAppSources: true,
   },
 
   // Served under /tools/; the parent site owns the domain-root robots.txt.
