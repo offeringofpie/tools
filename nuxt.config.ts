@@ -1,3 +1,22 @@
+// Runs before Google Tag Manager loads, so Google's tags start denied for
+// everything except analytics. Analytics is granted with client storage
+// switched off in the container, which keeps it cookieless.
+const consentDefaults = `
+window.dataLayer = window.dataLayer || [];
+function gtag() { window.dataLayer.push(arguments); }
+gtag('consent', 'default', {
+  ad_storage: 'denied',
+  ad_user_data: 'denied',
+  ad_personalization: 'denied',
+  analytics_storage: 'granted',
+  functionality_storage: 'denied',
+  personalization_storage: 'denied',
+  security_storage: 'granted',
+});
+gtag('set', 'url_passthrough', true);
+gtag('set', 'ads_data_redaction', true);
+`;
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
@@ -30,6 +49,16 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
   app: {
     baseURL: '/tools/',
+    head: {
+      script: process.env.GTM
+        ? [
+            {
+              tagPriority: -1,
+              innerHTML: consentDefaults,
+            },
+          ]
+        : [],
+    },
   },
   site: {
     url: 'https://jlopes.eu',
