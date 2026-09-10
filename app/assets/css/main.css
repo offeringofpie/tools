@@ -1,79 +1,102 @@
-@import url('https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap');
 @import 'tailwindcss';
 @import '@nuxt/ui';
 @plugin "@tailwindcss/typography";
 
 @theme {
   --font-sans:
-    'Recursive', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  --color-primary-50: hsl(180, 100%, 95%);
-  --color-primary-100: hsl(180, 100%, 90%);
-  --color-primary-200: hsl(180, 100%, 80%);
-  --color-primary-300: hsl(180, 100%, 70%);
-  --color-primary-400: hsl(180, 100%, 50%);
-  --color-primary-500: hsl(180, 100%, 39%);
-  --color-primary-600: hsl(180, 100%, 32%);
-  --color-primary-700: hsl(180, 100%, 25%);
-  --color-primary-800: hsl(180, 100%, 18%);
-  --color-primary-900: hsl(180, 100%, 12%);
-  --color-primary-950: hsl(180, 100%, 6%);
+    'Recursive Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  --font-mono:
+    'Recursive Variable', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    'Liberation Mono', 'Courier New', monospace;
 
-  --color-accent-50: hsl(313, 67%, 95%);
-  --color-accent-100: hsl(313, 67%, 90%);
-  --color-accent-200: hsl(313, 67%, 80%);
-  --color-accent-300: hsl(313, 67%, 70%);
-  --color-accent-400: hsl(313, 67%, 60%);
-  --color-accent-500: hsl(313, 67%, 48%);
-  --color-accent-600: hsl(313, 67%, 38%);
-  --color-accent-700: hsl(313, 67%, 28%);
-  --color-accent-800: hsl(313, 67%, 18%);
-  --color-accent-900: hsl(313, 67%, 12%);
-  --color-accent-950: hsl(313, 67%, 6%);
+  --text-title: clamp(1.5rem, 1.15rem + 1.6vw, 1.875rem);
+  --text-title--line-height: 1.15;
 
-  --color-base-50: hsl(0, 0%, 95%);
-  --color-base-100: hsl(0, 0%, 80%);
-  --color-base-200: hsl(0, 0%, 70%);
-  --color-base-300: hsl(0, 0%, 60%);
-  --color-base-400: hsl(0, 0%, 50%);
-  --color-base-500: hsl(0, 0%, 40%);
-  --color-base-600: hsl(0, 0%, 30%);
-  --color-base-700: hsl(0, 0%, 20%);
-  --color-base-800: hsl(0, 0%, 12%);
-  --color-base-900: hsl(0, 0%, 6%);
-  --color-base-950: hsl(0, 0%, 0%);
+  --color-primary-50: hsl(198, 60%, 94%);
+  --color-primary-100: hsl(198, 58%, 87%);
+  --color-primary-200: hsl(198, 56%, 78%);
+  --color-primary-300: hsl(198, 55%, 68%);
+  --color-primary-400: hsl(198, 54%, 63%);
+  --color-primary-500: var(--primary);
+  --color-primary-600: hsl(199, 50%, 47%);
+  --color-primary-700: hsl(200, 52%, 36%);
+  --color-primary-800: hsl(202, 50%, 26%);
+  --color-primary-900: hsl(206, 45%, 18%);
+  --color-primary-950: hsl(212, 40%, 12%);
 
-  --color-success-500: hsl(158, 53%, 56%);
-  --color-warning-500: hsl(44, 100%, 61%);
-  --color-error-500: hsl(11, 84%, 55%);
-  --color-info-500: hsl(205, 90%, 62%);
+  --color-accent-50: hsl(19, 92%, 95%);
+  --color-accent-100: hsl(19, 90%, 90%);
+  --color-accent-200: hsl(19, 89%, 83%);
+  --color-accent-300: hsl(19, 88%, 78%);
+  --color-accent-400: hsl(19, 88%, 75%);
+  --color-accent-500: var(--accent);
+  --color-accent-600: hsl(19, 74%, 60%);
+  --color-accent-700: hsl(18, 66%, 47%);
+  --color-accent-800: hsl(17, 62%, 34%);
+  --color-accent-900: hsl(16, 55%, 23%);
+  --color-accent-950: hsl(15, 48%, 14%);
+
+  --color-success-500: var(--success);
+  --color-warning-500: var(--warning);
+  --color-error-500: var(--error);
+  --color-info-500: var(--info);
+
+  --color-cat-general: hsl(303, 45%, 72%);
+  --color-cat-code: hsl(198, 54%, 62%);
+  --color-cat-design: hsl(150, 45%, 62%);
+  --color-cat-text: hsl(38, 85%, 70%);
+  --color-cat-web: hsl(255, 60%, 74%);
+  --color-cat-math: hsl(6, 78%, 66%);
+  --color-cat-other: hsl(28, 22%, 66%);
 }
 
 :root {
-  --ui-primary: var(--color-primary-500);
-  --ui-secondary: var(--color-accent-500);
-  --ui-success: var(--color-success-500);
-  --ui-info: var(--color-info-500);
-  --ui-warning: var(--color-warning-500);
-  --ui-error: var(--color-error-500);
+  --background: hsl(222, 30%, 9%);
+  --surface: hsl(220, 26%, 16%);
+  --surface-accent: hsl(303, 24%, 30%);
+  --primary: hsl(198, 54%, 58%);
+  --accent: hsl(19, 88%, 73%);
+  --muted: hsl(218, 22%, 38%);
+  --muted-strong: hsl(25, 50%, 78%);
+  --success: hsl(150, 45%, 62%);
+  --warning: hsl(38, 85%, 70%);
+  --error: hsl(6, 78%, 66%);
+  --info: hsl(218, 44%, 60%);
 
-  --ui-text-dimmed: var(--color-base-400);
-  --ui-text-muted: hsla(0, 0%, 100%, 0.55);
-  --ui-text-toned: var(--color-base-200);
-  --ui-text: var(--color-base-100);
-  --ui-text-highlighted: #ffffff;
-  --ui-text-inverted: var(--color-base-950);
+  --ui-primary: var(--primary);
+  --ui-secondary: var(--accent);
+  --ui-success: var(--success);
+  --ui-info: var(--info);
+  --ui-warning: var(--warning);
+  --ui-error: var(--error);
 
-  --ui-bg: var(--color-base-950);
-  --ui-bg-muted: var(--color-base-900);
-  --ui-bg-elevated: var(--color-base-800);
-  --ui-bg-accented: hsl(270, 52%, 11%);
-  --ui-bg-inverted: var(--color-base-50);
+  --ui-bg: var(--background);
+  --ui-bg-muted: hsl(222, 28%, 12%);
+  --ui-bg-elevated: var(--surface);
+  --ui-bg-accented: hsl(303, 24%, 18%);
+  --ui-bg-inverted: var(--muted-strong);
 
-  --ui-border: var(--color-base-800);
-  --ui-border-muted: var(--color-base-800);
-  --ui-border-accented: var(--color-base-700);
-  --ui-border-inverted: var(--color-base-100);
+  --ui-border: var(--muted);
+  --ui-border-muted: hsl(220, 22%, 24%);
+  --ui-border-accented: hsl(218, 20%, 48%);
+  --ui-border-inverted: var(--muted-strong);
+
+  --ui-text: var(--muted-strong);
+  --ui-text-highlighted: hsl(30, 35%, 94%);
+  --ui-text-toned: hsl(25, 45%, 88%);
+  --ui-text-muted: var(--muted-strong);
+  --ui-text-dimmed: hsl(25, 20%, 58%);
+  --ui-text-inverted: var(--background);
+}
+
+.font-mono {
+  font-variation-settings:
+    'MONO' 1,
+    'CASL' 0,
+    'slnt' 0,
+    'CRSV' 0;
+  font-variant-numeric: tabular-nums;
 }
 
 .sr {
