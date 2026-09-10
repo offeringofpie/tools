@@ -21,13 +21,13 @@ export interface CategoryConfig {
 }
 
 export const categories: Record<string, CategoryConfig> = {
-  General: { color: 'secondary', icon: 'i-heroicons-home' },
-  Text: { color: 'warning', icon: 'i-heroicons-document-text' },
-  Code: { color: 'primary', icon: 'i-heroicons-code-bracket' },
-  Design: { color: 'success', icon: 'i-heroicons-swatch' },
-  Web: { color: 'info', icon: 'i-heroicons-globe-alt' },
-  Math: { color: 'error', icon: 'i-heroicons-calculator' },
-  Other: { color: 'base-300', icon: 'i-heroicons-swatch' },
+  General: { color: 'general', icon: 'i-heroicons-home' },
+  Text: { color: 'text', icon: 'i-heroicons-document-text' },
+  Code: { color: 'code', icon: 'i-heroicons-code-bracket' },
+  Design: { color: 'design', icon: 'i-heroicons-swatch' },
+  Web: { color: 'web', icon: 'i-heroicons-globe-alt' },
+  Math: { color: 'math', icon: 'i-heroicons-calculator' },
+  Other: { color: 'other', icon: 'i-heroicons-swatch' },
 };
 
 interface ColorClass {
@@ -38,54 +38,53 @@ interface ColorClass {
 }
 
 export const colorClasses: Record<string, ColorClass> = {
-  primary: {
-    text: 'text-primary',
-    hoverRing: 'hover:ring-primary',
-    groupHoverText: 'group-hover:text-primary',
-    activeText: 'group-data-[active]:text-primary',
+  general: {
+    text: 'text-cat-general',
+    hoverRing: 'hover:ring-cat-general',
+    groupHoverText: 'group-hover:text-cat-general',
+    activeText: 'group-data-[active]:text-cat-general',
   },
-  secondary: {
-    text: 'text-secondary',
-    hoverRing: 'hover:ring-secondary',
-    groupHoverText: 'group-hover:text-secondary',
-    activeText: 'group-data-[active]:text-secondary',
+  code: {
+    text: 'text-cat-code',
+    hoverRing: 'hover:ring-cat-code',
+    groupHoverText: 'group-hover:text-cat-code',
+    activeText: 'group-data-[active]:text-cat-code',
   },
-  success: {
-    text: 'text-success',
-    hoverRing: 'hover:ring-success',
-    groupHoverText: 'group-hover:text-success',
-    activeText: 'group-data-[active]:text-success',
+  design: {
+    text: 'text-cat-design',
+    hoverRing: 'hover:ring-cat-design',
+    groupHoverText: 'group-hover:text-cat-design',
+    activeText: 'group-data-[active]:text-cat-design',
   },
-  info: {
-    text: 'text-info',
-    hoverRing: 'hover:ring-info',
-    groupHoverText: 'group-hover:text-info',
-    activeText: 'group-data-[active]:text-info',
+  text: {
+    text: 'text-cat-text',
+    hoverRing: 'hover:ring-cat-text',
+    groupHoverText: 'group-hover:text-cat-text',
+    activeText: 'group-data-[active]:text-cat-text',
   },
-  warning: {
-    text: 'text-warning',
-    hoverRing: 'hover:ring-warning',
-    groupHoverText: 'group-hover:text-warning',
-    activeText: 'group-data-[active]:text-warning',
+  web: {
+    text: 'text-cat-web',
+    hoverRing: 'hover:ring-cat-web',
+    groupHoverText: 'group-hover:text-cat-web',
+    activeText: 'group-data-[active]:text-cat-web',
   },
-  error: {
-    text: 'text-error',
-    hoverRing: 'hover:ring-error',
-    groupHoverText: 'group-hover:text-error',
-    activeText: 'group-data-[active]:text-error',
+  math: {
+    text: 'text-cat-math',
+    hoverRing: 'hover:ring-cat-math',
+    groupHoverText: 'group-hover:text-cat-math',
+    activeText: 'group-data-[active]:text-cat-math',
   },
-  'base-300': {
-    text: 'text-base-300',
-    hoverRing: 'hover:ring-base-300',
-    groupHoverText: 'group-hover:text-base-300',
-    activeText: 'group-data-[active]:text-base-300',
+  other: {
+    text: 'text-cat-other',
+    hoverRing: 'hover:ring-cat-other',
+    groupHoverText: 'group-hover:text-cat-other',
+    activeText: 'group-data-[active]:text-cat-other',
   },
 };
 
 export function colours(category: string): ColorClass {
   return (
-    colorClasses[categories[category]?.color ?? 'primary'] ??
-    colorClasses.primary!
+    colorClasses[categories[category]?.color ?? 'code'] ?? colorClasses.code!
   );
 }
 
@@ -225,6 +224,7 @@ export const config: Record<string, ToolConfig> = {
     category: 'Web',
     description: 'Check a URL for OpenGraph and meta data.',
     icon: 'i-heroicons-magnifying-glass',
+    title: 'URL Inspector',
     seoTitle: 'URL Inspector: Check OpenGraph & Meta Tags',
     seoDescription:
       'Paste a URL to see its title, description, OpenGraph, and Twitter card tags, exactly as search engines and social networks read them.',
@@ -233,6 +233,7 @@ export const config: Record<string, ToolConfig> = {
     category: 'Web',
     description: 'Generate URLs for marketing campaigns.',
     icon: 'i-heroicons-link',
+    title: 'UTM Builder',
     seoTitle: 'UTM Builder: Campaign URL Generator',
     seoDescription:
       'Build tagged campaign URLs for your marketing links. Fill in source, medium, and campaign, and copy a clean, correctly encoded UTM link.',
@@ -280,6 +281,7 @@ export const config: Record<string, ToolConfig> = {
     category: 'Design',
     description: 'Compress and clean up SVG files.',
     icon: 'i-heroicons-arrows-pointing-in',
+    title: 'SVG Optimizer',
     seoTitle: 'SVG Optimizer: Compress and Clean SVG Files',
     seoDescription:
       'Shrink SVG files by stripping out editor cruft, with a live preview and the optimized size before you commit.',
