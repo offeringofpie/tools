@@ -74,7 +74,7 @@
   --ui-bg: var(--background);
   --ui-bg-muted: hsl(222, 28%, 12%);
   --ui-bg-elevated: var(--surface);
-  --ui-bg-accented: hsl(303, 24%, 18%);
+  --ui-bg-accented: hsl(220, 24%, 22%);
   --ui-bg-inverted: var(--muted-strong);
 
   --ui-border: var(--muted);
