@@ -65,6 +65,18 @@ export default defineNuxtConfig({
     name: 'JL Tools',
   },
 
+  fonts: {
+    families: [
+      {
+        name: 'Recursive Variable',
+        src: 'https://fonts.gstatic.com/s/recursive/v44/8vIz7wMr0mhh-RQChyHEH06TlXhq_gukbYrFMk1QuAIcyEwG_X-dpEfaE61aHWiJ-CImKsvbsWd9qtZleg.woff2',
+        weight: '300 1000',
+        display: 'swap',
+        fallbacks: ['system-ui', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+      },
+    ],
+  },
+
   experimental: { viewTransition: true },
   sourcemap: { server: false },
   icon: {

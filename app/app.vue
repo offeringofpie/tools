@@ -19,14 +19,6 @@ useHead({
         return route.path === '/' ? `${siteUrl}/` : `${siteUrl}${route.path}`;
       },
     },
-    { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-    { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
-    {
-      rel: 'stylesheet',
-      href: 'https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap',
-      media: 'print',
-      onload: "this.media='all'",
-    },
   ],
   script: [
     {
