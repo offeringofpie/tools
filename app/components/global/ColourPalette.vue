@@ -576,18 +576,10 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="space-y-6">
-    <div
-      class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
-    >
-      <div>
-        <h1 class="text-2xl md:text-3xl font-bold text-white mb-2">
-          Colour Palette
-        </h1>
-        <p class="text-base-400">Press <UKbd>Space</UKbd> to generate.</p>
-      </div>
+  <ToolPage>
+    <template #description>Press <UKbd>Space</UKbd> to generate.</template>
 
-      <div class="flex items-center gap-3 w-full md:w-auto">
+    <template #actions>
         <USelect
           v-model="format"
           :items="formats"
@@ -612,7 +604,7 @@ onBeforeUnmount(() => {
             <div class="space-y-3">
               <div
                 v-if="!imgPreview"
-                class="border-2 border-dashed border-base-700 rounded-lg p-4 text-center hover:border-primary-500 transition-colors cursor-pointer mb-0"
+                class="border-2 border-dashed border-accented rounded-lg p-4 text-center hover:border-primary-500 transition-colors cursor-pointer mb-0"
                 role="button"
                 tabindex="0"
                 aria-label="Upload an image"
@@ -624,9 +616,9 @@ onBeforeUnmount(() => {
               >
                 <UIcon
                   name="i-heroicons-photo"
-                  class="size-5 text-base-500 mx-auto mb-1"
+                  class="size-5 text-dimmed mx-auto mb-1"
                 />
-                <p class="text-xs text-base-400">Choose an image</p>
+                <p class="text-xs text-muted">Choose an image</p>
               </div>
 
               <div v-else class="space-y-3">
@@ -662,8 +654,7 @@ onBeforeUnmount(() => {
         <UButton aria-label="Generate new color palette" @click="generate"
           >Generate</UButton
         >
-      </div>
-    </div>
+    </template>
 
     <div
       class="flex flex-col gap-2 md:hidden"
@@ -767,7 +758,7 @@ onBeforeUnmount(() => {
     </div>
 
     <div
-      class="hidden md:flex h-[40vh] min-h-100 w-full rounded-2xl overflow-x-auto overflow-y-hidden shadow-2xl border border-base-800 bg-base-900 custom-scrollbar"
+      class="hidden md:flex h-[40vh] min-h-100 w-full rounded-2xl overflow-x-auto overflow-y-hidden shadow-2xl border border-default bg-muted custom-scrollbar"
       role="list"
       aria-label="Color swatches"
     >
@@ -886,5 +877,5 @@ onBeforeUnmount(() => {
         </div>
       </div>
     </div>
-  </div>
+  </ToolPage>
 </template>

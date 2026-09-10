@@ -307,15 +307,7 @@ const modalDetails = computed(() => {
 </script>
 
 <template>
-  <div class="space-y-4 pb-12">
-    <header class="max-w-2xl">
-      <h1 class="text-2xl md:text-3xl font-bold text-white mb-1">
-        Character Map
-      </h1>
-      <p class="text-base-400">
-        Browse symbols, emojis, and special characters.
-      </p>
-    </header>
+  <ToolPage>
 
     <div
       v-if="loading"
@@ -410,7 +402,7 @@ const modalDetails = computed(() => {
                   class="px-2.5 py-1 rounded-full text-xs font-medium border transition"
                   :class="
                     filters.includes(`${cat.prefix}:${item.name}`)
-                      ? 'bg-primary text-white border-primary'
+                      ? 'bg-primary text-highlighted border-primary'
                       : 'bg-elevated border-default text-muted hover:text-primary'
                   "
                   @click="toggleFilter(`${cat.prefix}:${item.name}`)"
@@ -541,18 +533,18 @@ const modalDetails = computed(() => {
         <template #content>
           <div
             v-if="selected"
-            class="flex flex-col sm:flex-row rounded-xl bg-base-900 overflow-hidden"
+            class="flex flex-col sm:flex-row rounded-xl bg-muted overflow-hidden"
           >
             <div
-              class="flex flex-col items-center gap-5 p-8 sm:w-56 shrink-0 border-b sm:border-b-0 sm:border-r border-default bg-base-950"
+              class="flex flex-col items-center gap-5 p-8 sm:w-56 shrink-0 border-b sm:border-b-0 sm:border-r border-default bg-default"
             >
               <div
-                class="size-28 flex items-center justify-center text-7xl rounded-2xl border border-default bg-base-900 shadow-lg char-glyph"
+                class="size-28 flex items-center justify-center text-7xl rounded-2xl border border-default bg-muted shadow-lg char-glyph"
               >
                 {{ isPrintable(selected) ? selected.char : '?' }}
               </div>
               <div class="text-center w-full">
-                <p class="text-sm font-semibold text-white">
+                <p class="text-sm font-semibold text-highlighted">
                   {{ selected.name }}
                 </p>
                 <p class="text-xs text-muted font-mono mt-1">
@@ -580,7 +572,7 @@ const modalDetails = computed(() => {
               <div
                 v-for="field in modalDetails"
                 :key="field.label"
-                class="p-4 bg-base-900 flex flex-col gap-2"
+                class="p-4 bg-muted flex flex-col gap-2"
               >
                 <span class="text-xs uppercase tracking-widest text-muted">
                   {{ field.label }}
@@ -611,19 +603,19 @@ const modalDetails = computed(() => {
     </template>
 
     <div class="flex items-center justify-center gap-1.5 pt-2 flex-wrap">
-      <p class="text-xs text-base-600">
+      <p class="text-xs text-dimmed">
         Character data from
         <ULink
           to="https://unicode.org"
           target="_blank"
           rel="noopener noreferrer"
-          class="text-base-500 hover:text-base-300 underline underline-offset-2 transition-colors"
+          class="text-dimmed hover:text-muted underline underline-offset-2 transition-colors"
         >
           Unicode Consortium
         </ULink>
       </p>
     </div>
-  </div>
+  </ToolPage>
 </template>
 
 <style>

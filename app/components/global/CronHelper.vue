@@ -75,14 +75,10 @@ export function toText(val: string): string {
 </script>
 
 <template>
-  <div class="space-y-6 max-w-6xl mx-auto">
+  <ToolPage>
     <div class="space-y-6">
-      <h1 class="text-2xl md:text-3xl font-bold text-white mb-2">
-        Cron Helper
-      </h1>
-      <p class="text-base-400">Helps setup cronjobs.</p>
 
-      <UCard class="border border-base-800">
+      <UCard class="border border-default">
         <div class="space-y-8">
           <div
             class="p-6 rounded-lg border transition-colors duration-300 text-center border-primary-500/30"
@@ -90,7 +86,7 @@ export function toText(val: string): string {
             <div class="flex flex-col items-center gap-2">
               <p
                 class="text-xl md:text-xl font-semibold"
-                :class="error ? 'text-error-200' : 'text-white'"
+                :class="error ? 'text-error-200' : 'text-highlighted'"
               >
                 {{ text }}
               </p>
@@ -101,7 +97,7 @@ export function toText(val: string): string {
             <UInput
               v-model="cron"
               size="xl"
-              class="w-full font-mono text-2xl transition-all focus:ring-2 focus:ring-secondary-500"
+              class="w-full font-mono text-2xl transition-all"
               :class="{ 'ring-2 ring-error-500': error }"
               variant="subtle"
               placeholder="* * * * *"
@@ -138,7 +134,7 @@ export function toText(val: string): string {
               :class="i === 4 ? 'col-span-2 md:col-span-1' : ''"
             >
               <label
-                class="block text-xs font-semibold text-base-300 uppercase tracking-wider text-center"
+                class="block text-xs font-semibold text-muted uppercase tracking-wider text-center"
               >
                 {{ field.label }}
               </label>
@@ -150,7 +146,7 @@ export function toText(val: string): string {
                 placeholder="*"
                 @update:model-value="setToken(i, $event)"
               />
-              <span class="block text-[11px] text-base-500 text-center">
+              <span class="block text-[11px] text-dimmed text-center">
                 {{ field.hint }}
               </span>
             </div>
@@ -158,9 +154,9 @@ export function toText(val: string): string {
         </div>
       </UCard>
 
-      <UCard class="border border-base-800">
+      <UCard class="border border-default">
         <template #header>
-          <h2 class="text-sm font-semibold text-white uppercase tracking-wider">
+          <h2 class="text-sm font-semibold text-highlighted uppercase tracking-wider">
             Quick Recipes
           </h2>
         </template>
@@ -171,7 +167,7 @@ export function toText(val: string): string {
             size="sm"
             variant="soft"
             color="neutral"
-            class="font-mono text-xs hover:bg-primary-500/20 hover:text-primary-400 border border-base-800 hover:border-primary-500/50 transition-all"
+            class="font-mono text-xs hover:bg-primary-500/20 hover:text-primary-400 border border-default hover:border-primary-500/50 transition-all"
             @click="setPreset(p.value)"
           >
             {{ p.label }}
@@ -179,5 +175,5 @@ export function toText(val: string): string {
         </div>
       </UCard>
     </div>
-  </div>
+  </ToolPage>
 </template>

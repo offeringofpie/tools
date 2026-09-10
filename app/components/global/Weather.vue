@@ -344,11 +344,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="max-w-6xl mx-auto space-y-4">
-    <div>
-      <h1 class="text-2xl md:text-3xl font-bold text-white mb-2">Weather</h1>
-      <p class="text-base-400">Weather forecast with map.</p>
-    </div>
+  <ToolPage>
     <div class="flex items-center gap-2">
       <UButton
         icon="i-heroicons-map-pin"
@@ -404,11 +400,11 @@ onBeforeUnmount(() => {
     />
 
     <div v-if="title && status !== 'error'" class="px-1">
-      <h2 class="text-2xl font-semibold text-base-100">{{ title }}</h2>
+      <h2 class="text-2xl font-semibold text-default">{{ title }}</h2>
     </div>
 
     <div>
-      <div class="flex gap-4 border-b border-base-800 mb-6">
+      <div class="flex gap-4 border-b border-default mb-6">
         <button
           v-for="t in tabs"
           :key="t.value"
@@ -416,7 +412,7 @@ onBeforeUnmount(() => {
           :class="
             tab === t.value
               ? 'text-primary-400 border-b-2 border-primary-400'
-              : 'text-base-500 hover:text-base-300'
+              : 'text-dimmed hover:text-muted'
           "
           @click="tab = t.value"
         >
@@ -426,9 +422,9 @@ onBeforeUnmount(() => {
 
       <div v-show="tab === 'now'">
         <div v-if="status === 'loading'" class="animate-pulse space-y-4">
-          <div class="h-32 bg-base-800 rounded-xl" />
+          <div class="h-32 bg-elevated rounded-xl" />
           <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <div v-for="i in 4" :key="i" class="h-24 bg-base-800 rounded-xl" />
+            <div v-for="i in 4" :key="i" class="h-24 bg-elevated rounded-xl" />
           </div>
         </div>
 
@@ -439,10 +435,10 @@ onBeforeUnmount(() => {
               <div>
                 <div class="flex items-baseline gap-1">
                   <span class="text-6xl font-bold">{{ current.temp }}</span>
-                  <span class="text-2xl text-base-500">°{{ unit }}</span>
+                  <span class="text-2xl text-dimmed">°{{ unit }}</span>
                 </div>
-                <div class="text-lg text-base-300">{{ current.label }}</div>
-                <div class="text-sm text-base-500">
+                <div class="text-lg text-muted">{{ current.label }}</div>
+                <div class="text-sm text-dimmed">
                   Feels like {{ current.feelsLike }}°{{ unit }}
                 </div>
               </div>
@@ -452,8 +448,8 @@ onBeforeUnmount(() => {
           <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
             <UCard v-for="s in stats" :key="s.label" variant="subtle">
               <div class="flex items-center gap-2 mb-1">
-                <UIcon :name="s.icon" class="w-4 h-4 text-base-500" />
-                <div class="text-xs text-base-500 uppercase font-bold">
+                <UIcon :name="s.icon" class="w-4 h-4 text-dimmed" />
+                <div class="text-xs text-dimmed uppercase font-bold">
                   {{ s.label }}
                 </div>
               </div>
@@ -469,7 +465,7 @@ onBeforeUnmount(() => {
             <div class="flex items-center justify-between">
               <span class="w-24 text-sm">{{ day.date }}</span>
               <span class="text-2xl">{{ day.emoji }}</span>
-              <span class="flex-1 px-4 text-sm text-base-500">{{
+              <span class="flex-1 px-4 text-sm text-dimmed">{{
                 day.label
               }}</span>
               <span class="font-mono"
@@ -483,7 +479,7 @@ onBeforeUnmount(() => {
       <div v-show="tab === 'map'" ref="mapWrapper" class="relative">
         <div
           ref="mapEl"
-          class="h-120 max-h-full w-full rounded-xl bg-base-900"
+          class="h-120 max-h-full w-full rounded-xl bg-muted"
         />
         <UButton
           :icon="
@@ -513,13 +509,13 @@ onBeforeUnmount(() => {
     </div>
 
     <div class="flex items-center justify-center gap-1.5 pt-2 flex-wrap">
-      <p class="text-xs text-base-600">
+      <p class="text-xs text-dimmed">
         Data provided by
         <ULink
           to="https://open-meteo.com"
           target="_blank"
           rel="noopener noreferrer"
-          class="text-base-500 hover:text-base-300 underline underline-offset-2 transition-colors"
+          class="text-dimmed hover:text-muted underline underline-offset-2 transition-colors"
         >
           Open-Meteo
         </ULink>
@@ -528,7 +524,7 @@ onBeforeUnmount(() => {
           to="https://openstreetmap.org"
           target="_blank"
           rel="noopener noreferrer"
-          class="text-base-500 hover:text-base-300 underline underline-offset-2 transition-colors"
+          class="text-dimmed hover:text-muted underline underline-offset-2 transition-colors"
         >
           OpenStreetMap
         </ULink>
@@ -537,7 +533,7 @@ onBeforeUnmount(() => {
           to="https://carto.com"
           target="_blank"
           rel="noopener noreferrer"
-          class="text-base-500 hover:text-base-300 underline underline-offset-2 transition-colors"
+          class="text-dimmed hover:text-muted underline underline-offset-2 transition-colors"
         >
           CARTO
         </ULink>
@@ -546,13 +542,13 @@ onBeforeUnmount(() => {
           to="https://rainviewer.com"
           target="_blank"
           rel="noopener noreferrer"
-          class="text-base-500 hover:text-base-300 underline underline-offset-2 transition-colors"
+          class="text-dimmed hover:text-muted underline underline-offset-2 transition-colors"
         >
           RainViewer
         </ULink>
       </p>
     </div>
-  </div>
+  </ToolPage>
 </template>
 
 <style>

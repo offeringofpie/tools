@@ -140,13 +140,7 @@ async function copy() {
 </script>
 
 <template>
-  <div class="space-y-4">
-    <div>
-      <h1 class="text-2xl md:text-3xl font-bold text-white mb-1">
-        Lorem Ipsum Generator
-      </h1>
-      <p class="text-base-400">Generate placeholder text in a few flavors.</p>
-    </div>
+  <ToolPage>
 
     <div class="flex flex-col md:flex-row md:items-end gap-3">
       <UFormField label="Flavor" class="flex-1">
@@ -191,7 +185,7 @@ async function copy() {
 
     <div class="group relative">
       <pre
-        class="text-sm bg-base-900 border border-base-800 rounded-lg p-4 overflow-x-auto text-base-200 min-h-[240px] whitespace-pre-wrap"
+        class="text-sm bg-muted border border-default rounded-lg p-4 overflow-x-auto text-toned min-h-[240px] whitespace-pre-wrap"
         >{{ output }}</pre
       >
       <UButton
@@ -203,5 +197,5 @@ async function copy() {
         @click="copy"
       />
     </div>
-  </div>
+  </ToolPage>
 </template>

@@ -185,28 +185,24 @@ async function downloadZip() {
 </script>
 
 <template>
-  <div class="space-y-8 max-w-6xl mx-auto">
-    <div class="flex w-full align-bottom justify-between">
-      <div class="space-y-2">
-        <h1 class="text-2xl md:text-3xl font-bold text-white">SVG Optimizer</h1>
-        <p class="text-base-400">Compress and clean up SVG files.</p>
-      </div>
+  <ToolPage>
+    <template #actions>
       <UTabs
         v-model="activeTab"
         :items="tabs"
         :content="false"
         class="w-full md:w-80"
       />
-    </div>
+    </template>
 
     <div class="space-y-4">
       <div v-if="activeTab === 'upload'" class="pt-2 space-y-8">
         <UCard
-          class="rounded-lg overflow-hidden ring ring-default divide-y divide-default border-2 border-dashed min-h-100 flex items-center justify-center transition-all border-base-800 bg-base-900/30"
+          class="rounded-lg overflow-hidden ring ring-default divide-y divide-default border-2 border-dashed min-h-100 flex items-center justify-center transition-all border-default bg-muted/30"
           :class="
             dragging
               ? 'border-primary-500 bg-primary-500/10'
-              : 'border-base-800 bg-base-900/30 hover:border-base-700'
+              : 'border-default bg-muted/30 hover:border-accented'
           "
           @dragover.prevent="dragging = true"
           @dragleave.prevent="dragging = false"
@@ -221,9 +217,9 @@ async function downloadZip() {
           >
             <UIcon
               name="i-heroicons-photo"
-              class="w-16 h-16 text-base-500 mb-4 group-hover:text-primary-500 transition-colors"
+              class="w-16 h-16 text-dimmed mb-4 group-hover:text-primary-500 transition-colors"
             />
-            <p class="text-base font-medium text-white">Drop SVGs here</p>
+            <p class="text-base font-medium text-highlighted">Drop SVGs here</p>
             <input
               ref="picker"
               type="file"
@@ -237,18 +233,18 @@ async function downloadZip() {
 
         <div
           v-if="items.length > 0"
-          class="space-y-4 pt-4 border-t border-base-800"
+          class="space-y-4 pt-4 border-t border-default"
         >
           <div
-            class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-5 bg-base-900/50 border border-base-800 rounded-xl gap-4 shadow-sm"
+            class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-5 bg-muted/50 border border-default rounded-xl gap-4 shadow-sm"
           >
             <div>
               <p
-                class="text-xs text-base-400 font-semibold uppercase tracking-wider mb-1"
+                class="text-xs text-muted font-semibold uppercase tracking-wider mb-1"
               >
                 Total Saved
               </p>
-              <p class="text-3xl font-bold text-white">
+              <p class="text-3xl font-bold text-highlighted">
                 {{ totalSaved.toFixed(1) }}%
               </p>
             </div>
@@ -273,18 +269,18 @@ async function downloadZip() {
 
           <div class="space-y-3 mt-4">
             <h3
-              class="text-xs font-semibold text-base-400 uppercase tracking-wider mb-2 px-1"
+              class="text-xs font-semibold text-muted uppercase tracking-wider mb-2 px-1"
             >
               Optimized Files
             </h3>
             <div
               v-for="item in items"
               :key="item.id"
-              class="p-4 border border-base-800 rounded-xl bg-base-900/40 hover:bg-base-900/60 transition-colors group"
+              class="p-4 border border-default rounded-xl bg-muted/40 hover:bg-muted/60 transition-colors group"
             >
               <div class="flex items-start justify-between gap-4 mb-3">
                 <p
-                  class="font-medium text-white truncate flex-1"
+                  class="font-medium text-highlighted truncate flex-1"
                   :title="item.name"
                 >
                   {{ item.name }}
@@ -334,12 +330,12 @@ async function downloadZip() {
 
       <div v-else-if="activeTab === 'paste'" class="pt-2">
         <UCard
-          class="rounded-lg overflow-hidden ring ring-default divide-y divide-default border-2 min-h-100 transition-all border-base-800 bg-base-900/30"
+          class="rounded-lg overflow-hidden ring ring-default divide-y divide-default border-2 min-h-100 transition-all border-default bg-muted/30"
         >
           <div class="space-y-4 flex-1 flex flex-col">
             <div class="space-y-2">
               <label
-                class="text-xs font-semibold text-base-400 uppercase tracking-wider"
+                class="text-xs font-semibold text-muted uppercase tracking-wider"
                 >Input SVG</label
               >
               <UTextarea
@@ -354,11 +350,11 @@ async function downloadZip() {
             <div v-if="pastedItem" class="space-y-3 pt-4">
               <div class="flex items-center justify-between">
                 <label
-                  class="text-xs font-semibold text-base-400 uppercase tracking-wider"
+                  class="text-xs font-semibold text-muted uppercase tracking-wider"
                   >Optimized Output</label
                 >
                 <div
-                  class="flex items-center gap-2 text-xs text-base-400 font-mono bg-base-950/50 px-2 py-1"
+                  class="flex items-center gap-2 text-xs text-muted font-mono bg-default/50 px-2 py-1"
                 >
                   {{ formatBytes(pastedItem.origSize) }}
                   to
@@ -401,5 +397,5 @@ async function downloadZip() {
         </UCard>
       </div>
     </div>
-  </div>
+  </ToolPage>
 </template>

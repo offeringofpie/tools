@@ -194,7 +194,7 @@ onBeforeUnmount(() => editor.value?.destroy());
 </script>
 
 <template>
-  <div class="space-y-6 max-w-6xl mx-auto">
+  <ToolPage>
     <span aria-live="polite" class="sr">
       {{
         copied !== 'none'
@@ -203,16 +203,7 @@ onBeforeUnmount(() => editor.value?.destroy());
       }}
     </span>
 
-    <div class="space-y-2">
-      <h1 id="editor-title" class="text-2xl md:text-3xl font-bold text-white">
-        Markdown Editor
-      </h1>
-      <p class="text-base-400">
-        A clean, distraction-free writing environment.
-      </p>
-    </div>
-
-    <UCard class="flex flex-col border border-base-800 flex-1 p-0 sm:p-0">
+    <UCard class="flex flex-col border border-default flex-1 p-0 sm:p-0">
       <template #header>
         <div
           class="flex flex-col gap-4 md:flex-row md:items-center justify-between"
@@ -221,7 +212,7 @@ onBeforeUnmount(() => editor.value?.destroy());
             v-if="editor"
             role="toolbar"
             aria-label="Formatting tools"
-            class="flex flex-wrap items-center gap-1 bg-base-900 p-1 rounded-lg border border-base-800"
+            class="flex flex-wrap items-center gap-1 bg-muted p-1 rounded-lg border border-default"
           >
             <template v-for="(section, i) in menu" :key="i">
               <div
@@ -247,7 +238,7 @@ onBeforeUnmount(() => editor.value?.destroy());
                     :disabled="isDisabled(tool.cmd)"
                     :icon="tool.icon.startsWith('i-') ? tool.icon : undefined"
                     :class="{
-                      'bg-base-800 text-white':
+                      'bg-elevated text-highlighted':
                         tool.name && editor.isActive(tool.name, tool.attrs),
                     }"
                     @click="run(tool.cmd, tool.attrs)"
@@ -265,7 +256,7 @@ onBeforeUnmount(() => editor.value?.destroy());
 
               <div
                 v-if="i < menu.length - 1"
-                class="w-px h-5 bg-base-800 mx-1"
+                class="w-px h-5 bg-elevated mx-1"
                 aria-hidden="true"
               ></div>
             </template>
@@ -306,17 +297,17 @@ onBeforeUnmount(() => editor.value?.destroy());
 
       <ClientOnly>
         <div
-          class="bg-base-950/50 cursor-text rounded-b-xl"
+          class="bg-default/50 cursor-text rounded-b-xl"
           @click="editor?.commands.focus()"
         >
           <editor-content :editor="editor" />
         </div>
         <template #fallback>
-          <div class="min-h-125 flex items-center justify-center text-base-500">
+          <div class="min-h-125 flex items-center justify-center text-dimmed">
             Loading editor...
           </div>
         </template>
       </ClientOnly>
     </UCard>
-  </div>
+  </ToolPage>
 </template>

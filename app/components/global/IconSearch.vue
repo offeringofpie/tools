@@ -198,15 +198,11 @@ const tileClass =
 </script>
 
 <template>
-  <div class="space-y-4 pb-12">
+  <ToolPage>
     <div aria-live="polite" aria-atomic="true" class="sr-only">
       {{ announcement }}
     </div>
 
-    <header class="space-y-2">
-      <h1 class="text-2xl md:text-3xl font-bold text-white">Icon Search</h1>
-      <p class="text-base-400">Search for the ideal icon.</p>
-    </header>
 
     <div class="flex gap-2 items-center">
       <UInput
@@ -471,13 +467,13 @@ const tileClass =
     </UModal>
 
     <div class="flex items-center justify-center gap-1.5 pt-2 flex-wrap">
-      <p class="text-xs text-base-600">
+      <p class="text-xs text-dimmed">
         Icons from
         <ULink
           to="https://heroicons.com"
           target="_blank"
           rel="noopener noreferrer"
-          class="text-base-500 hover:text-base-300 underline underline-offset-2 transition-colors"
+          class="text-dimmed hover:text-muted underline underline-offset-2 transition-colors"
         >
           Heroicons
         </ULink>
@@ -486,7 +482,7 @@ const tileClass =
           to="https://lucide.dev"
           target="_blank"
           rel="noopener noreferrer"
-          class="text-base-500 hover:text-base-300 underline underline-offset-2 transition-colors"
+          class="text-dimmed hover:text-muted underline underline-offset-2 transition-colors"
         >
           Lucide
         </ULink>
@@ -495,7 +491,7 @@ const tileClass =
           to="https://phosphoricons.com"
           target="_blank"
           rel="noopener noreferrer"
-          class="text-base-500 hover:text-base-300 underline underline-offset-2 transition-colors"
+          class="text-dimmed hover:text-muted underline underline-offset-2 transition-colors"
         >
           Phosphor
         </ULink>
@@ -504,7 +500,7 @@ const tileClass =
           to="https://solar-icons.vercel.app/"
           target="_blank"
           rel="noopener noreferrer"
-          class="text-base-500 hover:text-base-300 underline underline-offset-2 transition-colors"
+          class="text-dimmed hover:text-muted underline underline-offset-2 transition-colors"
         >
           Solar
         </ULink>
@@ -513,7 +509,7 @@ const tileClass =
           to="https://fontawesome.com"
           target="_blank"
           rel="noopener noreferrer"
-          class="text-base-500 hover:text-base-300 underline underline-offset-2 transition-colors"
+          class="text-dimmed hover:text-muted underline underline-offset-2 transition-colors"
         >
           Font Awesome
         </ULink>
@@ -522,7 +518,7 @@ const tileClass =
           to="https://carbondesignsystem.com/elements/icons/library/"
           target="_blank"
           rel="noopener noreferrer"
-          class="text-base-500 hover:text-base-300 underline underline-offset-2 transition-colors"
+          class="text-dimmed hover:text-muted underline underline-offset-2 transition-colors"
         >
           Carbon
         </ULink>
@@ -531,11 +527,11 @@ const tileClass =
           to="https://simpleicons.org"
           target="_blank"
           rel="noopener noreferrer"
-          class="text-base-500 hover:text-base-300 underline underline-offset-2 transition-colors"
+          class="text-dimmed hover:text-muted underline underline-offset-2 transition-colors"
         >
           Simple Icons
         </ULink>
       </p>
     </div>
-  </div>
+  </ToolPage>
 </template>

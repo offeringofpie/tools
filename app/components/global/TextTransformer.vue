@@ -91,10 +91,8 @@ function copy(id: string, val: string) {
 </script>
 
 <template>
-  <div class="flex flex-col gap-2">
+  <ToolPage>
     <div class="space-y-6 flex flex-col mb-5">
-      <h1 class="text-2xl md:text-3xl font-bold text-white mb-2">Text Transformer</h1>
-      <p class="text-base-400">Paste any text and convert to other formats.</p>
       <UInput
         v-model="text"
         :placeholder="text"
@@ -150,5 +148,5 @@ function copy(id: string, val: string) {
         </UPageGrid>
       </template>
     </UCollapsible>
-  </div>
+  </ToolPage>
 </template>

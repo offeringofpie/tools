@@ -99,17 +99,17 @@ const toolsFor = (value: string) => {
 
     <section
       aria-labelledby="find-tools"
-      class="space-y-6 border-b border-base-800 pb-10"
+      class="space-y-6 border-b border-default pb-10"
     >
       <div class="flex items-center gap-3">
         <div>
           <h2
             id="find-tools"
-            class="text-2xl font-bold text-white text-balance"
+            class="text-2xl font-bold text-highlighted text-balance"
           >
             The right tools for you
           </h2>
-          <p class="text-base-400 text-pretty">
+          <p class="text-muted text-pretty">
             Here's some suggestions based on workflow.
           </p>
         </div>
@@ -134,12 +134,12 @@ const toolsFor = (value: string) => {
               orientation="horizontal"
               :ui="{
                 root: [
-                  'group p-4 rounded-lg ring ring-default bg-base-800 hover:bg-base-700',
+                  'group p-4 rounded-lg ring ring-default bg-elevated hover:bg-accented',
                   'transition-all duration-200 hover:shadow-lg hover:ring-primary',
                 ],
                 leadingIcon:
                   'transition-transform duration-200 group-hover:scale-110 text-primary',
-                title: 'transition-colors group-hover:text-primary text-white',
+                title: 'transition-colors group-hover:text-primary text-highlighted',
               }"
             />
           </UPageGrid>
@@ -173,7 +173,7 @@ const toolsFor = (value: string) => {
           orientation="horizontal"
           :ui="{
             root: [
-              'group p-4 rounded-lg ring ring-default bg-base-800 hover:bg-base-700',
+              'group p-4 rounded-lg ring ring-default bg-elevated hover:bg-accented',
               'transition-all duration-200 hover:shadow-lg',
               colours(category).hoverRing,
             ],

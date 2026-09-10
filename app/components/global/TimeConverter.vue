@@ -402,19 +402,15 @@ export function getAltCal(date: Date, calendar: string) {
 </script>
 
 <template>
-  <div class="space-y-6">
-    <h1 class="text-2xl md:text-3xl font-bold text-white mb-2">
-      Time Converter
-    </h1>
-    <p class="text-base-400">Convert time between different formats.</p>
-    <UCard class="border border-base-800">
+  <ToolPage>
+    <UCard class="border border-default">
       <div class="space-y-6">
         <UFormField>
           <div class="flex items-center gap-3 w-full">
             <UInput
               :model-value="getDisplayValue('local')"
               size="xl"
-              class="w-full flex-1 font-mono text-lg font-medium transition-all duration-300 focus:ring-2 focus:ring-secondary-500"
+              class="w-full flex-1 font-mono text-lg font-medium transition-all duration-300"
               variant="subtle"
               @update:model-value="handleInput('local', $event)"
               @focus="handleFocus('local')"
@@ -430,6 +426,7 @@ export function getAltCal(date: Date, calendar: string) {
                     variant="link"
                     color="success"
                     icon="i-heroicons-check"
+                    aria-label="Copied"
                     class="pointer-events-none"
                     :padded="false"
                   />
@@ -438,6 +435,7 @@ export function getAltCal(date: Date, calendar: string) {
                     variant="link"
                     color="neutral"
                     icon="i-heroicons-clipboard-document"
+                    aria-label="Copy value"
                     class="hover:text-primary focus:text-primary"
                     :padded="false"
                     @click="copy('local', standardFormats.local)"
@@ -460,13 +458,13 @@ export function getAltCal(date: Date, calendar: string) {
           </div>
         </UFormField>
 
-        <USeparator class="border-base-800" />
+        <USeparator class="border-default" />
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <template v-for="field in formFields" :key="field.id">
             <div v-if="field.id === 'zoned'" class="space-y-2">
               <div class="flex items-center justify-between w-full px-1">
-                <label class="block text-sm font-medium text-white">{{
+                <label class="block text-sm font-medium text-highlighted">{{
                   field.label
                 }}</label>
                 <USelect
@@ -482,7 +480,7 @@ export function getAltCal(date: Date, calendar: string) {
               <UInput
                 :model-value="getDisplayValue(field.id)"
                 size="lg"
-                class="w-full font-mono transition-all focus:ring-2 focus:ring-secondary-500"
+                class="w-full font-mono transition-all"
                 variant="subtle"
                 @update:model-value="handleInput(field.id, $event)"
                 @focus="handleFocus(field.id)"
@@ -500,6 +498,7 @@ export function getAltCal(date: Date, calendar: string) {
                       variant="link"
                       color="success"
                       icon="i-heroicons-check"
+                    aria-label="Copied"
                       class="pointer-events-none"
                       :padded="false"
                     />
@@ -508,6 +507,7 @@ export function getAltCal(date: Date, calendar: string) {
                       variant="link"
                       color="neutral"
                       icon="i-heroicons-clipboard-document"
+                    aria-label="Copy value"
                       class="hover:text-primary focus:text-primary"
                       :padded="false"
                       @click="copy(field.id, standardFormats.zoned)"
@@ -522,7 +522,7 @@ export function getAltCal(date: Date, calendar: string) {
                 :model-value="getDisplayValue(field.id)"
                 :readonly="field.id === 'swatch'"
                 size="lg"
-                class="w-full font-mono transition-all focus:ring-2 focus:ring-secondary-500"
+                class="w-full font-mono transition-all"
                 variant="subtle"
                 @update:model-value="handleInput(field.id, $event)"
                 @focus="handleFocus(field.id)"
@@ -540,6 +540,7 @@ export function getAltCal(date: Date, calendar: string) {
                       variant="link"
                       color="success"
                       icon="i-heroicons-check"
+                    aria-label="Copied"
                       class="pointer-events-none"
                       :padded="false"
                     />
@@ -548,6 +549,7 @@ export function getAltCal(date: Date, calendar: string) {
                       variant="link"
                       color="neutral"
                       icon="i-heroicons-clipboard-document"
+                    aria-label="Copy value"
                       class="hover:text-primary focus:text-primary"
                       :padded="false"
                       @click="
@@ -568,9 +570,9 @@ export function getAltCal(date: Date, calendar: string) {
       </div>
     </UCard>
 
-    <UCard v-if="alternativeCalendars.length" class="border border-base-800">
+    <UCard v-if="alternativeCalendars.length" class="border border-default">
       <template #header>
-        <h2 class="text-lg font-semibold text-white">Alternative Calendars</h2>
+        <h2 class="text-lg font-semibold text-highlighted">Alternative Calendars</h2>
       </template>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -579,7 +581,7 @@ export function getAltCal(date: Date, calendar: string) {
           :key="alt.id"
           role="button"
           tabindex="0"
-          class="group flex items-center justify-between p-4 rounded-lg bg-base-900/40 border border-base-800 hover:border-primary-500 cursor-pointer transition-all outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+          class="group flex items-center justify-between p-4 rounded-lg bg-muted/40 border border-default hover:border-primary-500 cursor-pointer transition-all outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
           @click="copy(alt.id, alt.value)"
           @keydown.enter="copy(alt.id, alt.value)"
           @keydown.space.prevent="copy(alt.id, alt.value)"
@@ -594,12 +596,12 @@ export function getAltCal(date: Date, calendar: string) {
               <UTooltip :text="alt.description" :popper="{ placement: 'top' }">
                 <UIcon
                   name="i-heroicons-information-circle"
-                  class="w-4 h-4 text-base-500 hover:text-primary-400 transition-colors"
+                  class="w-4 h-4 text-dimmed hover:text-primary-400 transition-colors"
                   @click.stop
                 />
               </UTooltip>
             </div>
-            <p class="text-base font-mono text-base-100">{{ alt.value }}</p>
+            <p class="text-base font-mono text-default">{{ alt.value }}</p>
           </div>
 
           <div class="flex items-center shrink-0 ml-4">
@@ -613,12 +615,12 @@ export function getAltCal(date: Date, calendar: string) {
               :class="
                 copiedField === alt.id
                   ? 'text-success-500 opacity-100'
-                  : 'text-base-400 opacity-0 group-hover:opacity-100 group-hover:text-primary-400'
+                  : 'text-muted opacity-0 group-hover:opacity-100 group-hover:text-primary-400'
               "
             />
           </div>
         </div>
       </div>
     </UCard>
-  </div>
+  </ToolPage>
 </template>

@@ -255,19 +255,14 @@ const run = computed(() => {
 </script>
 
 <template>
-  <div class="max-w-screen mx-auto flex flex-col lg:flex-row gap-6 items-start">
+  <ToolPage>
+    <div class="flex flex-col lg:flex-row gap-6 items-start">
     <div class="flex-1 w-full space-y-6 min-w-0">
-      <div>
-        <h1 class="text-2xl md:text-3xl font-bold text-white mb-2">
-          Regex Helper
-        </h1>
-        <p class="text-base-400">Write and debug regular expressions.</p>
-      </div>
 
-      <UCard class="border border-base-800 space-y-6">
+      <UCard class="border border-default space-y-6">
         <div>
           <div class="flex items-center gap-2">
-            <span class="text-base-500 font-bold font-mono">/</span>
+            <span class="text-dimmed font-bold font-mono">/</span>
             <UInput
               v-model="pattern"
               size="lg"
@@ -276,7 +271,7 @@ const run = computed(() => {
               variant="subtle"
               placeholder="([a-z]+)@([a-z]+)\.([a-z]{2,})"
             >
-              <span class="text-base-500 font-bold font-mono ml-2">/</span>
+              <span class="text-dimmed font-bold font-mono ml-2">/</span>
             </UInput>
             <UInput
               v-model="flags"
@@ -293,7 +288,7 @@ const run = computed(() => {
         </div>
 
         <div>
-          <label class="block font-semibold text-white mb-2 mt-6"
+          <label class="block font-semibold text-highlighted mb-2 mt-6"
             >Test String</label
           >
           <UTextarea
@@ -310,7 +305,7 @@ const run = computed(() => {
       <UCollapsible
         v-if="docs.length"
         v-model:open="openDocs"
-        class="border border-base-800 rounded-xl bg-base-900/20"
+        class="border border-default rounded-xl bg-muted/20"
       >
         <UButton
           color="neutral"
@@ -326,7 +321,7 @@ const run = computed(() => {
         </UButton>
         <template #content>
           <div
-            class="p-4 sm:p-6 pt-0 border-t border-base-800/50 mt-2 space-y-1.5 overflow-x-auto"
+            class="p-4 sm:p-6 pt-0 border-t border-default/50 mt-2 space-y-1.5 overflow-x-auto"
           >
             <div
               v-for="(item, i) in docs"
@@ -335,20 +330,20 @@ const run = computed(() => {
               :style="{ paddingLeft: `${item.depth * 1.5}rem` }"
             >
               <code
-                class="bg-base-950 border border-base-800 text-primary-400 px-1.5 py-0.5 rounded text-[11px] font-mono shadow-sm shrink-0 whitespace-pre"
+                class="bg-default border border-default text-primary-400 px-1.5 py-0.5 rounded text-[11px] font-mono shadow-sm shrink-0 whitespace-pre"
               >
                 {{ item.token }}
               </code>
-              <span class="text-base-300 text-xs mt-0.5">{{ item.desc }}</span>
+              <span class="text-muted text-xs mt-0.5">{{ item.desc }}</span>
             </div>
           </div>
         </template>
       </UCollapsible>
 
-      <UCard v-if="pattern && input" class="border border-base-800">
+      <UCard v-if="pattern && input" class="border border-default">
         <template #header>
           <div class="flex items-center justify-between">
-            <h2 class="text-lg font-semibold text-white">Match Results</h2>
+            <h2 class="text-lg font-semibold text-highlighted">Match Results</h2>
             <UBadge v-if="run.groups.length" color="primary" variant="subtle"
               >{{ run.groups.length }} match(es)</UBadge
             >
@@ -357,10 +352,10 @@ const run = computed(() => {
 
         <div class="space-y-4">
           <div
-            class="max-h-48 overflow-y-auto custom-scrollbar rounded-lg border border-base-800 bg-base-900/70 p-4 font-mono whitespace-pre-wrap break-words"
+            class="max-h-48 overflow-y-auto custom-scrollbar rounded-lg border border-default bg-muted/70 p-4 font-mono whitespace-pre-wrap break-words"
           >
             <template v-for="(node, i) in run.parts" :key="i">
-              <span v-if="node.text" class="text-base-300">{{
+              <span v-if="node.text" class="text-muted">{{
                 node.text
               }}</span>
               <mark
@@ -378,10 +373,10 @@ const run = computed(() => {
             <div
               v-for="(cap, i) in run.groups"
               :key="i"
-              class="bg-base-950 p-3 rounded border border-base-800 font-mono"
+              class="bg-default p-3 rounded border border-default font-mono"
             >
-              <div class="text-white mb-2">
-                <span class="text-base-500 mr-2">Match {{ i + 1 }}</span>
+              <div class="text-highlighted mb-2">
+                <span class="text-dimmed mr-2">Match {{ i + 1 }}</span>
                 <span
                   class="bg-primary-500/20 text-primary-300 px-1.5 rounded break-all"
                   >{{ cap.match }}</span
@@ -390,20 +385,20 @@ const run = computed(() => {
 
               <div
                 v-if="cap.items.length"
-                class="pl-4 border-l-2 border-base-800 space-y-1"
+                class="pl-4 border-l-2 border-default space-y-1"
               >
                 <div
                   v-for="(g, j) in cap.items"
                   :key="j"
-                  class="text-base-300 flex"
+                  class="text-muted flex"
                 >
-                  <span class="text-secondary-500/70 mr-2 shrink-0"
+                  <span class="text-secondary/70 mr-2 shrink-0"
                     >Group {{ j + 1 }}</span
                   >
                   <span class="break-all">{{ g }}</span>
                 </div>
               </div>
-              <div v-else class="pl-4 text-xs text-base-500 italic">
+              <div v-else class="pl-4 text-xs text-dimmed italic">
                 No capture groups
               </div>
             </div>
@@ -415,7 +410,7 @@ const run = computed(() => {
     <div class="w-full lg:w-64 shrink-0 lg:top-0 space-y-4">
       <UCollapsible
         v-model:open="openTpl"
-        class="border border-base-800 rounded-xl bg-base-900/20"
+        class="border border-default rounded-xl bg-muted/20"
       >
         <UButton
           color="neutral"
@@ -436,7 +431,7 @@ const run = computed(() => {
               :key="t.label"
               variant="soft"
               color="neutral"
-              class="font-mono justify-start border border-base-800"
+              class="font-mono justify-start border border-default"
               @click="
                 pattern = t.exp;
                 flags = t.flags;
@@ -450,7 +445,7 @@ const run = computed(() => {
 
       <UCollapsible
         v-model:open="openCheat"
-        class="border border-base-800 rounded-xl bg-base-900/20"
+        class="border border-default rounded-xl bg-muted/20"
       >
         <UButton
           color="neutral"
@@ -468,7 +463,7 @@ const run = computed(() => {
           <div class="p-3 pt-0 space-y-6">
             <div v-for="group in cheats" :key="group.label" class="space-y-2">
               <h3
-                class="text-xs font-semibold text-base-500 uppercase tracking-wider px-1"
+                class="text-xs font-semibold text-dimmed uppercase tracking-wider px-1"
               >
                 {{ group.label }}
               </h3>
@@ -477,15 +472,15 @@ const run = computed(() => {
                   v-for="h in group.items"
                   :key="h.token"
                   v-show="!h.hidden"
-                  class="flex items-center justify-between text-left hover:bg-base-800/50 p-1.5 rounded transition-colors group cursor-pointer"
+                  class="flex items-center justify-between text-left hover:bg-elevated/50 p-1.5 rounded transition-colors group cursor-pointer"
                   @click="pattern += h.token"
                 >
                   <code
-                    class="text-primary-400 bg-base-900 border border-base-800 px-1.5 py-0.5 rounded text-[11px] font-mono group-hover:border-primary-500/30 transition-colors"
+                    class="text-primary-400 bg-muted border border-default px-1.5 py-0.5 rounded text-[11px] font-mono group-hover:border-primary-500/30 transition-colors"
                     >{{ h.token }}</code
                   >
                   <span
-                    class="text-base-400 text-xs truncate ml-2 flex-1 text-right"
+                    class="text-muted text-xs truncate ml-2 flex-1 text-right"
                     >{{ h.short }}</span
                   >
                 </button>
@@ -494,6 +489,7 @@ const run = computed(() => {
           </div>
         </template>
       </UCollapsible>
+      </div>
     </div>
-  </div>
+  </ToolPage>
 </template>

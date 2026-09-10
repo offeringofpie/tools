@@ -48,7 +48,7 @@ defineShortcuts({
 const sidebarUi = computed(() => {
   return {
     container: [
-      'lg:relative lg:inset-auto lg:translate-x-0 lg:h-full border-r border-base-800 bg-bg',
+      'lg:relative lg:inset-auto lg:translate-x-0 lg:h-full border-r border-default bg-default',
       ready.value ? '' : 'transition-none',
     ],
     gap: ready.value ? '' : 'transition-none',
@@ -157,17 +157,17 @@ const home: NavigationMenuItem = {
 </script>
 
 <template>
-  <div class="flex flex-col h-screen w-full bg-bg text-base-50">
+  <div class="flex flex-col h-screen w-full bg-default text-highlighted">
     <a
       href="#main-content"
-      class="sr-only focus:not-sr-only focus:absolute focus:z-100 focus:top-2 focus:left-2 focus:px-4 focus:py-2 focus:bg-bg focus:text-base-50 focus:rounded focus:ring-2 focus:ring-primary"
+      class="sr-only focus:not-sr-only focus:absolute focus:z-100 focus:top-2 focus:left-2 focus:px-4 focus:py-2 focus:bg-default focus:text-highlighted focus:rounded focus:ring-2 focus:ring-primary"
     >
       Skip to content
     </a>
 
     <SiteHeader />
 
-    <div class="flex flex-1 overflow-hidden w-full bg-bg text-base-50">
+    <div class="flex flex-1 overflow-hidden w-full bg-default text-highlighted">
       <USidebar
         id="tool-sidebar"
         v-model:open="open"
@@ -205,7 +205,7 @@ const home: NavigationMenuItem = {
                   :class="
                     isRail(state)
                       ? ''
-                      : 'w-full justify-start font-normal text-base-400'
+                      : 'w-full justify-start font-normal text-muted'
                   "
                   aria-label="Search tools"
                   @click="paletteOpen = true"
@@ -249,7 +249,7 @@ const home: NavigationMenuItem = {
               :key="category"
               class="space-y-2"
             >
-              <USeparator class="my-2 border-base-800" />
+              <USeparator class="my-2 border-default" />
               <h3
                 v-if="!isRail(state)"
                 :class="[
@@ -273,9 +273,9 @@ const home: NavigationMenuItem = {
         </template>
       </USidebar>
 
-      <div class="flex-1 flex flex-col overflow-hidden bg-bg">
+      <div class="flex-1 flex flex-col overflow-hidden bg-default">
         <div
-          class="h-16 shrink-0 flex items-center gap-3 px-4 bg-bg border-b border-base-800"
+          class="h-16 shrink-0 flex items-center gap-3 px-4 bg-default border-b border-default"
         >
           <UButton
             icon="i-heroicons-bars-3"
@@ -317,7 +317,7 @@ const home: NavigationMenuItem = {
 
           <span
             v-if="route.path !== '/'"
-            class="text-sm font-medium text-base-400 lg:hidden truncate"
+            class="text-sm font-medium text-muted lg:hidden truncate"
           >
             {{ title }}
           </span>
@@ -353,7 +353,7 @@ const home: NavigationMenuItem = {
             <slot />
           </div>
           <footer
-            class="max-w-6xl mx-auto mt-12 pt-4 border-t border-base-800 text-sm text-base-400"
+            class="max-w-6xl mx-auto mt-12 pt-4 border-t border-default text-sm text-muted"
           >
             Built by
             <ULink

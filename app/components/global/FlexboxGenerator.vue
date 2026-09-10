@@ -223,11 +223,7 @@ const tabs = [
 </script>
 
 <template>
-  <div class="space-y-6 max-w-6xl mx-auto">
-    <div class="space-y-2">
-      <h1 class="text-2xl md:text-3xl font-bold text-white">Flexbox Builder</h1>
-      <p class="text-base-400">Learn and build Flexbox CSS.</p>
-    </div>
+  <ToolPage>
 
     <div class="flex flex-col-reverse md:flex-row items-start gap-4">
       <main class="flex-1 flex flex-col min-w-0">
@@ -363,5 +359,5 @@ const tabs = [
         </div>
       </aside>
     </div>
-  </div>
+  </ToolPage>
 </template>

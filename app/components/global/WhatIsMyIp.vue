@@ -35,12 +35,8 @@ onMounted(fetchIp);
 </script>
 
 <template>
-  <div class="space-y-6">
-    <div class="flex items-start justify-between gap-4 flex-wrap">
-      <div>
-        <h1 class="text-2xl md:text-3xl font-bold text-white mb-2">My IP</h1>
-        <p class="text-base-400">Your public IP and network info.</p>
-      </div>
+  <ToolPage>
+    <template #actions>
       <UButton
         variant="soft"
         color="neutral"
@@ -50,7 +46,7 @@ onMounted(fetchIp);
       >
         Refresh
       </UButton>
-    </div>
+    </template>
 
     <UAlert
       v-if="ipError"
@@ -60,17 +56,17 @@ onMounted(fetchIp);
       icon="i-heroicons-exclamation-circle"
     />
 
-    <UCard class="border border-base-800 bg-base-900/50">
+    <UCard class="border border-default bg-muted/50">
       <div class="flex items-center justify-between gap-4 flex-wrap">
         <div>
-          <p class="text-xs uppercase tracking-widest text-base-500 mb-1">
+          <p class="text-xs uppercase tracking-widest text-dimmed mb-1">
             Public IP Address
           </p>
-          <div v-if="ipLoading" class="flex items-center gap-2 text-base-500">
+          <div v-if="ipLoading" class="flex items-center gap-2 text-dimmed">
             <UIcon name="i-heroicons-arrow-path" class="size-4 animate-spin" />
             <span class="text-sm">Fetching…</span>
           </div>
-          <p v-else class="text-3xl font-mono font-bold text-white">
+          <p v-else class="text-3xl font-mono font-bold text-highlighted">
             {{ ipData?.ip ?? '—' }}
           </p>
         </div>
@@ -107,7 +103,7 @@ onMounted(fetchIp);
           },
         ]"
         :key="item.label"
-        class="border border-base-800 bg-base-900/50"
+        class="border border-default bg-muted/50"
       >
         <div class="flex items-start gap-3">
           <UIcon
@@ -115,8 +111,8 @@ onMounted(fetchIp);
             class="size-4 text-primary-400 mt-0.5 shrink-0"
           />
           <div class="min-w-0">
-            <p class="text-xs text-base-500 mb-0.5">{{ item.label }}</p>
-            <p class="text-sm text-base-100 font-medium break-all">
+            <p class="text-xs text-dimmed mb-0.5">{{ item.label }}</p>
+            <p class="text-sm text-default font-medium break-all">
               {{ item.value || '—' }}
             </p>
           </div>
@@ -125,17 +121,17 @@ onMounted(fetchIp);
     </div>
 
     <div class="flex items-center justify-center gap-1.5 pt-2">
-      <p class="text-xs text-base-600">
+      <p class="text-xs text-dimmed">
         Data provided by
         <ULink
           to="https://ipapi.co"
           target="_blank"
           rel="noopener noreferrer"
-          class="text-base-500 hover:text-base-300 underline underline-offset-2 transition-colors"
+          class="text-dimmed hover:text-muted underline underline-offset-2 transition-colors"
         >
           ipapi.co
         </ULink>
       </p>
     </div>
-  </div>
+  </ToolPage>
 </template>

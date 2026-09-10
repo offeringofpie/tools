@@ -26,7 +26,7 @@ function goHome() {
 <template>
   <UApp>
     <div
-      class="min-h-screen flex flex-col items-center justify-center gap-6 px-6 text-center bg-default text-base-50"
+      class="min-h-screen flex flex-col items-center justify-center gap-6 px-6 text-center bg-default text-highlighted"
     >
       <SiteLogo class="size-16 text-primary" />
 
@@ -35,10 +35,10 @@ function goHome() {
       </p>
 
       <div class="space-y-2 max-w-md">
-        <h1 class="text-2xl md:text-3xl font-bold text-white">
+        <h1 class="text-title font-bold text-highlighted">
           {{ heading }}
         </h1>
-        <p class="text-base-400">{{ message }}</p>
+        <p class="text-muted">{{ message }}</p>
       </div>
 
       <UButton

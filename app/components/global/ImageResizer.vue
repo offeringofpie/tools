@@ -345,7 +345,13 @@ async function download() {
 </script>
 
 <template>
-  <div class="space-y-6 max-w-7xl mx-auto">
+  <ToolPage>
+    <template v-if="items.length" #actions>
+      <UButton variant="soft" icon="i-heroicons-trash" @click="clearAll"
+        >Clear</UButton
+      >
+    </template>
+
     <input
       ref="picker"
       type="file"
@@ -355,28 +361,16 @@ async function download() {
       @change="handleFileSelect"
     />
 
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
-      <div class="space-y-2">
-        <h1 class="text-2xl md:text-3xl font-bold text-white">Image Resizer</h1>
-        <p class="text-base-400">Resize Images in bulk!</p>
-      </div>
-      <div v-if="items.length">
-        <UButton variant="soft" icon="i-heroicons-trash" @click="clearAll"
-          >Clear</UButton
-        >
-      </div>
-    </div>
-
     <div class="flex flex-col lg:flex-row gap-6">
       <div v-if="items.length" class="w-full lg:w-80 lg:order-last shrink-0">
         <div class="lg:sticky lg:top-8">
           <UCard
-            class="border border-base-800 bg-base-900/50"
+            class="border border-default bg-muted/50"
             :ui="{ body: { base: 'overflow-visible' } }"
           >
             <template #header>
               <h2
-                class="text-xs font-bold text-white uppercase tracking-widest"
+                class="text-xs font-bold text-highlighted uppercase tracking-widest"
               >
                 Settings
               </h2>
@@ -426,7 +420,7 @@ async function download() {
           :class="
             dragging
               ? 'border-primary-500 bg-primary-500/10'
-              : 'border-base-800 bg-base-900/30 hover:border-base-700 hover:bg-base-900/40'
+              : 'border-default bg-muted/30 hover:border-accented hover:bg-muted/40'
           "
           role="button"
           @dragover.prevent="dragging = true"
@@ -439,9 +433,9 @@ async function download() {
           >
             <UIcon
               name="i-heroicons-photo"
-              class="w-16 h-16 text-base-600 mb-4"
+              class="w-16 h-16 text-dimmed mb-4"
             />
-            <h3 class="text-lg font-medium text-white mb-2">
+            <h3 class="text-lg font-medium text-highlighted mb-2">
               Drop images here
             </h3>
           </div>
@@ -452,16 +446,16 @@ async function download() {
           class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
         >
           <div
-            class="border-2 border-dashed border-base-800 rounded-xl bg-base-900/20 flex flex-col items-center justify-center min-h-62.5 hover:border-base-700 hover:bg-base-900/40 transition-all group"
+            class="border-2 border-dashed border-default rounded-xl bg-muted/20 flex flex-col items-center justify-center min-h-62.5 hover:border-accented hover:bg-muted/40 transition-all group"
             role="button"
             @click="picker?.click()"
           >
             <UIcon
               name="i-heroicons-plus-circle"
-              class="w-10 h-10 text-base-700 group-hover:text-base-500 transition-colors"
+              class="w-10 h-10 text-dimmed group-hover:text-dimmed transition-colors"
             />
             <span
-              class="text-sm font-medium text-base-600 group-hover:text-base-400 mt-2"
+              class="text-sm font-medium text-dimmed group-hover:text-muted mt-2"
               >Add more</span
             >
           </div>
@@ -469,13 +463,13 @@ async function download() {
           <UCard
             v-for="item in items"
             :key="item.id"
-            class="border border-base-800 bg-base-900/50 flex flex-col overflow-hidden"
+            class="border border-default bg-muted/50 flex flex-col overflow-hidden"
             :ui="{ body: { padding: 'p-0' } }"
           >
             <div
-              class="flex items-center justify-between gap-2 px-3 py-2 border-b border-base-800 bg-base-900/80"
+              class="flex items-center justify-between gap-2 px-3 py-2 border-b border-default bg-muted/80"
             >
-              <span class="text-xs font-medium text-white truncate">{{
+              <span class="text-xs font-medium text-highlighted truncate">{{
                 item.name
               }}</span>
               <UButton
@@ -488,7 +482,7 @@ async function download() {
             </div>
 
             <div
-              class="relative w-full bg-base-950 overflow-hidden select-none flex items-center justify-center min-h-50"
+              class="relative w-full bg-default overflow-hidden select-none flex items-center justify-center min-h-50"
             >
               <div
                 class="relative w-full"
@@ -510,7 +504,7 @@ async function download() {
               </div>
             </div>
             <div
-              class="p-3 border-t border-base-800 bg-base-900/80 flex items-center justify-center text-[10px] text-base-500 font-mono"
+              class="p-3 border-t border-default bg-muted/80 flex items-center justify-center text-[10px] text-dimmed font-mono"
             >
               {{ item.w }}x{{ item.h }} to {{ getDimensions(item).w }}x{{
                 getDimensions(item).h
@@ -520,5 +514,5 @@ async function download() {
         </div>
       </div>
     </div>
-  </div>
+  </ToolPage>
 </template>

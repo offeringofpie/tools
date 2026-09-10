@@ -274,15 +274,7 @@ export function beautify(code: string, type: CodeType): string {
 </script>
 
 <template>
-  <div class="space-y-6">
-    <div class="space-y-2">
-      <h1 class="text-2xl md:text-3xl font-bold text-white">
-        Code Minifier / Beautifier
-      </h1>
-      <p class="text-base-400 max-w-2xl">
-        Quick & dirty HTML, CSS, JavaScript code minifier or beautifier.
-      </p>
-    </div>
+  <ToolPage>
 
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
       <UCard class="h-full">
@@ -291,8 +283,8 @@ export function beautify(code: string, type: CodeType): string {
             class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between"
           >
             <div>
-              <h2 class="text-lg font-semibold text-white">Input</h2>
-              <p class="text-sm text-base-400">Paste code here.</p>
+              <h2 class="text-lg font-semibold text-highlighted">Input</h2>
+              <p class="text-sm text-muted">Paste code here.</p>
             </div>
             <UFieldGroup class="flex-wrap">
               <UButton
@@ -340,8 +332,8 @@ export function beautify(code: string, type: CodeType): string {
             class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between"
           >
             <div>
-              <h2 class="text-lg font-semibold text-white">Output</h2>
-              <p class="text-sm text-base-400">
+              <h2 class="text-lg font-semibold text-highlighted">Output</h2>
+              <p class="text-sm text-muted">
                 Your processed code appears here.
               </p>
             </div>
@@ -359,14 +351,14 @@ export function beautify(code: string, type: CodeType): string {
         </template>
 
         <div
-          class="min-h-96 rounded-lg border border-base-800 bg-base-900/70 p-4 overflow-auto"
+          class="min-h-96 rounded-lg border border-default bg-muted/70 p-4 overflow-auto"
         >
           <pre
-            class="text-sm text-base-100 whitespace-pre-wrap wrap-break-word font-mono"
+            class="text-sm text-default whitespace-pre-wrap wrap-break-word font-mono"
             >{{ output }}</pre
           >
         </div>
       </UCard>
     </div>
-  </div>
+  </ToolPage>
 </template>

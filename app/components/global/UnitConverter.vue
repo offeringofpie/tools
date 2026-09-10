@@ -385,15 +385,7 @@ export function format(val: number | string): string {
 </script>
 
 <template>
-  <div class="space-y-6 max-w-6xl mx-auto">
-    <div>
-      <h1 class="text-2xl md:text-3xl font-bold text-white mb-2">
-        Unit Converter
-      </h1>
-      <p class="text-base-400">
-        Convert between units of length, weight, temperature, and more.
-      </p>
-    </div>
+  <ToolPage>
     <div class="flex flex-col md:flex-row gap-4 items-start">
     <UCard class="flex-1 w-full order-2 md:order-1 min-w-0">
       <UPageGrid>
@@ -450,5 +442,5 @@ export function format(val: number | string): string {
       />
     </div>
   </div>
-  </div>
+  </ToolPage>
 </template>

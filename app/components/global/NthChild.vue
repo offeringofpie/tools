@@ -371,13 +371,7 @@ const Sections = [{ key: 'presets' as const, label: 'Presets' }];
 </script>
 
 <template>
-  <div class="space-y-6 max-w-6xl mx-auto">
-    <div class="space-y-2">
-      <h1 class="text-2xl md:text-3xl font-bold text-white">
-        :nth-child Helper
-      </h1>
-      <p class="text-base-400">Helping make :nth-child() rules since 2026.</p>
-    </div>
+  <ToolPage>
 
     <div class="flex flex-col-reverse md:flex-row items-start gap-4">
       <main class="flex-1 flex flex-col min-w-0 items-end-safe gap-5">
@@ -390,6 +384,7 @@ const Sections = [{ key: 'presets' as const, label: 'Presets' }];
                 variant="outline"
                 size="sm"
                 icon="i-heroicons-minus"
+                aria-label="Remove one element"
                 @click="decreaseTotal"
               />
               {{ total }}
@@ -399,6 +394,7 @@ const Sections = [{ key: 'presets' as const, label: 'Presets' }];
                 variant="outline"
                 size="sm"
                 icon="i-heroicons-plus"
+                aria-label="Add one element"
                 @click="increaseTotal"
               />
             </div>
@@ -430,7 +426,7 @@ const Sections = [{ key: 'presets' as const, label: 'Presets' }];
                     ? 'text-primary'
                     : getItemState(i) === 'predicted'
                       ? 'border-2 border-dashed opacity-50 text-primary'
-                      : 'text-base-400',
+                      : 'text-muted',
                 ]"
                 :title="`Child #${i}${predicted.has(i) ? ' — predicted' : ''}`"
                 @click="toggle(i)"
@@ -534,11 +530,12 @@ const Sections = [{ key: 'presets' as const, label: 'Presets' }];
                 size="sm"
                 variant="subtle"
                 :icon="copied ? 'i-heroicons-check' : 'i-heroicons-document-duplicate'"
+                :aria-label="copied ? 'CSS copied' : 'Copy CSS'"
                 @click="copy"
               /></pre>
           </div>
         </div>
       </aside>
     </div>
-  </div>
+  </ToolPage>
 </template>

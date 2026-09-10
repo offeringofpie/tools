@@ -17,7 +17,7 @@
 
       <nav
         aria-label="Main navigation"
-        class="hidden md:flex items-center gap-5 text-2xl text-base-400"
+        class="hidden md:flex items-center gap-5 text-2xl text-muted"
       >
         <ULink
           raw
