@@ -292,7 +292,7 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const ip = getRequestIP(event, { xForwardedFor: true }) ?? 'unknown';
+  const ip = getHeader(event, 'cf-connecting-ip') ?? 'unknown';
   const rateLimitKey = `${ip}:${mode}:${btoa(url.href)}`;
   const cacheKey = `fetch:${mode}:${btoa(url.href)}`;
 

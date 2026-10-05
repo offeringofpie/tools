@@ -1,12 +1,9 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { dirname, resolve } from 'node:path';
+import { resolve } from 'node:path';
 
 const require = createRequire(import.meta.url);
-const outputFile = resolve(
-  import.meta.dirname,
-  '../public/data/icon-search.json',
-);
+const outputDir = resolve(import.meta.dirname, '../public/data/icons');
 
 const readJson = (specifier) =>
   JSON.parse(readFileSync(require.resolve(specifier), 'utf8'));
@@ -39,45 +36,36 @@ const sets = [
   { pkg: 'simple-icons', lib: 'simple-icons' },
 ];
 
-function loadSet(set) {
+function buildSet(set) {
   const { icons } = readJson(`@iconify-json/${set.pkg}/icons.json`);
   const baseName = set.baseName ?? identity;
   const tags = set.tags ?? {};
 
-  return Object.entries(icons).map(([name, icon]) => {
-    return {
-      id: `${set.pkg}:${name}`,
-      name: baseName(name),
-      lib: set.lib,
-      tags: tags[name] ?? [],
-      body: icon.body,
-      w: icon.width ?? set.width ?? 24,
-      h: icon.height ?? set.height ?? 24,
-    };
-  });
-}
-
-function countByLib(icons) {
-  return icons.reduce((counts, icon) => {
-    counts[icon.lib] = (counts[icon.lib] ?? 0) + 1;
-    return counts;
-  }, {});
+  return {
+    lib: set.lib,
+    width: set.width ?? 24,
+    height: set.height ?? 24,
+    icons: Object.entries(icons).map(([key, icon]) => {
+      return {
+        key,
+        name: baseName(key),
+        body: icon.body,
+        w: icon.width,
+        h: icon.height,
+        tags: tags[key],
+      };
+    }),
+  };
 }
 
 function main() {
-  const icons = sets.flatMap(loadSet);
+  mkdirSync(outputDir, { recursive: true });
 
-  const output = {
-    meta: {
-      generated: new Date().toISOString(),
-      total: icons.length,
-      libs: countByLib(icons),
-    },
-    icons,
-  };
+  for (const set of sets) {
+    const file = resolve(outputDir, `${set.pkg}.json`);
+    writeFileSync(file, JSON.stringify(buildSet(set)));
+  }
 
-  mkdirSync(dirname(outputFile), { recursive: true });
-  writeFileSync(outputFile, JSON.stringify(output));
   console.log(`Complete!`);
 }
 
