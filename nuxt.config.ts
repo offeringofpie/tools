@@ -1,3 +1,6 @@
+import { rename, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
+
 // Runs before Google Tag Manager loads, so Google's tags start denied for
 // everything except analytics. Analytics is granted with client storage
 // switched off in the container, which keeps it cookieless.
@@ -17,15 +20,30 @@ gtag('set', 'url_passthrough', true);
 gtag('set', 'ads_data_redaction', true);
 `;
 
+// Workers static assets only read these from the root of the assets
+// directory, while Nitro writes `_headers` inside the `/tools/` base.
+const redirects = `/tools /tools/ 301
+/tools/index.html /tools/ 301
+/tools/:slug/ /tools/:slug 301
+`;
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
 
   ssr: true,
   nitro: {
-    preset: 'netlify',
+    preset: 'cloudflare_module',
+    cloudflare: {
+      deployConfig: true,
+      nodeCompat: true,
+      wrangler: {
+        name: 'jl-tools',
+      },
+    },
     prerender: {
       crawlLinks: true,
+      autoSubfolderIndex: false,
       routes: ['/', '/sitemap.xml'],
     },
     storage: {
@@ -35,6 +53,23 @@ export default defineNuxtConfig({
       cache: {
         driver: 'memory',
       },
+    },
+  },
+
+  hooks: {
+    'nitro:init'(nitro) {
+      if (nitro.options.dev) {
+        return;
+      }
+
+      nitro.hooks.hook('compiled', async () => {
+        const assetsDir = join(nitro.options.output.dir, 'public');
+        await rename(
+          join(nitro.options.output.publicDir, '_headers'),
+          join(assetsDir, '_headers'),
+        );
+        await writeFile(join(assetsDir, '_redirects'), redirects);
+      });
     },
   },
 

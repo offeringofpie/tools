@@ -17,6 +17,20 @@ interface IconEntry {
   h: number;
 }
 
+type IconSet = {
+  lib: string;
+  width: number;
+  height: number;
+  icons: {
+    key: string;
+    name: string;
+    body: string;
+    w?: number;
+    h?: number;
+    tags?: string[];
+  }[];
+};
+
 const maxResults = 2000;
 
 const libLabels: Record<string, string> = {
@@ -60,14 +74,42 @@ const allIcons = ref<IconEntry[]>([]);
 const iconsLoaded = ref(false);
 const loadError = ref(false);
 
-const dataUrl = `${useRuntimeConfig().app.baseURL}data/icon-search.json`;
+const setPrefixes = [
+  'heroicons',
+  'lucide',
+  'ph',
+  'solar',
+  'fa6-solid',
+  'fa6-regular',
+  'fa6-brands',
+  'carbon',
+  'simple-icons',
+];
+
+const dataUrl = `${useRuntimeConfig().app.baseURL}data/icons`;
+
+const loadSet = async (prefix: string): Promise<IconEntry[]> => {
+  const res = await fetch(`${dataUrl}/${prefix}.json`);
+  if (!res.ok) throw new Error(res.statusText);
+
+  const set = (await res.json()) as IconSet;
+  return set.icons.map((icon) => {
+    return {
+      id: `${prefix}:${icon.key}`,
+      name: icon.name,
+      lib: set.lib,
+      tags: icon.tags ?? [],
+      body: icon.body,
+      w: icon.w ?? set.width,
+      h: icon.h ?? set.height,
+    };
+  });
+};
 
 onMounted(async () => {
   try {
-    const res = await fetch(dataUrl);
-    if (!res.ok) throw new Error(res.statusText);
-    const data = (await res.json()) as { icons: IconEntry[] };
-    allIcons.value = data.icons;
+    const sets = await Promise.all(setPrefixes.map(loadSet));
+    allIcons.value = sets.flat();
     iconsLoaded.value = true;
   } catch {
     loadError.value = true;

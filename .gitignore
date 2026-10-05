@@ -34,3 +34,6 @@ coverage/
 .netlify
 
 deno.lock
+
+# Local Wrangler state and generated deploy config
+.wrangler
