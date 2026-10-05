@@ -43,6 +43,9 @@ interface CityItem {
   place: Place;
 }
 
+const esriCanvas =
+  'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas';
+
 const unit = ref<'C' | 'F'>('C');
 
 function toF(c: number) {
@@ -283,10 +286,19 @@ async function initMap() {
     maxZoom: 12,
   }).setView([pos.value.lat, pos.value.lon], 7);
 
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-    attribution: '© OpenStreetMap, © CARTO',
+  L.tileLayer(`${esriCanvas}/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}`, {
+    attribution:
+      'Powered by <a href="https://www.esri.com/" target="_blank">Esri</a> | Esri, HERE, Garmin, &copy; OpenStreetMap contributors, and the GIS user community',
     maxZoom: 12,
   }).addTo(map);
+
+  L.tileLayer(
+    `${esriCanvas}/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}`,
+    {
+      maxZoom: 12,
+      zIndex: 2,
+    },
+  ).addTo(map);
 
   const rv = await $fetch<any>(
     'https://api.rainviewer.com/public/weather-maps.json',
@@ -530,12 +542,12 @@ onBeforeUnmount(() => {
         </ULink>
         ·
         <ULink
-          to="https://carto.com"
+          to="https://www.esri.com"
           target="_blank"
           rel="noopener noreferrer"
           class="text-dimmed hover:text-muted underline underline-offset-2 transition-colors"
         >
-          CARTO
+          Esri
         </ULink>
         ·
         <ULink
