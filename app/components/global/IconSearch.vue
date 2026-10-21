@@ -33,15 +33,58 @@ type IconSet = {
 
 const maxResults = 2000;
 
-const libLabels: Record<string, string> = {
-  heroicons: 'Heroicons',
-  lucide: 'Lucide',
-  ph: 'Phosphor',
-  solar: 'Solar',
-  fa6: 'Font Awesome 6',
-  carbon: 'Carbon',
-  'simple-icons': 'Simple Icons',
+type Lib = {
+  label: string;
+  url: string;
+  files: string[];
 };
+
+type LibStatus = 'loading' | 'loaded' | 'error';
+
+const libs: Record<string, Lib> = {
+  heroicons: {
+    label: 'Heroicons',
+    url: 'https://heroicons.com',
+    files: ['heroicons'],
+  },
+  lucide: {
+    label: 'Lucide',
+    url: 'https://lucide.dev',
+    files: ['lucide'],
+  },
+  ph: {
+    label: 'Phosphor',
+    url: 'https://phosphoricons.com',
+    files: ['ph'],
+  },
+  fa6: {
+    label: 'Font Awesome 6',
+    url: 'https://fontawesome.com',
+    files: ['fa6-solid', 'fa6-regular', 'fa6-brands'],
+  },
+  hugeicons: {
+    label: 'Hugeicons',
+    url: 'https://hugeicons.com',
+    files: ['hugeicons'],
+  },
+  solar: {
+    label: 'Solar',
+    url: 'https://solar-icons.vercel.app/',
+    files: ['solar'],
+  },
+  carbon: {
+    label: 'Carbon',
+    url: 'https://carbondesignsystem.com/elements/icons/library/',
+    files: ['carbon'],
+  },
+  'simple-icons': {
+    label: 'Simple Icons',
+    url: 'https://simpleicons.org',
+    files: ['simple-icons'],
+  },
+};
+
+const defaultLibs = ['heroicons', 'lucide', 'fa6', 'hugeicons'];
 
 const featuredIds = [
   'heroicons:home',
@@ -70,21 +113,12 @@ const featuredIds = [
   'lucide:sun',
 ];
 
-const allIcons = ref<IconEntry[]>([]);
-const iconsLoaded = ref(false);
-const loadError = ref(false);
+const iconsByLib = ref<Record<string, IconEntry[]>>({});
+const libStatus = ref<Record<string, LibStatus>>({});
 
-const setPrefixes = [
-  'heroicons',
-  'lucide',
-  'ph',
-  'solar',
-  'fa6-solid',
-  'fa6-regular',
-  'fa6-brands',
-  'carbon',
-  'simple-icons',
-];
+const allIcons = computed(() => {
+  return Object.keys(libs).flatMap((key) => iconsByLib.value[key] ?? []);
+});
 
 const dataUrl = `${useRuntimeConfig().app.baseURL}data/icons`;
 
@@ -106,14 +140,24 @@ const loadSet = async (prefix: string): Promise<IconEntry[]> => {
   });
 };
 
-onMounted(async () => {
-  try {
-    const sets = await Promise.all(setPrefixes.map(loadSet));
-    allIcons.value = sets.flat();
-    iconsLoaded.value = true;
-  } catch {
-    loadError.value = true;
+const loadLib = async (key: string) => {
+  const status = libStatus.value[key];
+  if (status === 'loading' || status === 'loaded') {
+    return;
   }
+
+  libStatus.value[key] = 'loading';
+  try {
+    const sets = await Promise.all(libs[key].files.map(loadSet));
+    iconsByLib.value[key] = sets.flat();
+    libStatus.value[key] = 'loaded';
+  } catch {
+    libStatus.value[key] = 'error';
+  }
+};
+
+onMounted(() => {
+  filterLibs.value.forEach(loadLib);
 });
 
 const iconById = computed(
@@ -127,33 +171,34 @@ const makeSvg = (icon: IconEntry, size?: number) => {
 
 const iconClass = (icon: IconEntry) => `i-${icon.id.replace(':', '-')}`;
 
-const libCounts = computed(() =>
-  allIcons.value.reduce<Record<string, number>>((acc, icon) => {
-    acc[icon.lib] = (acc[icon.lib] ?? 0) + 1;
-    return acc;
-  }, {}),
-);
-
-const allLibs = computed(() =>
-  Object.entries(libLabels).map(([key, label]) => {
-    const count = libCounts.value[key];
+const allLibs = computed(() => {
+  return Object.entries(libs).map(([key, lib]) => {
+    const count = iconsByLib.value[key]?.length;
     return {
       key,
-      label: count ? `${label} (${count.toLocaleString()})` : label,
+      label: count ? `${lib.label} (${count.toLocaleString()})` : lib.label,
+      loading: libStatus.value[key] === 'loading',
     };
-  }),
-);
+  });
+});
 
 const query = ref('');
 const search = refDebounced(query, 150);
-const filterLibs = ref<string[]>([]);
+const filterLibs = ref<string[]>(defaultLibs);
 const copied = ref<string | null>(null);
 const grid = ref<HTMLElement | null>(null);
 const announcement = ref('');
 const selectedIcon = ref<IconEntry | null>(null);
 const modalOpen = ref(false);
 
-const hasFilters = computed(() => search.value || filterLibs.value.length);
+const isDefaultLibs = computed(() => {
+  return (
+    filterLibs.value.length === defaultLibs.length &&
+    defaultLibs.every((key) => filterLibs.value.includes(key))
+  );
+});
+
+const hasFilters = computed(() => search.value || !isDefaultLibs.value);
 
 const openIcon = (icon: IconEntry) => {
   selectedIcon.value = icon;
@@ -161,10 +206,26 @@ const openIcon = (icon: IconEntry) => {
   modalOpen.value = true;
 };
 
+const hasError = computed(() => {
+  return filterLibs.value.some((key) => libStatus.value[key] === 'error');
+});
+
+const isLoading = computed(() => {
+  return filterLibs.value.some((key) => libStatus.value[key] !== 'loaded');
+});
+
 const toggleLib = (key: string) => {
-  filterLibs.value = filterLibs.value.includes(key)
-    ? filterLibs.value.filter((lib) => lib !== key)
-    : [...filterLibs.value, key];
+  if (filterLibs.value.includes(key)) {
+    filterLibs.value = filterLibs.value.filter((lib) => lib !== key);
+    return;
+  }
+
+  filterLibs.value = [...filterLibs.value, key];
+  loadLib(key);
+};
+
+const retry = () => {
+  filterLibs.value.forEach(loadLib);
 };
 
 const downloadSvg = (icon: IconEntry) => {
@@ -310,6 +371,7 @@ const tileClass =
               :variant="filterLibs.includes(lib.key) ? 'solid' : 'subtle'"
               size="xs"
               class="rounded-full"
+              :loading="lib.loading"
               :aria-pressed="filterLibs.includes(lib.key)"
               @click="toggleLib(lib.key)"
               >{{ lib.label }}</UButton
@@ -319,7 +381,21 @@ const tileClass =
       </UPopover>
     </div>
 
-    <template v-if="!iconsLoaded">
+    <UAlert
+      v-if="hasError"
+      color="error"
+      variant="subtle"
+      title="Couldn't load icons"
+      class="my-6"
+    >
+      <template #actions>
+        <UButton color="neutral" variant="outline" size="xs" @click="retry">
+          Retry
+        </UButton>
+      </template>
+    </UAlert>
+
+    <template v-else-if="isLoading">
       <div class="flex items-center justify-center h-40 gap-3 text-muted">
         <UIcon name="i-heroicons-arrow-path" class="size-5 animate-spin" />
         <span>Loading icons…</span>
@@ -336,7 +412,7 @@ const tileClass =
         >
           <button
             :class="tileClass"
-            :aria-label="`${icon.name} from ${libLabels[icon.lib] ?? icon.lib}`"
+            :aria-label="`${icon.name} from ${libs[icon.lib].label}`"
             @click="openIcon(icon)"
           >
             <div class="w-full aspect-square flex items-center justify-center">
@@ -376,7 +452,7 @@ const tileClass =
             >
               <button
                 :class="tileClass"
-                :aria-label="`${icon.name} from ${libLabels[icon.lib] ?? icon.lib}`"
+                :aria-label="`${icon.name} from ${libs[icon.lib].label}`"
                 @click="openIcon(icon)"
               >
                 <div
@@ -427,7 +503,7 @@ const tileClass =
                 {{ selectedIcon.name }}
               </p>
               <p class="text-xs text-muted mt-0.5">
-                {{ libLabels[selectedIcon.lib] ?? selectedIcon.lib }}
+                {{ libs[selectedIcon.lib].label }}
               </p>
             </div>
             <div class="flex flex-col gap-2 w-full">
@@ -511,68 +587,17 @@ const tileClass =
     <div class="flex items-center justify-center gap-1.5 pt-2 flex-wrap">
       <p class="text-xs text-dimmed">
         Icons from
-        <ULink
-          to="https://heroicons.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-dimmed hover:text-muted underline underline-offset-2 transition-colors"
-        >
-          Heroicons
-        </ULink>
-        ·
-        <ULink
-          to="https://lucide.dev"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-dimmed hover:text-muted underline underline-offset-2 transition-colors"
-        >
-          Lucide
-        </ULink>
-        ·
-        <ULink
-          to="https://phosphoricons.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-dimmed hover:text-muted underline underline-offset-2 transition-colors"
-        >
-          Phosphor
-        </ULink>
-        ·
-        <ULink
-          to="https://solar-icons.vercel.app/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-dimmed hover:text-muted underline underline-offset-2 transition-colors"
-        >
-          Solar
-        </ULink>
-        ·
-        <ULink
-          to="https://fontawesome.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-dimmed hover:text-muted underline underline-offset-2 transition-colors"
-        >
-          Font Awesome
-        </ULink>
-        ·
-        <ULink
-          to="https://carbondesignsystem.com/elements/icons/library/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-dimmed hover:text-muted underline underline-offset-2 transition-colors"
-        >
-          Carbon
-        </ULink>
-        ·
-        <ULink
-          to="https://simpleicons.org"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-dimmed hover:text-muted underline underline-offset-2 transition-colors"
-        >
-          Simple Icons
-        </ULink>
+        <template v-for="(lib, key, index) in libs" :key="key">
+          <template v-if="index"> · </template>
+          <ULink
+            :to="lib.url"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-dimmed hover:text-muted underline underline-offset-2 transition-colors"
+          >
+            {{ lib.label }}
+          </ULink>
+        </template>
       </p>
     </div>
   </ToolPage>

@@ -34,6 +34,7 @@ const sets = [
   { pkg: 'fa6-brands', lib: 'fa6', width: 512, height: 512 },
   { pkg: 'carbon', lib: 'carbon', width: 32, height: 32 },
   { pkg: 'simple-icons', lib: 'simple-icons' },
+  { pkg: 'hugeicons', lib: 'hugeicons' },
 ];
 
 function buildSet(set) {
