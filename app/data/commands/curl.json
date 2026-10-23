@@ -1,0 +1,90 @@
+{
+  "name": "curl",
+  "cluster": true,
+  "docs": "https://curl.se/docs/manpage.html",
+  "tasks": [
+    {
+      "title": "Fetch a URL",
+      "fields": {
+        "url": { "label": "URL", "placeholder": "https://example.com" },
+        "show": {
+          "kind": "select",
+          "label": "Show",
+          "options": [
+            { "label": "Body" },
+            { "label": "Both", "value": "-i" },
+            { "label": "Headers", "value": "-I" }
+          ]
+        }
+      },
+      "layout": [["url", "show"]],
+      "flags": {
+        "follow": { "label": "Follow redirects", "value": "-L", "on": true },
+        "fail": { "label": "Fail fast", "value": "-f" },
+        "quiet": { "label": "Silent", "value": "-s -S" }
+      },
+      "script": ["curl {follow} {show} {fail} {quiet} {url}"]
+    },
+    {
+      "title": "Download a file",
+      "fields": {
+        "url": {
+          "label": "URL",
+          "placeholder": "https://example.com/file.zip"
+        },
+        "saveAs": {
+          "label": "Save as",
+          "placeholder": "file.zip",
+          "optional": true
+        }
+      },
+      "flags": {
+        "follow": { "label": "Follow redirects", "value": "-L", "on": true },
+        "resume": { "label": "Resume", "value": "-C -" },
+        "progress": { "label": "Progress bar", "value": "--progress-bar" }
+      },
+      "script": ["curl {follow} [-o {saveAs} | -O] {resume} {progress} {url}"]
+    },
+    {
+      "title": "Send JSON",
+      "fields": {
+        "url": {
+          "label": "URL",
+          "placeholder": "https://api.example.com/items"
+        },
+        "method": {
+          "kind": "select",
+          "label": "Method",
+          "options": [
+            { "label": "POST" },
+            { "label": "PUT", "value": "PUT" },
+            { "label": "PATCH", "value": "PATCH" },
+            { "label": "DELETE", "value": "DELETE" }
+          ]
+        },
+        "body": {
+          "kind": "textarea",
+          "label": "Body",
+          "placeholder": "{\"name\":\"example\"}"
+        },
+        "token": {
+          "label": "Token",
+          "placeholder": "your-token",
+          "optional": true
+        }
+      },
+      "script": [
+        "curl [-X {method}] -H 'Content-Type: application/json' [-H 'Authorization: Bearer {token}'] -d {body} {url}"
+      ]
+    },
+    {
+      "title": "Upload a file",
+      "fields": {
+        "url": { "label": "URL", "placeholder": "https://example.com/upload" },
+        "name": { "label": "Field name", "placeholder": "file" },
+        "path": { "label": "File", "placeholder": "./photo.jpg" }
+      },
+      "script": ["curl -F {name}=@{path} {url}"]
+    }
+  ]
+}

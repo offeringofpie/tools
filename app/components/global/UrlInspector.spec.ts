@@ -2,7 +2,9 @@ import { mount, flushPromises } from '@vue/test-utils';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import UrlInspector from './UrlInspector.vue';
 
-vi.stubGlobal('$fetch', vi.fn());
+vi.hoisted(() => {
+  vi.stubGlobal('$fetch', vi.fn());
+});
 vi.stubGlobal('navigator', {
   clipboard: { writeText: vi.fn().mockResolvedValue(undefined) },
 });

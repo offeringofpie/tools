@@ -172,6 +172,15 @@ export const config: Record<string, ToolConfig> = {
     seoDescription:
       'Search thousands of Unicode symbols, emojis, arrows, and accented characters.',
   },
+  CommandHelper: {
+    category: 'Code',
+    description:
+      'Build curl, ffmpeg, git, sed and tar commands, with links to the docs.',
+    icon: 'i-heroicons-command-line',
+    seoTitle: 'Command Builder for curl, ffmpeg, git, sed and tar',
+    seoDescription:
+      'Pick a task, fill in a few fields, and copy a ready-to-run curl, ffmpeg, git, sed or tar command, with links to the official docs.',
+  },
   CronHelper: {
     category: 'Code',
     description: 'Build and decode cron schedules.',

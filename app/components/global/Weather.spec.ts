@@ -23,8 +23,11 @@ const mockResponse = {
   },
 };
 
-const mockFetch = vi.fn();
-vi.stubGlobal('$fetch', mockFetch);
+const mockFetch = vi.hoisted(() => {
+  const fetchMock = vi.fn();
+  vi.stubGlobal('$fetch', fetchMock);
+  return fetchMock;
+});
 vi.stubGlobal('import', { meta: { client: false } });
 
 const geolocationMock = { getCurrentPosition: vi.fn() };

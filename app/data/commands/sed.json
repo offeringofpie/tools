@@ -1,0 +1,88 @@
+{
+  "name": "sed",
+  "cluster": true,
+  "docs": "https://pubs.opengroup.org/onlinepubs/9799919799/utilities/sed.html",
+  "tasks": [
+    {
+      "title": "Replace text",
+      "fields": {
+        "find": { "label": "Find", "placeholder": "foo", "spaces": "keep" },
+        "replace": {
+          "label": "Replace",
+          "placeholder": "bar",
+          "spaces": "keep"
+        },
+        "scope": {
+          "kind": "select",
+          "label": "Matches",
+          "options": [
+            { "label": "All", "value": "g" },
+            { "label": "First", "value": "1" }
+          ]
+        },
+        "file": { "label": "File", "placeholder": "file.txt" }
+      },
+      "layout": [
+        ["find", "replace"],
+        ["scope", "file"]
+      ],
+      "flags": { "inplace": { "label": "In place", "value": "-i.bak" } },
+      "script": [
+        "sed -E {inplace} 's/{find|slash}/{replace|slash}/{scope}' {file}"
+      ]
+    },
+    {
+      "title": "Remove text",
+      "fields": {
+        "find": { "label": "Find", "placeholder": "foo", "spaces": "keep" },
+        "scope": {
+          "kind": "select",
+          "label": "Matches",
+          "options": [
+            { "label": "All", "value": "g" },
+            { "label": "First", "value": "1" }
+          ]
+        },
+        "file": { "label": "File", "placeholder": "file.txt" }
+      },
+      "layout": [["find", "scope"], ["file"]],
+      "flags": { "inplace": { "label": "In place", "value": "-i.bak" } },
+      "script": ["sed -E {inplace} 's/{find|slash}//{scope}' {file}"]
+    },
+    {
+      "title": "Delete matching lines",
+      "fields": {
+        "pattern": {
+          "label": "Pattern",
+          "placeholder": "^#",
+          "spaces": "keep"
+        },
+        "file": { "label": "File", "placeholder": "file.txt" }
+      },
+      "layout": [["pattern", "file"]],
+      "flags": { "inplace": { "label": "In place", "value": "-i.bak" } },
+      "script": ["sed -E {inplace} '/{pattern|slash}/d' {file}"]
+    },
+    {
+      "title": "Print a range of lines",
+      "fields": {
+        "from": { "label": "From", "placeholder": "5" },
+        "to": { "label": "To", "placeholder": "10" },
+        "file": { "label": "File", "placeholder": "file.txt" }
+      },
+      "layout": [["from", "to"], ["file"]],
+      "script": ["sed -n '{from},{to}p' {file}"]
+    },
+    {
+      "title": "Delete a range of lines",
+      "fields": {
+        "from": { "label": "From", "placeholder": "5" },
+        "to": { "label": "To", "placeholder": "10" },
+        "file": { "label": "File", "placeholder": "file.txt" }
+      },
+      "layout": [["from", "to"], ["file"]],
+      "flags": { "inplace": { "label": "In place", "value": "-i.bak" } },
+      "script": ["sed {inplace} '{from},{to}d' {file}"]
+    }
+  ]
+}

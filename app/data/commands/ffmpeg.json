@@ -1,0 +1,175 @@
+{
+  "name": "ffmpeg",
+  "docs": "https://ffmpeg.org/ffmpeg.html",
+  "tasks": [
+    {
+      "title": "Trim a video",
+      "fields": {
+        "input": { "label": "Input", "placeholder": "in.mp4" },
+        "start": { "kind": "time", "label": "Start", "initial": "00:00:10" },
+        "endMode": {
+          "kind": "select",
+          "label": "End by",
+          "options": [
+            { "label": "Time", "value": "-to" },
+            { "label": "Duration", "value": "-t" }
+          ]
+        },
+        "end": { "kind": "time", "label": "End", "initial": "00:00:30" },
+        "output": { "label": "Output", "placeholder": "out.mp4" }
+      },
+      "layout": [
+        ["input", "output"],
+        ["start", "endMode", "end"]
+      ],
+      "flags": { "copy": { "label": "Stream copy", "value": "-c copy" } },
+      "script": [
+        "ffmpeg -ss {start} {endMode} {end} -i {input} {copy} {output}"
+      ]
+    },
+    {
+      "title": "Convert format",
+      "fields": {
+        "input": { "label": "Input", "placeholder": "in.mkv" },
+        "format": {
+          "kind": "select",
+          "label": "Format",
+          "options": [
+            { "label": "MP4", "value": "mp4" },
+            { "label": "WebM", "value": "webm" },
+            { "label": "MKV", "value": "mkv" },
+            { "label": "MOV", "value": "mov" }
+          ]
+        },
+        "output": { "label": "Output", "placeholder": "out" }
+      },
+      "layout": [["input", "format", "output"]],
+      "flags": { "copy": { "label": "Stream copy", "value": "-c copy" } },
+      "script": ["ffmpeg -i {input} {copy} {output}.{format}"]
+    },
+    {
+      "title": "Extract audio",
+      "fields": {
+        "input": { "label": "Input", "placeholder": "in.mp4" },
+        "format": {
+          "kind": "select",
+          "label": "Format",
+          "options": [
+            {
+              "label": "MP3",
+              "value": "mp3",
+              "codec": "-c:a libmp3lame -q:a 2"
+            },
+            { "label": "M4A", "value": "m4a", "codec": "-c:a aac -b:a 192k" },
+            { "label": "WAV", "value": "wav", "codec": "-c:a pcm_s16le" },
+            { "label": "FLAC", "value": "flac", "codec": "-c:a flac" }
+          ]
+        },
+        "output": { "label": "Output", "placeholder": "out" }
+      },
+      "layout": [["input", "format", "output"]],
+      "script": ["ffmpeg -i {input} -vn {format.codec} {output}.{format}"]
+    },
+    {
+      "title": "Compress a video",
+      "fields": {
+        "input": { "label": "Input", "placeholder": "in.mp4" },
+        "quality": {
+          "kind": "select",
+          "label": "Quality",
+          "initial": "Medium",
+          "options": [
+            { "label": "High", "value": "18" },
+            { "label": "Medium", "value": "23" },
+            { "label": "Low", "value": "28" }
+          ]
+        },
+        "speed": {
+          "kind": "select",
+          "label": "Speed",
+          "initial": "Medium",
+          "options": [
+            { "label": "Fast", "value": "fast" },
+            { "label": "Medium", "value": "medium" },
+            { "label": "Slow", "value": "slow" }
+          ]
+        },
+        "resize": {
+          "kind": "select",
+          "label": "Size",
+          "options": [
+            { "label": "Original" },
+            { "label": "1080p", "value": "1080" },
+            { "label": "720p", "value": "720" },
+            { "label": "480p", "value": "480" }
+          ]
+        },
+        "output": { "label": "Output", "placeholder": "out.mp4" }
+      },
+      "layout": [["input", "output"], ["quality", "speed"], ["resize"]],
+      "script": [
+        "ffmpeg -i {input} -c:v libx264 -crf {quality} -preset {speed} [-vf scale=-2:{resize}] -c:a aac -b:a 128k {output}"
+      ]
+    },
+    {
+      "title": "Make a GIF",
+      "fields": {
+        "input": { "label": "Input", "placeholder": "in.mp4" },
+        "start": { "kind": "time", "label": "Start", "initial": "00:00:00" },
+        "length": { "kind": "time", "label": "Length", "initial": "00:00:05" },
+        "fps": {
+          "kind": "select",
+          "label": "Frame rate",
+          "initial": "12",
+          "options": [
+            { "label": "10", "value": "10" },
+            { "label": "12", "value": "12" },
+            { "label": "15", "value": "15" }
+          ]
+        },
+        "width": {
+          "kind": "select",
+          "label": "Width",
+          "initial": "480 px",
+          "options": [
+            { "label": "320 px", "value": "320" },
+            { "label": "480 px", "value": "480" },
+            { "label": "640 px", "value": "640" }
+          ]
+        },
+        "output": { "label": "Output", "placeholder": "out.gif" }
+      },
+      "layout": [
+        ["input", "output"],
+        ["start", "length"],
+        ["fps", "width"]
+      ],
+      "script": [
+        "ffmpeg -ss {start} -t {length} -i {input} -vf 'fps={fps},scale={width}:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse' {output}"
+      ]
+    },
+    {
+      "title": "Save a frame",
+      "fields": {
+        "input": { "label": "Input", "placeholder": "in.mp4" },
+        "time": { "kind": "time", "label": "Time", "initial": "00:00:05" },
+        "format": {
+          "kind": "select",
+          "label": "Format",
+          "options": [
+            { "label": "PNG", "value": "png" },
+            { "label": "JPG", "value": "jpg", "quality": "-q:v 2" }
+          ]
+        },
+        "output": { "label": "Output", "placeholder": "frame" }
+      },
+      "layout": [
+        ["input", "output"],
+        ["time", "format"]
+      ],
+      "script": [
+        "ffmpeg -ss {time} -i {input} -frames:v 1 -update 1 {format.quality} {output}.{format}"
+      ]
+    }
+  ]
+}

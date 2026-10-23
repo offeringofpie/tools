@@ -1,0 +1,179 @@
+{
+  "name": "git",
+  "docs": "https://git-scm.com/docs",
+  "tasks": [
+    {
+      "title": "Undo recent commits",
+      "fields": {
+        "count": { "label": "Commits", "placeholder": "1" },
+        "mode": {
+          "kind": "select",
+          "label": "Changes",
+          "options": [
+            { "label": "Keep staged", "value": "--soft" },
+            { "label": "Keep unstaged", "value": "--mixed" },
+            { "label": "Discard", "value": "--hard" }
+          ]
+        }
+      },
+      "layout": [["count", "mode"]],
+      "script": ["git reset {mode} HEAD~{count}"]
+    },
+    {
+      "title": "Amend the last commit",
+      "fields": {
+        "message": {
+          "label": "Message",
+          "placeholder": "Fix typo",
+          "optional": true
+        }
+      },
+      "flags": { "all": { "label": "All tracked", "value": "--all" } },
+      "script": ["git commit --amend {all} [-m {message} | --no-edit]"]
+    },
+    {
+      "title": "Stash changes",
+      "fields": {
+        "message": {
+          "label": "Message",
+          "placeholder": "work in progress",
+          "optional": true
+        }
+      },
+      "flags": {
+        "untracked": {
+          "label": "Untracked files",
+          "value": "--include-untracked"
+        }
+      },
+      "script": ["git stash push {untracked} [-m {message}]"]
+    },
+    {
+      "title": "Restore a stash",
+      "fields": {
+        "action": {
+          "kind": "select",
+          "label": "Action",
+          "options": [
+            { "label": "Pop", "value": "pop" },
+            { "label": "Apply", "value": "apply" },
+            { "label": "Drop", "value": "drop" }
+          ]
+        },
+        "index": { "label": "Stash number", "placeholder": "0" }
+      },
+      "layout": [["action", "index"]],
+      "script": ["git stash {action} stash@{{index}}"]
+    },
+    {
+      "title": "Show history",
+      "fields": {
+        "limit": { "label": "Limit", "placeholder": "20" },
+        "author": {
+          "label": "Author",
+          "placeholder": "name or email",
+          "optional": true
+        },
+        "path": { "label": "Path", "placeholder": "src/", "optional": true }
+      },
+      "layout": [["limit", "author"], ["path"]],
+      "flags": {
+        "oneline": { "label": "One line", "value": "--oneline", "on": true },
+        "graph": { "label": "Graph", "value": "--graph", "on": true },
+        "decorate": {
+          "label": "Branch names",
+          "value": "--decorate",
+          "on": true
+        },
+        "all": { "label": "All branches", "value": "--all" }
+      },
+      "script": [
+        "git log {oneline} {graph} {decorate} {all} -n {limit} [--author {author}] [-- {path}]"
+      ]
+    },
+    {
+      "title": "Delete a local branch",
+      "fields": {
+        "branch": { "label": "Branch", "placeholder": "feature" },
+        "force": {
+          "kind": "select",
+          "label": "If unmerged",
+          "options": [
+            { "label": "Keep", "value": "-d" },
+            { "label": "Delete", "value": "-D" }
+          ]
+        }
+      },
+      "layout": [["branch", "force"]],
+      "script": ["git branch {force} {branch}"]
+    },
+    {
+      "title": "Delete a remote branch",
+      "fields": {
+        "branch": { "label": "Branch", "placeholder": "feature" },
+        "remote": { "label": "Remote", "placeholder": "origin" }
+      },
+      "layout": [["branch", "remote"]],
+      "script": ["git push {remote} --delete {branch}"]
+    },
+    {
+      "title": "Remove untracked files",
+      "fields": {
+        "mode": {
+          "kind": "select",
+          "label": "Action",
+          "options": [
+            { "label": "Preview", "value": "-n" },
+            { "label": "Delete", "value": "-f" }
+          ]
+        }
+      },
+      "flags": {
+        "dirs": { "label": "Folders", "value": "-d", "on": true },
+        "ignored": { "label": "Ignored files", "value": "-x" }
+      },
+      "script": ["git clean {mode} {dirs} {ignored}"]
+    }
+  ],
+  "tricks": [
+    {
+      "title": "Rename a branch",
+      "fields": {
+        "old": { "label": "Current name", "placeholder": "old-name" },
+        "new": { "label": "New name", "placeholder": "new-name" },
+        "remote": { "label": "Remote", "placeholder": "origin" }
+      },
+      "layout": [["old", "new", "remote"]],
+      "script": [
+        "# Rename locally",
+        "git branch -m {old} {new}",
+        "# Delete old remote branch, push new one",
+        "git push {remote} :{old} {new}",
+        "# Reset upstream tracking",
+        "git push {remote} -u {new}"
+      ]
+    },
+    {
+      "title": "Push to an extra repo",
+      "fields": {
+        "remote": { "label": "Remote", "placeholder": "origin" },
+        "current": {
+          "label": "Current URL",
+          "placeholder": "git@github.com:user/repo.git"
+        },
+        "extra": {
+          "label": "Extra URL",
+          "placeholder": "git@gitlab.com:user/repo.git"
+        }
+      },
+      "script": [
+        "# Keep pushing to the current repo",
+        "git remote set-url --add --push {remote} {current}",
+        "# Also push to the extra repo",
+        "git remote set-url --add --push {remote} {extra}",
+        "# Check the push URLs",
+        "git remote -v"
+      ]
+    }
+  ]
+}

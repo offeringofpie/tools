@@ -1,0 +1,67 @@
+{
+  "name": "tar",
+  "note": "The flags shown work in GNU tar (Linux) and in the bsdtar that macOS ships.",
+  "cluster": true,
+  "docs": "https://www.gnu.org/software/tar/manual/tar.html",
+  "tasks": [
+    {
+      "title": "Create an archive",
+      "fields": {
+        "source": { "label": "Source", "placeholder": "my-folder" },
+        "name": { "label": "Archive name", "placeholder": "archive" },
+        "compression": {
+          "kind": "select",
+          "label": "Compression",
+          "options": [
+            { "label": "gzip", "value": "tar.gz", "flag": "-z" },
+            { "label": "xz", "value": "tar.xz", "flag": "-J" },
+            { "label": "bzip2", "value": "tar.bz2", "flag": "-j" },
+            { "label": "None", "value": "tar" }
+          ]
+        },
+        "excludes": {
+          "kind": "tags",
+          "label": "Exclude",
+          "placeholder": "Add a pattern and press Enter"
+        }
+      },
+      "layout": [["source", "name"], ["compression"], ["excludes"]],
+      "flags": { "verbose": { "label": "Verbose", "value": "-v" } },
+      "script": [
+        "tar -c {compression.flag} {verbose} -f {name}.{compression} [--exclude {excludes}] {source}"
+      ]
+    },
+    {
+      "title": "Extract an archive",
+      "fields": {
+        "archive": { "label": "Archive", "placeholder": "archive.tar.gz" },
+        "destination": {
+          "label": "Extract into",
+          "placeholder": "my-folder",
+          "optional": true
+        },
+        "strip": {
+          "kind": "select",
+          "label": "Strip folders",
+          "options": [
+            { "label": "None" },
+            { "label": "1 level", "value": "1" },
+            { "label": "2 levels", "value": "2" }
+          ]
+        }
+      },
+      "flags": { "verbose": { "label": "Verbose", "value": "-v" } },
+      "script": [
+        "tar -x {verbose} -f {archive} [-C {destination}] [--strip-components {strip}]"
+      ]
+    },
+    {
+      "title": "List contents",
+      "fields": {
+        "archive": { "label": "Archive", "placeholder": "archive.tar.gz" }
+      },
+      "flags": { "long": { "label": "Long listing", "value": "-v" } },
+      "script": ["tar -t {long} -f {archive}"]
+    }
+  ]
+}
